@@ -1,0 +1,15 @@
+{% if cursos %}
+  <div class="cursos-lista">
+    <h3>📘 Tus cursos creados:</h3>
+    {% for curso in cursos %}
+      <div class="curso-item">
+        <strong>{{ curso.nombre }}</strong><br>
+        <small>{{ curso.descripcion }}</small>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="cursos-lista">
+    <p>No tienes cursos registrados aún.</p>
+  </div>
+{% endif %}

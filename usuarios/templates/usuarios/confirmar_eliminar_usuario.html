@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Eliminación</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ffcccc, #ffe6e6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+        h2 {
+            color:rgb(0, 0, 0);
+            margin-bottom: 20px;
+        }
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #bdc3c7;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>¿Estás seguro que deseas eliminar al usuario "{{ usuario.username }}"?</h2>
+        <div class="buttons">
+            <a href="{% url 'eliminar_usuario' usuario.id %}" class="btn btn-danger">Aceptar</a>
+            <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </div>
+</body>
+</html>

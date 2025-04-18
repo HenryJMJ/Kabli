@@ -1,0 +1,41 @@
+{% block content %}
+  <div class="container">
+    <h1>Subir Recursos</h1>
+    <p>Aquí podrás subir materiales y recursos para tus estudiantes.</p>
+
+    <!-- Formulario para subir recursos -->
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+    
+      <div class="form-group">
+        <label for="archivo">Selecciona el archivo a subir:</label>
+        <input type="file" name="archivo" id="archivo" class="form-control" required>
+      </div>
+    
+      <div class="form-group">
+        <label for="descripcion">Descripción del recurso:</label>
+        <textarea name="descripcion" id="descripcion" class="form-control" rows="4" required></textarea>
+      </div>
+    
+      <button type="submit" class="btn btn-primary">Subir</button>
+    </form>      
+
+    <!-- Lista de recursos -->
+    <h3 class="mt-4">📚 Lista de Recursos</h3>
+    <div class="lista-recursos">
+      {% if recursos %}
+        <ul>
+          {% for recurso in recursos %}
+            <li>
+              <strong>{{ recurso.descripcion }}</strong><br>
+              <a href="{{ recurso.archivo.url }}" target="_blank">Ver recurso</a><br>
+              Subido por: {{ recurso.usuario.username }} el {{ recurso.fecha_subida|date:"d M Y H:i" }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No hay recursos disponibles.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

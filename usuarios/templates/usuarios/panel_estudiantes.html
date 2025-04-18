@@ -1,0 +1,354 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Estudiantil</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #9dc9ff, #bce6ff);
+      min-height: 100vh;
+      transition: background 0.4s;
+    }
+
+    /* Deshabilitamos los enlaces (excepto en el logout) */
+    a {
+      pointer-events: none;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      height: 100vh;
+    }
+
+    /* Barra lateral */
+    .sidebar {
+      width: 120px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .sidebar a {
+      text-align: center;
+      text-decoration: none;
+      color: black;
+      font-size: 12px;
+    }
+
+    .sidebar img {
+      width: 50px;
+      margin-bottom: 5px;
+    }
+
+    /* Contenido principal */
+    .content {
+      flex-grow: 1;
+      background-image: url("{% static 'usuarios/img/fondo1.png' %}");
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .header {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.7);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Iconos superiores */
+    .top-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .top-icons a, .top-icons span {
+      text-decoration: none;
+      pointer-events: none;
+    }
+
+    .top-icons img {
+      width: 40px;
+    }
+
+    /* Botón de logout */
+    .logout-btn {
+      pointer-events: auto;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #333;
+      text-decoration: none;
+    }
+
+    /* Pie de página */
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: rgba(255, 228, 181, 0.9);
+      padding: 15px 0;
+      border-top: 1px solid #ddd;
+    }
+
+    .footer a {
+      text-align: center;
+      text-decoration: none;
+      color: black;
+      pointer-events: none;
+    }
+
+    .footer img {
+      width: 40px;
+      margin-bottom: 5px;
+      transition: transform 0.2s;
+    }
+
+    .footer img:hover {
+      transform: scale(1.1);
+    }
+
+    /* Caja de overlay */
+    .overlay-box {
+      position: absolute;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 700px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #666;
+      font-size: 1rem;
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+      /* Barra lateral */
+      .sidebar {
+        width: 80px;
+        padding: 10px 0;
+      }
+
+      .sidebar img {
+        width: 40px;
+      }
+
+      .sidebar a {
+        font-size: 10px;
+      }
+
+      /* Contenido principal */
+      .content {
+        padding: 15px;
+      }
+
+      .header {
+        font-size: 16px;
+        padding: 8px 15px;
+      }
+
+      .top-icons {
+        top: 10px;
+        right: 10px;
+        gap: 10px;
+      }
+
+      .top-icons img {
+        width: 30px;
+      }
+
+      .logout-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+
+      .footer {
+        flex-direction: column;
+        padding: 10px 0;
+      }
+
+      .footer a {
+        font-size: 10px;
+      }
+
+      .footer img {
+        width: 35px;
+      }
+
+      .overlay-box {
+        top: 100px;
+        width: 90%;
+        max-width: 600px;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Responsividad para móviles */
+    @media (max-width: 480px) {
+      .container {
+        flex-direction: column;
+      }
+
+      /* Barra lateral */
+      .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 15px 0;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .sidebar a {
+        width: 100%;
+        text-align: left;
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+
+      .sidebar img {
+        width: 35px;
+      }
+
+      .content {
+        padding: 10px;
+      }
+
+      .top-icons {
+        top: 10px;
+        right: 10px;
+        gap: 8px;
+      }
+
+      .top-icons img {
+        width: 30px;
+      }
+
+      .overlay-box {
+        top: 80px;
+        width: 90%;
+        padding: 20px;
+      }
+
+      .footer {
+        flex-direction: column;
+        padding: 10px 0;
+      }
+
+      .footer a {
+        font-size: 12px;
+      }
+
+      .footer img {
+        width: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Barra lateral -->
+    <div class="sidebar">
+      <a href="#">
+        <img src="{% static 'usuarios/img/birrete.png' %}" alt="Académico">
+        <div>ACADÉMICO</div>
+      </a>
+      <a href="#">
+        <img src="{% static 'usuarios/img/crebro.jpg' %}" alt="Gimnasio Mental">
+        <div>GIMNASIO MENTAL</div>
+      </a>
+      <a href="#">
+        <img src="{% static 'usuarios/img/mapa.jpg' %}" alt="Mapa del Saber">
+        <div>MAPA DEL SABER</div>
+      </a>
+      <a href="#">
+        <img src="{% static 'usuarios/img/fuego.jpg' %}" alt="Recursos">
+        <div>FUEGO DEL APRENDIZAJE</div>
+      </a>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content">
+      <div class="header">
+        Aprende con nosotros cada tema académico con información de todo el mundo.
+      </div>
+
+      <div class="top-icons">
+        <a href="#"><img src="{% static 'usuarios/img/icono.png' %}" alt="Perfil"></a>
+        <!-- El botón de cerrar sesión sí funciona -->
+        <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="logout-btn">Cerrar Sesión</button>
+        </form>
+      </div>
+
+      <!-- Contenido de bienvenida -->
+      <div class="overlay-box">
+        <h1>¡Bienvenid@, {{ nombre_usuario }}!</h1>
+        <p>Explora tus recursos, actividades y progreso en un solo lugar.</p>
+      </div>
+
+      <!-- Menú inferior -->
+      <div class="footer">
+        <a href="#"><img src="{% static 'usuarios/img/inicio.png' %}" alt="Inicio"><div>INICIO</div></a>
+        <a href="#"><img src="{% static 'usuarios/img/calendario.png' %}" alt="Calendario"><div>CALENDARIO</div></a>
+        <a href="#"><img src="{% static 'usuarios/img/mensaje.png' %}" alt="Mensaje"><div>MENSAJES</div></a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

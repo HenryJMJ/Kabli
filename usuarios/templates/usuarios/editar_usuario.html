@@ -1,0 +1,210 @@
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Usuario</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #9dc9ff, #bce6ff);
+      min-height: 100vh;
+      padding: 40px;
+      transition: background 0.4s;
+    }
+
+    body.dark {
+      background: rgb(2, 2, 2);
+      color: white;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      animation: fadeIn 0.8s ease-in-out;
+      color: rgb(0, 0, 0);
+    }
+
+    body.dark h2 {
+      color: white;
+    }
+
+    .form-container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      animation: fadeIn 1s ease;
+    }
+
+    body.dark .form-container {
+      background-color: #2f3640;
+      color: white;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #90caf9;
+      border-radius: 8px;
+      font-size: 15px;
+      background-color: #f4f9ff;
+    }
+
+    body.dark input[type="text"],
+    body.dark input[type="email"] {
+      background-color: #3b3f47;
+      color: white;
+      border-color: #555;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    button,
+    .btn-cancel {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+    }
+
+    button:hover {
+      background-color: #1565c0;
+    }
+
+    .btn-cancel {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+
+    .btn-cancel:hover {
+      background-color: #bdbdbd;
+    }
+
+    body.dark .btn-cancel {
+      background-color: #555;
+      color: white;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 20px;
+      color: #d32f2f;
+    }
+
+    .floating-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    .icon-button {
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+      transition: all 0.3s ease;
+    }
+
+    .icon-button:hover {
+      transform: scale(1.1);
+    }
+
+    body.dark .icon-button {
+      background: #2f3640;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Botón flotante para cambiar el modo oscuro -->
+  <div class="floating-buttons">
+    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
+  </div>
+
+  <h2>Editar Usuario</h2>
+
+  <div class="form-container">
+    {% if messages %}
+      {% for message in messages %}
+        <p class="message">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <label for="username">Nombre de Usuario:</label>
+      <input type="text" name="username" value="{{ usuario.username }}" required>
+
+      <label for="email">Correo Electrónico:</label>
+      <input type="email" name="email" value="{{ usuario.email }}" required>
+
+      <div class="btn-container">
+        <button type="submit">Guardar Cambios</button>
+        <a href="{% url 'lista_usuarios' %}" class="btn-cancel">Cancelar</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function toggleDarkMode() {
+      const body = document.body;
+      const toggle = document.getElementById('darkToggle');
+      body.classList.toggle('dark');
+      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+    }
+  </script>
+</body>
+</html>
+{% endblock %}

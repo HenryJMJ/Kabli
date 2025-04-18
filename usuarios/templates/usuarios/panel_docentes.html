@@ -1,0 +1,293 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Docente</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(to right, #9dc9ff, #bce6ff);
+      min-height: 100vh;
+      padding: 40px;
+      transition: background 0.4s;
+    }
+
+    body.dark { background: #1e272e; color: white; }
+
+    h1, h2 { text-align: center; margin-bottom: 20px; font-size: 2rem; }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #3498db;
+      padding: 15px 30px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .navbar .logo { color: white; font-size: 1.5rem; font-weight: bold; }
+
+    .navbar .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .navbar .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .navbar .nav-links li a:hover { color: #ecf0f1; }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      animation: fadeIn 0.6s ease;
+    }
+
+    body.dark .container { background-color: #2f3640; }
+
+    .floating-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    .icon-button {
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+      transition: all 0.3s ease;
+    }
+
+    .icon-button:hover { transform: scale(1.1); }
+
+    body.dark .icon-button {
+      background: #2f3640;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 🧩 Cards personalizadas */
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .action-card {
+      background: #f1f1f1;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .action-card h3 {
+      font-size: 1.2rem;
+      margin: 10px 0;
+      color: #2c3e50;
+    }
+
+    .action-card p {
+      font-size: 0.95rem;
+      color: #34495e;
+      margin-bottom: 12px;
+    }
+
+    .action-card a {
+      text-decoration: none;
+      color: #3498db;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .action-card a:hover {
+      color: #2980b9;
+    }
+
+    .emoji {
+      font-size: 2.5rem;
+    }
+
+    body.dark .action-card {
+      background: #3b3b3b;
+      color: white;
+    }
+
+    body.dark .action-card h3,
+    body.dark .action-card p {
+      color: white;
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      .floating-buttons {
+        bottom: 15px;
+        right: 15px;
+      }
+
+      .icon-button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+
+      .cards-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .action-card h3 {
+        font-size: 1rem;
+      }
+
+      .action-card p {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .navbar .logo {
+        font-size: 1.2rem;
+      }
+
+      .navbar .nav-links {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .cards-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .icon-button {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+      }
+
+      .floating-buttons {
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Botones flotantes -->
+  <div class="floating-buttons">
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button class="icon-button" title="Cerrar sesión">🔚</button>
+    </form>
+    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
+  </div>
+
+  <!-- Título -->
+  <h2>👨‍🏫 Panel Docente</h2>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">🏫 I.E. MIGUE</div>
+    <ul class="nav-links">
+      <li><a href="{% url 'panel_docentes' %}">Inicio</a></li>
+      <li><a href="#">Cursos</a></li>
+      <li><a href="#">Estudiantes</a></li>
+      <li><a href="#">Recursos</a></li>
+      <li><a href="#">Mi Perfil</a></li>
+    </ul>
+  </nav>
+
+  <!-- Contenido -->
+  <div class="container">
+    <h1>Bienvenid@, {{ username }}</h1>
+    <p style="text-align: center;">Este es el panel exclusivo para docentes. Aquí puedes acceder a tus herramientas principales.</p>
+
+    <div class="cards-container">
+      <div class="action-card">
+        <span class="emoji">📚</span>
+        <h3>Gestionar Cursos</h3>
+        <p>Administra tus asignaturas, clases y contenidos curriculares.</p>
+        <a href="{% url 'libreria_cursos' %}">Ir a cursos →</a>
+      </div>
+      
+      <div class="action-card">
+        <span class="emoji">📤</span>
+        <h3>Subir Recursos</h3>
+        <p>Comparte archivos y materiales con tus estudiantes.</p>
+        <a href="{% url 'libreria_recursos' %}">Subir ahora →</a>
+      </div>
+    
+      <div class="action-card">
+        <span class="emoji">👥</span>
+        <h3>Estudiantes Inscritos</h3>
+        <p>Consulta quiénes están inscritos en tus cursos.</p>
+        <a href="{% url 'estudiantes_curso' %}">Ver lista →</a>
+      </div>
+    </div>    
+  </div>
+
+  <script>
+    function toggleDarkMode() {
+      const body = document.body;
+      const toggle = document.getElementById('darkToggle');
+      body.classList.toggle('dark');
+      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+    }
+  </script>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel de Administración</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #9dc9ff, #bce6ff);
+      min-height: 100vh;
+      padding: 40px;
+      transition: background 0.4s;
+    }
+
+    body.dark {
+      background: #1e272e;
+      color: white;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #3498db;
+      padding: 15px 30px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      position: relative;
+      flex-wrap: wrap; /* Esto asegura que todo se mantenga en el mismo contenedor */
+    }
+
+    .navbar .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      z-index: 2; /* Asegura que el logo esté sobre otros elementos */
+      flex-grow: 1; /* Esto hace que el logo ocupe el espacio disponible a la izquierda */
+    }
+
+    .navbar .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      z-index: 1; /* Asegura que las opciones del menú estén detrás del logo */
+      flex-grow: 2; /* Esto hace que las opciones de menú ocupen el espacio restante */
+      justify-content: flex-end;
+    }
+
+    .navbar .nav-links li {
+      position: relative;
+    }
+
+    .navbar .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .navbar .nav-links li a:hover {
+      color: #ecf0f1;
+    }
+
+    body.dark .navbar {
+      background-color: #2f3640;
+    }
+
+    body.dark .navbar .nav-links li a {
+      color: #dcdde1;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+      z-index: 2; /* Asegura que el icono de hamburguesa esté sobre el menú */
+      flex-shrink: 0; /* Esto evita que el ícono se haga pequeño cuando el tamaño cambia */
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .floating-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    .icon-button {
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+      transition: all 0.3s ease;
+    }
+
+    .icon-button:hover {
+      transform: scale(1.1);
+    }
+
+    body.dark .icon-button {
+      background: #2f3640;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .welcome-wrapper {
+      position: relative;
+      height: calc(100vh - 210px);
+    }
+
+    .welcome-popup {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(135deg, #3498db, #6dd5fa);
+      padding: 20px 30px;
+      border-radius: 20px;
+      max-width: 600px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: fadeInOut 5s ease-in-out forwards;
+      z-index: 10;
+    }
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+      }
+      10%, 90% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+      }
+    }
+
+    body.dark .welcome-popup {
+      background: linear-gradient(135deg, #2f3640, #4b4b4b);
+      color: #f5f6fa;
+    }
+
+    /* Estilos responsivos */
+    @media (max-width: 1024px) {
+      .navbar {
+        flex-direction: row;
+        align-items: center;
+        padding: 10px 15px;
+      }
+
+      .navbar .logo {
+        margin-right: auto;
+      }
+
+      .navbar .nav-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .menu-toggle {
+        display: block;
+        font-size: 2rem;
+        color: white;
+        margin-left: auto;
+      }
+
+      .nav-links.hidden {
+        display: none;
+      }
+
+      .floating-buttons {
+        bottom: 15px;
+        right: 15px;
+      }
+
+      .icon-button {
+        width: 40px;
+        height: 40px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .welcome-popup {
+        font-size: 1.5rem;
+        max-width: 90%;
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar .nav-links {
+        grid-template-columns: 1fr;
+      }
+
+      .icon-button {
+        width: 35px;
+        height: 35px;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        background-color: #3498db;
+        padding: 20px;
+        border-radius: 10px;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        display: none;
+        z-index: 1;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .navbar .logo {
+        margin-right: auto;
+      }
+
+      .menu-toggle {
+        font-size: 2rem;
+        color: white;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .navbar .nav-links {
+        grid-template-columns: 1fr;
+      }
+
+      h2 {
+        font-size: 1.2rem;
+      }
+
+      .welcome-popup {
+        font-size: 1.2rem;
+      }
+
+      .icon-button {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Botones flotantes -->
+  <div class="floating-buttons">
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button class="icon-button" title="Cerrar sesión">🔚</button>
+    </form>
+    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
+  </div>
+
+  <h2>Panel de Administración</h2>
+
+  <!-- Barra de navegación -->
+  <nav class="navbar">
+    <div class="logo">🏫 I.E. MIGUE</div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <ul class="nav-links hidden">
+      <li><a href="{% url 'panel_admin' %}">Inicio</a></li>
+      <li><a href="{% url 'estadisticas' %}">Estadísticas</a></li>
+      <li><a href="{% url 'lista_usuarios' %}">Usuarios</a></li>
+      <li><a href="{% url 'gestion_academica' %}">Académico</a></li>
+      <li><a href="{% url 'gestionar_cursos' %}">Cursos</a></li>
+      <li><a href="{% url 'ver_estudiantes' %}">Estudiantes</a></li>
+      <li><a href="{% url 'configuracion' %}">Configuración</a></li>
+      <li><a href="{% url 'perfil_admin' %}">Mi Perfil</a></li>
+      <li><a href="{% url 'notificaciones' %}">Notificaciones</a></li>
+    </ul>
+  </nav>
+
+  <!-- Mensaje de bienvenida centrado -->
+  {% if show_welcome %}
+  <div class="welcome-wrapper">
+    <div class="welcome-popup" id="welcomeMessage">
+      👋 ¡Bienvenido Administrador!
+    </div>
+  </div>
+  {% endif %}
+
+  <script>
+    function toggleDarkMode() {
+      const body = document.body;
+      const toggle = document.getElementById('darkToggle');
+      body.classList.toggle('dark');
+      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+    }
+
+    function toggleMenu() {
+      const nav = document.querySelector('.nav-links');
+      nav.classList.toggle('show');
+    }
+
+    // Ocultar mensaje de bienvenida después de 5 segundos
+    setTimeout(() => {
+      const welcome = document.getElementById('welcomeMessage');
+      if (welcome) welcome.style.display = 'none';
+    }, 5000);
+  </script>
+</body>
+</html>

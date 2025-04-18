@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estadísticas | Panel de Administración</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #9dc9ff, #bce6ff);
+      min-height: 100vh;
+      padding: 40px;
+      transition: background 0.4s;
+    }
+
+    body.dark {
+      background: #1e272e;
+      color: white;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .alert {
+      background-color: #2ecc71;
+      color: white;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      text-align: center;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #3498db;
+      padding: 15px 30px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .navbar .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .navbar .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .navbar .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .navbar .nav-links li a:hover {
+      color: #ecf0f1;
+    }
+
+    body.dark .navbar {
+      background-color: #2f3640;
+    }
+
+    body.dark .navbar .nav-links li a {
+      color: #dcdde1;
+    }
+
+    .floating-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    .icon-button {
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+      transition: all 0.3s ease;
+    }
+
+    .icon-button:hover {
+      transform: scale(1.1);
+    }
+
+    body.dark .icon-button {
+      background: #2f3640;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .estadisticas-panel {
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .estadisticas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+
+    .stat-card:hover {
+      transform: translateY(0);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card .icon {
+      font-size: 2.5rem;
+    }
+
+    .stat-card .label {
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .stat-card .value {
+      color: #3498db;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    body.dark .stat-card {
+      background-color: #2f3640;
+      color: #dcdde1;
+    }
+
+    body.dark .stat-card .value {
+      color: #00a8ff;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark canvas {
+      background-color: #2f3640;
+    }
+
+    .grafica-container {
+      grid-column: 1 / -1;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    body.dark .grafica-container {
+      background-color: #2f3640;
+      color: #dcdde1;
+    }
+
+    .grafica-container canvas {
+      width: 100% !important;
+      height: auto !important;
+    }
+
+    .tabla-container {
+      grid-column: 1 / -1;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    body.dark .tabla-container {
+      background-color: #2f3640;
+      color: #dcdde1;
+    }
+
+    .tabla-container table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+      text-align: center;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .tabla-container th,
+    .tabla-container td {
+      padding: 12px 15px;
+      white-space: nowrap;
+    }
+
+    .tabla-container thead {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .tabla-container tbody tr:nth-child(even) {
+      background-color: #f4f6f7;
+    }
+
+    .tabla-container tbody tr:nth-child(odd) {
+      background-color: #e8f8f5;
+    }
+
+    body.dark .tabla-container tbody tr:nth-child(even),
+    body.dark .tabla-container tbody tr:nth-child(odd) {
+      background-color: #3e4a5a;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* --- Responsivo --- */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .navbar .nav-links {
+        flex-direction: column;
+        gap: 10px;
+        padding-left: 20px;
+      }
+
+      .stat-card {
+        padding: 15px;
+        font-size: 1.2rem;
+      }
+
+      .tabla-container table {
+        font-size: 14px;
+      }
+
+      .tabla-container th,
+      .tabla-container td {
+        padding: 10px;
+      }
+
+      .tabla-container {
+        padding: 20px;
+      }
+
+      .grafica-container {
+        padding: 20px;
+      }
+
+      .floating-buttons {
+        bottom: 10px;
+        right: 10px;
+        gap: 8px;
+      }
+
+      .icon-button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+
+      .stat-card .icon {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Botones flotantes -->
+  <div class="floating-buttons">
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button class="icon-button" title="Cerrar sesión">🔚</button>
+    </form>
+    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
+  </div>
+
+  <h2>Estadísticas Generales</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- Barra de navegación -->
+  <nav class="navbar">
+    <div class="logo">🏫 I.E. MIGUE</div>
+    <ul class="nav-links">
+      <li><a href="{% url 'panel_admin' %}">Inicio</a></li>
+      <li><a href="{% url 'estadisticas' %}">Estadísticas</a></li>
+      <li><a href="{% url 'lista_usuarios' %}">Usuarios</a></li>
+      <li><a href="{% url 'gestion_academica' %}">Académico</a></li>
+      <li><a href="{% url 'gestionar_cursos' %}">Cursos</a></li>
+      <li><a href="{% url 'ver_estudiantes' %}">Estudiantes</a></li>
+      <li><a href="{% url 'configuracion' %}">Configuración</a></li>
+      <li><a href="{% url 'perfil_admin' %}">Mi Perfil</a></li>
+      <li><a href="{% url 'notificaciones' %}">Notificaciones</a></li>
+    </ul>
+  </nav>
+
+  <!-- Panel de Estadísticas -->
+  <div class="estadisticas-panel">
+    <div class="estadisticas-grid">
+      <div class="stat-card">
+        <div class="icon">👥</div>
+        <div class="label">Usuarios</div>
+        <div class="value">{{ total_usuarios }}</div>
+      </div>
+    </div>
+
+    <!-- Gráfico adicional: Usuarios por rol -->
+    <div class="grafica-container">
+      <h3 style="text-align:center; margin-bottom: 20px;">Estadísticas</h3>
+      <canvas id="usuariosPorRol"></canvas>
+    </div>
+
+    <!-- Panel de registros de usuarios -->
+    <div id="panel-registros" class="tabla-container">
+      <h3 style="text-align: center; margin-bottom: 20px;">Registros de Usuarios</h3>
+
+      <!-- Filtro de Fecha y Hora -->
+      <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; justify-content: center;">
+        <div>
+          <label for="filtroFecha" style="font-weight: 500;">Filtrar por Fecha:</label><br>
+          <input type="date" id="filtroFecha" style="padding: 8px 10px; border-radius: 8px; border: 1px solid #ccc;">
+        </div>
+        <div style="align-self: flex-end;">
+          <button onclick="filtrarRegistros()" style="padding: 8px 15px; border-radius: 8px; background-color: #3498db; color: white; border: none; cursor: pointer;">
+            Filtrar
+          </button>
+          <button onclick="limpiarFiltros()" style="padding: 8px 15px; border-radius: 8px; background-color: #95a5a6; color: white; border: none; cursor: pointer;">
+            Limpiar
+          </button>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for registro in registros %}
+            <tr>
+              <td>{{ registro.nombre }}</td>
+              <td>{{ registro.correo }}</td>
+              <td>{{ registro.fecha|date:"d/m/Y" }}</td>
+              <td>{{ registro.fecha|time:"H:i:s" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4">No hay registros disponibles.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div> <!-- Fin del panel de estadísticas -->
+
+  <script>
+    function toggleDarkMode() {
+      const body = document.body;
+      const toggle = document.getElementById('darkToggle');
+      body.classList.toggle('dark');
+      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+    }
+
+    const ctx = document.getElementById('usuariosPorRol').getContext('2d');
+
+    const dataCompleta = {
+      labels: ['Admin', 'Docente', 'Estudiante'],
+      counts: {{ roles_counts|safe }},
+      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+      borderColor: ['#2e59d9', '#17a673', '#2c9faf']
+    };
+
+    const usuariosPorRolChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: dataCompleta.labels,
+        datasets: [{
+          label: 'Usuarios por Rol',
+          data: dataCompleta.counts,
+          backgroundColor: dataCompleta.backgroundColor,
+          borderColor: dataCompleta.borderColor,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+
+    function filtrarRegistros() {
+      const filtroFecha = document.getElementById('filtroFecha').value;
+      const filas = document.querySelectorAll('#panel-registros tbody tr');
+    
+      filas.forEach(fila => {
+        const fechaTexto = fila.children[2]?.textContent.trim(); // columna fecha
+        const mostrarPorFecha = !filtroFecha || fechaTexto === formatearFecha(filtroFecha);
+    
+        fila.style.display = mostrarPorFecha ? '' : 'none';
+      });
+    }
+    
+    function limpiarFiltros() {
+      document.getElementById('filtroFecha').value = '';
+      filtrarRegistros();
+    }
+    
+    function formatearFecha(fechaISO) {
+      const [anio, mes, dia] = fechaISO.split("-");
+      return `${dia}/${mes}/${anio}`; // formato mostrado en la tabla
+    }    
+  </script>  
+</body>
+</html>

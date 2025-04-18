@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cambiar Contraseña</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(to bottom right, #b3d9ff, #cce6ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .password-box {
+      background-color: #ffffff;
+      padding: 3rem 2rem;
+      border-radius: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+
+    .password-box h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+    }
+
+    .password-box input[type="password"] {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 1rem;
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .password-box input[type="password"]:focus {
+      border-color: #2196f3;
+      outline: none;
+    }
+
+    .password-box button {
+      width: 100%;
+      padding: 0.9rem;
+      border: none;
+      background-color: #2196f3;
+      color: white;
+      border-radius: 1rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .password-box button:hover {
+      background-color: #1976d2;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="password-box">
+    <h2>Cambiar Contraseña</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="password" name="nueva" placeholder="Nueva contraseña" required>
+      <input type="password" name="confirmar" placeholder="Confirmar contraseña" required>
+      <button type="submit">Cambiar</button>
+    </form>
+  </div>
+</body>
+</html>
