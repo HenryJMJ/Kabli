@@ -41,5 +41,3 @@ urlpatterns = [
     path('verificar/', views.verificar_codigo_view, name='verificar_codigo'),
     path('cambiar/', views.cambiar_contraseña_view, name='cambiar_contraseña'),
 ]
-
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
