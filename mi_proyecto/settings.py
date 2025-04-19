@@ -149,10 +149,10 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '5565-181-78-74-83.ngrok-free.app']
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://b569-181-78-74-83.ngrok-free.app',  # tu ngrok HTTPS
+    'https://i-e-migue.onrender.com',
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:8000/",  # Si estás trabajando localmente
-    "https://b569-181-78-74-83.ngrok-free.app",  # Tu URL de ngrok
+    "http://127.0.0.1:8000/", 
+    "https://i-e-migue.onrender.com", 
 ]
