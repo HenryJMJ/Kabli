@@ -1,7 +1,193 @@
+{% load static %}
 {% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estudiantes Inscritos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(to right, #9dc9ff, #bce6ff);
+      min-height: 100vh;
+      padding: 40px;
+      transition: background 0.4s;
+    }
+
+    body.dark { background: #1e272e; color: white; }
+
+    h1, h2 { text-align: center; margin-bottom: 20px; font-size: 2rem; }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #3498db;
+      padding: 15px 30px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .navbar .logo { color: white; font-size: 1.5rem; font-weight: bold; }
+
+    .navbar .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .navbar .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .navbar .nav-links li a:hover { color: #ecf0f1; }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      animation: fadeIn 0.6s ease;
+    }
+
+    body.dark .container { background-color: #2f3640; }
+
+    .floating-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    .icon-button {
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+      transition: all 0.3s ease;
+    }
+
+    .icon-button:hover { transform: scale(1.1); }
+
+    body.dark .icon-button {
+      background: #2f3640;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      .floating-buttons {
+        bottom: 15px;
+        right: 15px;
+      }
+
+      .icon-button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .navbar .logo {
+        font-size: 1.2rem;
+      }
+
+      .navbar .nav-links {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .icon-button {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+      }
+
+      .floating-buttons {
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra superior -->
+  <nav class="navbar">
+    <div class="logo">🏫 I.E. MIGUE</div>
+    <ul class="nav-links">
+      <li><a href="{% url 'panel_docentes' %}">Inicio</a></li>
+    </ul>
+  </nav>
+
+  <!-- Botones flotantes -->
+  <div class="floating-buttons">
+    <form method="POST" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button class="icon-button" title="Cerrar sesión">🔚</button>
+    </form>
+    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
+  </div>
+
+  <!-- Contenido -->
   <div class="container">
     <h1>Estudiantes Inscritos</h1>
     <p>Consulta los estudiantes inscritos en tus cursos.</p>
-    <!-- Aquí va tu lista de estudiantes inscritos -->
+
+    <!-- Lista de estudiantes inscritos -->
+    <ul>
+      {% for estudiante in estudiantes %}
+        <li>{{ estudiante.nombre }} - {{ estudiante.curso }} - {{ estudiante.fecha_inscripcion }}</li>
+      {% empty %}
+        <li>No hay estudiantes inscritos en los cursos.</li>
+      {% endfor %}
+    </ul>
   </div>
+
+  <script>
+    function toggleDarkMode() {
+      const body = document.body;
+      const toggle = document.getElementById('darkToggle');
+      body.classList.toggle('dark');
+      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+    }
+  </script>
+</body>
+</html>
 {% endblock %}
