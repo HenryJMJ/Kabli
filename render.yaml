@@ -2,8 +2,10 @@ services:
   - type: web
     name: ie-migue
     env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn mi_proyecto.wsgi:application"
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn mi_proyecto.wsgi:application
     envVars:
       - key: SECRET_KEY
         value: django-insecure-_onh10b5u%hekj5yhl5ktgko@i1ot$q++ucf$w=o-eege-@m)p

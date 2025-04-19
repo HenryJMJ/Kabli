@@ -42,5 +42,4 @@ urlpatterns = [
     path('cambiar/', views.cambiar_contraseña_view, name='cambiar_contraseña'),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
