@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_onh10b5u%hekj5yhl5ktgko@i1ot$q++ucf$w=o-eege-@m)p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tu-app.onrender.com']
 
 
 # Application definition
@@ -134,6 +134,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'usuarios', 'img')
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
