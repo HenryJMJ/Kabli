@@ -1,0 +1,14 @@
+# Ignorar base de datos SQLite
+db.sqlite3
+
+# Entornos virtuales
+venv/
+.env
+
+# Archivos de migración innecesarios
+__pycache__/
+*.pyc
+
+# Archivos del sistema
+*.log
+.DS_Store
