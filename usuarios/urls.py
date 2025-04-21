@@ -35,6 +35,7 @@ urlpatterns = [
     path('libreria_recursos/', views.libreria_recursos, name='libreria_recursos'),
     path('editar_recurso/<int:recurso_id>/', views.editar_recurso, name='editar_recurso'),
     path('eliminar_recurso/<int:recurso_id>/', views.eliminar_recurso, name='eliminar_recurso'),
+    path('recurso/<int:recurso_id>/', views.detalle_recurso, name='detalle_recurso'),
     path('estudiantes_curso/', views.estudiantes_curso, name='estudiantes_curso'),
     path('estudiantes/', views.ver_estudiantes, name='ver_estudiantes'),
     path('recuperar/', views.enviar_codigo_view, name='enviar_codigo'),

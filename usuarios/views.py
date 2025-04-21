@@ -472,3 +472,9 @@ def eliminar_recurso(request, recurso_id):
 
     # Redirigir a la página de recursos después de la eliminación
     return redirect('libreria_recursos')
+
+@login_required
+def detalle_recurso(request, recurso_id):
+    recurso = Recurso.objects.get(id=recurso_id)
+    archivo_nombre = recurso.archivo.name.split('/')[-1]  # Obtener solo el nombre del archivo
+    return render(request, 'usuarios/detalle_recurso.html', {'recurso': recurso, 'archivo_nombre': archivo_nombre})

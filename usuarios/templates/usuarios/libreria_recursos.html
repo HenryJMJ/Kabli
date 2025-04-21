@@ -201,6 +201,13 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    ul li:hover {
+      transform: scale(1.05);
+      background-color: #f1f1f1;
     }
 
     ul li div:first-child {
@@ -268,11 +275,11 @@
     <h2 style="text-align:center;">📁 Recursos Subidos</h2>
     <ul>
       {% for recurso in recursos %}
-        <li>
+        <li onclick="window.location.href='{% url 'detalle_recurso' recurso.id %}'">
           <div>
             📄 <strong>{{ recurso.nombre }}</strong><br>
             📝 {{ recurso.descripcion }}<br>
-            🔗 <a href="{{ recurso.archivo.url }}" target="_blank">Descargar</a>
+            🔗 <a href="{{ recurso.archivo.url }}" target="_blank">Descargar</a><br>
           </div>
           <div>
             <!-- Botón de editar -->
@@ -289,7 +296,6 @@
         <li>No hay recursos subidos aún.</li>
       {% endfor %}
     </ul>
-
   </div>
 
   <script>

@@ -1,11 +1,185 @@
+{% load static %}
 {% block content %}
-  <h2>Editar Recurso: {{ recurso.nombre }}</h2>
-  
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="icon-button">📝 Guardar Cambios</button>
-  </form>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Recurso</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
-  <a href="{% url 'libreria_recursos' %}" class="icon-button" title="Cancelar">❌ Cancelar</a>
+    body {
+      background: linear-gradient(to right, #9dc9ff, #bce6ff);
+      min-height: 100vh;
+      padding: 40px;
+      transition: background 0.4s;
+      color: #2c3e50;
+    }
+
+    body.dark { background: #1e272e; color: white; }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      animation: fadeIn 0.6s ease;
+    }
+
+    body.dark .form-container {
+      background: #2f3640;
+    }
+
+    form p {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    body.dark input,
+    body.dark select,
+    body.dark textarea {
+      background: #3b3b3b;
+      color: white;
+      border: 1px solid #555;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .icon-button {
+      background: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+      transition: all 0.3s ease;
+    }
+
+    .icon-button:hover {
+      transform: scale(1.05);
+      background-color: #f0f0f0;
+    }
+
+    body.dark .icon-button {
+      background: #3b3b3b;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Botón flotante para modo oscuro */
+    .floating-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    .floating-buttons .icon-button {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      padding: 0;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 20px;
+      }
+
+      .buttons {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .icon-button {
+        width: 100%;
+        text-align: center;
+      }
+
+      .floating-buttons {
+        right: 15px;
+        bottom: 15px;
+      }
+
+      .floating-buttons .icon-button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botones flotantes -->
+  <div class="floating-buttons">
+    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="form-container">
+    <h2>Editar Recurso: {{ recurso.nombre }}</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="buttons">
+        <button type="submit" class="icon-button">📝 Guardar Cambios</button>
+        <a href="{% url 'libreria_recursos' %}" class="icon-button" title="Cancelar">❌ Cancelar</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function toggleDarkMode() {
+      const body = document.body;
+      const toggle = document.getElementById('darkToggle');
+      body.classList.toggle('dark');
+      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+    }
+  </script>
+</body>
+</html>
 {% endblock %}

@@ -1,0 +1,244 @@
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalles del Recurso</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(to right, #9dc9ff, #bce6ff);
+      min-height: 100vh;
+      padding: 80px 20px 40px;
+      transition: background 0.4s;
+    }
+
+    body.dark {
+      background: #1e272e;
+      color: white;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      padding: 15px 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 999;
+      transition: background 0.3s;
+    }
+
+    nav h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    nav a {
+      background-color: #3498db;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #2980b9;
+    }
+
+    body.dark nav {
+      background-color: #2f3640;
+    }
+
+    body.dark nav h2 {
+      color: white;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+
+    .recurso-details {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      margin: 0 auto;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .recurso-details h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .recurso-details p {
+      margin-bottom: 12px;
+      color: #34495e;
+    }
+
+    .recurso-details a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .recurso-details a:hover {
+      color: #2980b9;
+    }
+
+    body.dark .recurso-details {
+      background-color: #2f3640;
+    }
+
+    body.dark .recurso-details h2,
+    body.dark .recurso-details p {
+      color: white;
+    }
+
+    .fecha-agregado {
+      font-size: 0.95rem;
+      color: #888;
+    }
+
+    body.dark .fecha-agregado {
+      color: #ccc;
+    }
+
+    .btn-back {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 25px;
+      font-size: 18px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-back:hover {
+      background-color: #2980b9;
+      transform: scale(1.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .floating-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    .icon-button {
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: black;
+      transition: all 0.3s ease;
+    }
+
+    .icon-button:hover {
+      transform: scale(1.1);
+    }
+
+    body.dark .icon-button {
+      background: #2f3640;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      body { padding-top: 100px; }
+
+      .icon-button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .icon-button {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+      }
+
+      .floating-buttons {
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegación superior -->
+  <nav>
+    <h2>📘 {{ recurso.nombre }}</h2>
+    <a href="{% url 'libreria_recursos' %}">⬅</a>
+  </nav>
+
+  <!-- Botón flotante modo oscuro -->
+  <div class="floating-buttons">
+    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
+  </div>
+
+  <h1>📄 Detalles del Recurso</h1>
+
+  <div class="recurso-details">
+    <h2>{{ recurso.nombre }}</h2>
+    <p><strong>Descripción:</strong> {{ recurso.descripcion }}</p>
+    <p><strong>Archivo:</strong> <a href="{{ recurso.archivo.url }}" target="_blank">{{ archivo_nombre }}</a></p>
+    <p class="fecha-agregado"><strong>Fecha y hora de agregación:</strong> {{ recurso.fecha_agregado|date:"d/m/Y H:i" }}</p>
+  </div>
+
+  <script>
+    function toggleDarkMode() {
+      const body = document.body;
+      const toggle = document.getElementById('darkToggle');
+      body.classList.toggle('dark');
+      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+    }
+  </script>
+</body>
+</html>
+{% endblock %}
