@@ -21,6 +21,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from .models import Curso
+from .models import CursoDocente
 from .models import PerfilEstudiante
 from .forms import CursoForm
 from .models import Recurso
@@ -338,9 +339,70 @@ def panel_docentes(request):
         'recursos': recursos  # Pasa los recursos filtrados a la plantilla
     })
 
+@login_required
 def libreria_cursos(request):
     cursos = Curso.objects.all()
-    return render(request, 'usuarios/libreria_cursos.html', {'cursos': cursos})
+    usuario = request.user
+
+    # Obtener los cursos asignados al docente
+    cursos_asignados = CursoDocente.objects.filter(docente=usuario)
+
+    for curso in cursos:
+        # Verificar si el docente ya tiene este curso asignado
+        curso.agregado = CursoDocente.objects.filter(curso=curso, docente=usuario).exists()
+
+        # Calcular cuántos docentes tienen asignado este curso
+        curso.cursos_asignados = CursoDocente.objects.filter(curso=curso).count()
+
+        curso.completado = curso.unidades_completadas >= curso.total_unidades
+
+    return render(request, 'usuarios/libreria_cursos.html', {
+        'cursos': cursos,
+    })
+
+@login_required
+def agregar_curso_docente(request, curso_id):
+    if request.method == 'POST':
+        usuario = request.user
+        curso = get_object_or_404(Curso, id=curso_id)
+
+        # Verificar si el docente ya tiene el curso asignado
+        if CursoDocente.objects.filter(curso=curso, docente=usuario).exists():
+            return JsonResponse({'mensaje': 'Este curso ya fue agregado.', 'exito': False})
+
+        # Verificar si el curso tiene 3 docentes asignados
+        if CursoDocente.objects.filter(curso=curso).count() >= 3:
+            return JsonResponse({'mensaje': 'El curso ya está completo. No se pueden agregar más docentes.', 'exito': False})
+
+        # Verifica cuántos cursos tiene asignados el docente
+        if CursoDocente.objects.filter(docente=usuario).count() >= 2:
+            return JsonResponse({'mensaje': 'Ya tienes el máximo de dos cursos asignados.', 'exito': False})
+
+        # Asigna el curso al docente
+        CursoDocente.objects.create(curso=curso, docente=usuario)
+
+        # Actualiza el curso específico
+        cursos_asignados = CursoDocente.objects.filter(curso=curso).count()
+
+        return JsonResponse({
+            'mensaje': 'Curso agregado a tu sección de cursos',
+            'exito': True,
+            'cursos_asignados': cursos_asignados  # Enviar la cantidad de cursos asignados solo para ese curso
+        })
+
+    return JsonResponse({'mensaje': 'Método no permitido', 'exito': False}, status=405)
+
+@login_required
+def curso_docente(request):
+    # Recuperar todos los cursos asignados al docente
+    cursos_asignados = CursoDocente.objects.filter(docente=request.user).select_related('curso')
+    return render(request, 'usuarios/curso_docente.html', {'cursos': [cd.curso for cd in cursos_asignados]})
+
+@login_required
+def eliminar_curso_docente(request, curso_id):
+    # Eliminar la relación entre el docente y el curso
+    CursoDocente.objects.filter(curso_id=curso_id, docente=request.user).delete()
+    return redirect('curso_docente')
 
 # Vista para la lista de estudiantes inscritos en el curso
 def estudiantes_curso(request):

@@ -37,6 +37,7 @@ class Perfil(models.Model):
     )
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     rol = models.CharField(max_length=20, choices=ROLES, default='estudiante')
+    cursos_asignados = models.ManyToManyField('Curso', blank=True, related_name='docentes_asignados')
 
     def __str__(self):
         return f"{self.usuario.username} - {self.get_rol_display()}"
@@ -78,11 +79,36 @@ class Notificacion(models.Model):
 class Curso(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
-    docente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cursos')  # Relación con el usuario/docente
     activo = models.BooleanField(default=True)
+    total_unidades = models.PositiveIntegerField(default=3)  # Número de unidades de curso
+    unidades_completadas = models.PositiveIntegerField(default=0)  # Unidades completadas por docentes
 
     def __str__(self):
         return self.nombre
+
+    def esta_deshabilitado(self):
+        # El curso se deshabilita cuando se completan todas las unidades
+        return self.unidades_completadas >= self.total_unidades
+
+class CursoDocente(models.Model):
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    docente = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('curso', 'docente')  # Un docente no puede agregar el mismo curso dos veces
+
+    def save(self, *args, **kwargs):
+        # Incrementar el contador de unidades cuando se guarda el curso-docente
+        if not self.pk:  # Si es un nuevo registro, no uno existente
+            curso = self.curso
+            if curso.unidades_completadas < curso.total_unidades:
+                curso.unidades_completadas += 1
+                curso.save()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.docente.username} - {self.curso.nombre}"
+
     
 class Recurso(models.Model):
     nombre = models.CharField(max_length=100, default="Recurso sin nombre")

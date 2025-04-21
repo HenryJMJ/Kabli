@@ -1,0 +1,18 @@
+{% block content %}
+<div class="container">
+  <h2>📚 Mis Cursos Asignados</h2>
+  <ul style="margin-top: 20px;">
+    {% for curso in cursos %}
+      <li style="margin-bottom: 10px;">
+        ✅ {{ curso.nombre }} - {{ curso.descripcion }}
+        <form method="post" action="{% url 'eliminar_curso_docente' curso.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+        </form>
+      </li>
+    {% empty %}
+      <li>No has agregado ningún curso aún.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
