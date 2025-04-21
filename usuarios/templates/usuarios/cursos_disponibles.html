@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel Estudiantil</title>
+  <title>Cursos Disponibles</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -14,35 +14,19 @@
       font-family: 'Poppins', sans-serif;
     }
 
-    html, body {
-      overflow-x: hidden;
-      width: 100%;
-    }
-
     body {
       background: linear-gradient(to right, #9dc9ff, #bce6ff);
       min-height: 100vh;
       transition: background 0.4s;
     }
 
-    a {
-      pointer-events: none;
-    }
-
-    .content a,
-    .curso-box-link {
-      pointer-events: auto;
-    }
-
     .container {
       display: flex;
       flex-wrap: wrap;
       height: 100vh;
-      position: relative;
-      max-width: 100vw;
-      overflow-x: hidden;
     }
 
+    /* Barra lateral */
     .sidebar {
       width: 120px;
       background: white;
@@ -66,15 +50,15 @@
       margin-bottom: 5px;
     }
 
+    /* Contenido principal */
     .content {
       flex-grow: 1;
       background-image: url("{% static 'usuarios/img/fondo1.png' %}");
       background-size: cover;
       background-position: center;
       position: relative;
-      overflow-x: hidden;
+      overflow: hidden;
       padding: 20px;
-      max-width: 100vw;
     }
 
     .header {
@@ -91,37 +75,62 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    .top-icons {
-      position: absolute;
-      top: 20px;
-      right: 20px;
+    .courses-list {
       display: flex;
-      align-items: center;
-      gap: 15px;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 60px;
     }
 
-    .top-icons a,
-    .top-icons span {
+    .course-card {
+      width: 250px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .course-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .course-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .course-card h3 {
+      font-size: 1.2rem;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .course-card p {
+      font-size: 1rem;
+      color: #666;
+      margin: 10px 0;
+    }
+
+    .course-card a {
       text-decoration: none;
-      pointer-events: none;
+      color: #fff;
+      background: #3498db;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: background 0.3s ease;
     }
 
-    .top-icons img {
-      width: 40px;
+    .course-card a:hover {
+      background: #2980b9;
     }
 
-    .logout-btn {
-      pointer-events: auto;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 5px 10px;
-      font-size: 12px;
-      cursor: pointer;
-      color: #333;
-      text-decoration: none;
-    }
-
+    /* Pie de página */
     .footer {
       position: absolute;
       bottom: 0;
@@ -150,95 +159,107 @@
       transform: scale(1.1);
     }
 
-    .overlay-box {
-      position: absolute;
-      top: 120px;
-      left: 5%;
-      right: 5%;
-      width: auto;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 10px;
-    }
-
-    p {
-      color: #666;
-      font-size: 1rem;
-    }
-
-    .curso-box-link {
-      text-decoration: none;
-    }
-
-    .curso-box {
-      position: absolute;
-      top: 280px;
-      left: 5%;
-      right: 5%;
-      width: auto;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    }
-
-    .curso-box:hover {
-      transform: scale(1.07);
-      box-shadow: 0 15px 30px rgba(0, 123, 255, 0.3);
-      background-color: #e6f2ff;
-    }
-
-    .curso-box h1 {
-      font-size: 1.6rem;
-      margin-bottom: 10px;
-    }
-
-    .curso-box p {
-      font-size: 1rem;
-      color: #555;
-    }
-
+    /* Responsividad */
     @media (max-width: 768px) {
-      .curso-box {
-        padding: 20px;
+      .container {
+        flex-direction: column;
       }
 
-      .curso-box h1 {
-        font-size: 1.4rem;
+      /* Barra lateral */
+      .sidebar {
+        width: 80px;
+        padding: 10px 0;
       }
 
-      .curso-box p {
-        font-size: 0.9rem;
+      .sidebar img {
+        width: 40px;
+      }
+
+      .sidebar a {
+        font-size: 10px;
+      }
+
+      /* Contenido principal */
+      .content {
+        padding: 15px;
+      }
+
+      .header {
+        font-size: 16px;
+        padding: 8px 15px;
+      }
+
+      .courses-list {
+        gap: 15px;
+      }
+
+      .course-card {
+        width: 200px;
+      }
+
+      .footer {
+        flex-direction: column;
+        padding: 10px 0;
+      }
+
+      .footer a {
+        font-size: 10px;
+      }
+
+      .footer img {
+        width: 35px;
       }
     }
 
     @media (max-width: 480px) {
-      .curso-box {
-        padding: 15px;
+      .container {
+        flex-direction: column;
       }
 
-      .curso-box h1 {
-        font-size: 1.2rem;
+      /* Barra lateral */
+      .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 15px 0;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
       }
 
-      .curso-box p {
-        font-size: 0.85rem;
+      .sidebar a {
+        width: 100%;
+        text-align: left;
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+
+      .sidebar img {
+        width: 35px;
+      }
+
+      .content {
+        padding: 10px;
+      }
+
+      .footer {
+        flex-direction: column;
+        padding: 10px 0;
+      }
+
+      .footer a {
+        font-size: 12px;
+      }
+
+      .footer img {
+        width: 30px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Barra lateral -->
     <div class="sidebar">
       <a href="#">
         <img src="{% static 'usuarios/img/birrete.png' %}" alt="Académico">
@@ -258,33 +279,27 @@
       </a>
     </div>
 
+    <!-- Contenido principal -->
     <div class="content">
       <div class="header">
-        Aprende con nosotros cada tema académico con información de todo el mundo.
+        Explora todos los cursos disponibles y comienza tu aprendizaje hoy.
       </div>
 
-      <div class="top-icons">
-        <a href="{% url 'perfil_estudiante' %}">
-          <img src="{% static 'usuarios/img/icono.png' %}" alt="Perfil">
-        </a>        
-        <form method="POST" action="{% url 'logout' %}" style="display:inline;">
-          {% csrf_token %}
-          <button type="submit" class="logout-btn">Cerrar Sesión</button>
-        </form>
-      </div>
-
-      <div class="overlay-box">
-        <h1>¡Bienvenid@, {{ nombre_usuario }}!</h1>
-        <p>Explora tus recursos, actividades y progreso en un solo lugar.</p>
-      </div>
-
-      <a href="{% url 'cursos_disponibles' %}" class="curso-box-link">
-        <div class="curso-box">
-          <h1>¡Es hora de empezar a mejorar tu aprendizaje!</h1>
-          <p>Haz clic para escoger el curso que más te convenga, qué esperas!</p>
+      <!-- Lista de cursos -->
+      <div class="courses-list">
+        {% for curso in cursos %}
+        <div class="course-card">
+          <img src="{{ curso.imagen_url }}" alt="{{ curso.nombre }}">
+          <h3>{{ curso.nombre }}</h3>
+          <p>{{ curso.descripcion }}</p>
+          <a href="{% url 'detalle_curso' curso.id %}">Ver detalles</a>
         </div>
-      </a>
+        {% empty %}
+        <p>No hay cursos disponibles en este momento.</p>
+        {% endfor %}
+      </div>
 
+      <!-- Pie de página -->
       <div class="footer">
         <a href="#"><img src="{% static 'usuarios/img/inicio.png' %}" alt="Inicio"><div>INICIO</div></a>
         <a href="#"><img src="{% static 'usuarios/img/calendario.png' %}" alt="Calendario"><div>CALENDARIO</div></a>

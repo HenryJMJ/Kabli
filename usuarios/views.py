@@ -21,6 +21,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from .models import Curso
+from .models import PerfilEstudiante
 from .forms import CursoForm
 from .models import Recurso
 from .forms import RecursoForm
@@ -281,6 +282,22 @@ def panel_estudiantes(request):
     nombre = request.user.first_name or request.user.username
     return render(request, 'usuarios/panel_estudiantes.html', {'nombre_usuario': nombre})
 
+@login_required
+def cursos_disponibles(request):
+    return render(request, 'usuarios/cursos_disponibles.html')
+
+def perfil_estudiante(request):
+    perfil, created = PerfilEstudiante.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        perfil.identificacion = request.POST.get('identificacion', '')
+        perfil.edad = request.POST.get('edad') or None
+        perfil.telefono = request.POST.get('telefono', '')
+        perfil.departamento = request.POST.get('departamento', '')
+        perfil.ciudad = request.POST.get('ciudad', '')
+        perfil.save()
+
+    return render(request, 'usuarios/perfil_estudiante.html', {'perfil': perfil})
 @login_required
 def panel_docentes(request):
     try:

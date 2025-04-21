@@ -41,6 +41,17 @@ class Perfil(models.Model):
     def __str__(self):
         return f"{self.usuario.username} - {self.get_rol_display()}"
     
+class PerfilEstudiante(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    identificacion = models.CharField(max_length=20, blank=True)
+    edad = models.IntegerField(null=True, blank=True)
+    telefono = models.CharField(max_length=15, blank=True)
+    departamento = models.CharField(max_length=50, blank=True)
+    ciudad = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return f"Perfil de {self.user.username}"    
+    
 class Acceso(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
