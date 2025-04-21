@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.db import IntegrityError
 from .forms import RegistroForm
 from django.conf import settings
 from django.core.mail import send_mail
@@ -11,6 +12,7 @@ from django.utils.timezone import localtime
 from django.contrib.auth.models import Group
 from .models import Perfil
 import json
+import os
 from django.db.models import Count
 from django.db.models.functions import TruncDate
 from .models import Notificacion
@@ -188,8 +190,6 @@ def restaurar_notificacion(request, id):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False}, status=400)
 
-from django.db import IntegrityError
-
 def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
@@ -222,7 +222,6 @@ def registro(request):
         form = RegistroForm()
 
     return render(request, 'usuarios/registro.html', {'form': form})
-
 
 def lista_usuarios(request):
     query = request.GET.get("q")
@@ -296,15 +295,6 @@ def panel_docentes(request):
 def libreria_cursos(request):
     cursos = Curso.objects.all()
     return render(request, 'usuarios/libreria_cursos.html', {'cursos': cursos})
-
-# Vista para la librería de recursos
-def libreria_recursos(request):
-    return render(request, 'usuarios/libreria_recursos.html')
-
-@login_required
-def lista_recursos(request):
-    recursos = Recurso.objects.filter(usuario=request.user)  # Solo los recursos del usuario actual
-    return render(request, 'usuarios/lista_recursos.html', {'recursos': recursos})
 
 # Vista para la lista de estudiantes inscritos en el curso
 def estudiantes_curso(request):
@@ -391,7 +381,6 @@ def cambiar_contraseña_view(request):
             messages.error(request, 'Las contraseñas no coinciden.')
     return render(request, 'usuarios/cambiar_contraseña.html')
 
-
 @login_required
 def gestionar_cursos(request):
     cursos = Curso.objects.filter(docente=request.user)
@@ -437,22 +426,49 @@ def eliminar_curso(request, id):
     return redirect('gestionar_cursos')
 
 @login_required
-def subir_recurso(request):
+def libreria_recursos(request):
     if request.method == 'POST':
-        print(f"Archivos recibidos: {request.FILES}")  # Verificar si hay archivos en el request
         form = RecursoForm(request.POST, request.FILES)
         if form.is_valid():
-            recurso = form.save(commit=False)
-            recurso.usuario = request.user
-            recurso.save()
-            print(f"Recurso guardado: {recurso.archivo.name}")  # Verificar si el archivo se ha guardado
-            return redirect('subir_recurso')
-        else:
-            print("Formulario no válido")  # Si el formulario no es válido, imprímelo
-            print(form.errors)
+            form.save()
+            return redirect('libreria_recursos')
     else:
         form = RecursoForm()
+    
+    recursos = Recurso.objects.all()
+    return render(request, 'usuarios/libreria_recursos.html', {
+        'form': form,
+        'recursos': recursos
+    })
 
-    recursos = Recurso.objects.filter(usuario=request.user)  # Obtener los recursos de este usuario
-    return render(request, 'subir_recurso.html', {'form': form, 'recursos': recursos})
+@login_required
+def editar_recurso(request, recurso_id):
+    recurso = get_object_or_404(Recurso, id=recurso_id)
 
+    if request.method == "POST":
+        form = RecursoForm(request.POST, request.FILES, instance=recurso)
+        if form.is_valid():
+            form.save()
+            return redirect('libreria_recursos')  # Redirigir a la página de recursos
+    else:
+        form = RecursoForm(instance=recurso)
+
+    return render(request, 'usuarios/editar_recurso.html', {'form': form, 'recurso': recurso})
+
+@login_required
+def eliminar_recurso(request, recurso_id):
+    # Obtener el recurso
+    recurso = get_object_or_404(Recurso, id=recurso_id)
+
+    # Obtener la ruta del archivo en el sistema de archivos
+    archivo_path = recurso.archivo.path if recurso.archivo else None
+
+    # Eliminar el recurso de la base de datos
+    recurso.delete()
+
+    # Eliminar el archivo del sistema si existe
+    if archivo_path and os.path.exists(archivo_path):
+        os.remove(archivo_path)
+
+    # Redirigir a la página de recursos después de la eliminación
+    return redirect('libreria_recursos')

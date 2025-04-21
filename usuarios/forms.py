@@ -59,12 +59,11 @@ class CursoForm(forms.ModelForm):
         model = Curso
         fields = ['nombre', 'descripcion']
 
-
 class RecursoForm(forms.ModelForm):
     class Meta:
         model = Recurso
-        fields = ['descripcion', 'archivo']
-        widgets = {
-            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
-            'archivo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-        }
+        fields = ['nombre', 'descripcion', 'archivo']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nombre'].initial = 'Nombre del recurso'

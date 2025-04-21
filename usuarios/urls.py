@@ -32,12 +32,15 @@ urlpatterns = [
     path('panel-estudiantes/', views.panel_estudiantes, name='panel_estudiantes'),
     path('panel-docentes/', views.panel_docentes, name='panel_docentes'),
     path('gestionar_cursos/', views.libreria_cursos, name='libreria_cursos'),
-    path('subir_recursos/', views.libreria_recursos, name='libreria_recursos'),
-    path('subir_recurso/', views.subir_recurso, name='subir_recurso'),
-    path('lista_recursos/', views.lista_recursos, name='lista_recursos'),
+    path('libreria_recursos/', views.libreria_recursos, name='libreria_recursos'),
+    path('editar_recurso/<int:recurso_id>/', views.editar_recurso, name='editar_recurso'),
+    path('eliminar_recurso/<int:recurso_id>/', views.eliminar_recurso, name='eliminar_recurso'),
     path('estudiantes_curso/', views.estudiantes_curso, name='estudiantes_curso'),
     path('estudiantes/', views.ver_estudiantes, name='ver_estudiantes'),
     path('recuperar/', views.enviar_codigo_view, name='enviar_codigo'),
     path('verificar/', views.verificar_codigo_view, name='verificar_codigo'),
     path('cambiar/', views.cambiar_contraseña_view, name='cambiar_contraseña'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

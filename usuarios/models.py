@@ -73,10 +73,10 @@ class Curso(models.Model):
         return self.nombre
     
 class Recurso(models.Model):
-    archivo = models.FileField(upload_to='recursos/')  # Archivos se guardan en media/recursos/
-    descripcion = models.TextField()
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100, default="Recurso sin nombre")
+    archivo = models.FileField(upload_to='recursos/')
+    descripcion = models.TextField(blank=True, null=True)
     fecha_subida = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.descripcion
+        return self.nombre

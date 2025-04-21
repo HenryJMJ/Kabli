@@ -1,0 +1,11 @@
+{% block content %}
+  <h2>Editar Recurso: {{ recurso.nombre }}</h2>
+  
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="icon-button">📝 Guardar Cambios</button>
+  </form>
+
+  <a href="{% url 'libreria_recursos' %}" class="icon-button" title="Cancelar">❌ Cancelar</a>
+{% endblock %}

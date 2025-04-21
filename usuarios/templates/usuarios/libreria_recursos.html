@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Librería de Cursos</title>
+  <title>Librería de Recursos</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -158,7 +158,7 @@
   </div>
 
   <!-- Título y Navbar -->
-  <h2>📘 Librería de Cursos</h2>
+  <h2>📘 Librería de Recursos</h2>
 
   <nav class="navbar">
     <div class="logo">🏫 I.E. MIGUE</div>
@@ -169,18 +169,39 @@
 
   <!-- Contenido -->
   <div class="container">
-    <h1>Listado de Cursos</h1>
-    <p style="text-align:center;">Aquí puedes consultar y gestionar tus cursos asignados.</p>
+    <h1>Subir Nuevo Recurso</h1>
+    <p style="text-align:center;">Aquí puedes subir materiales para los cursos.</p>
 
-    <!-- 🔽 Ejemplo de tabla o cards de cursos -->
-    <ul style="margin-top: 20px;">
-      {% for curso in cursos %}
-        <li style="margin-bottom: 10px;">📖 {{ curso.nombre }} - {{ curso.descripcion }}</li>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="icon-button">📤 Subir Recurso</button>
+    </form>
+    
+    <hr style="margin: 20px 0;">
+    
+    <!-- Lista de recursos -->
+    <h2 style="text-align:center;">📁 Recursos Subidos</h2>
+    <ul>
+      {% for recurso in recursos %}
+        <li>
+          📄 <strong>{{ recurso.nombre }}</strong><br>
+          📝 {{ recurso.descripcion }}<br>
+          🔗 <a href="{{ recurso.archivo.url }}" target="_blank">Descargar</a><br>
+          
+          <!-- Botón de editar -->
+          <a href="{% url 'editar_recurso' recurso.id %}" class="icon-button" title="Editar Recurso">✏️</a>
+          
+          <!-- Botón de eliminar -->
+          <form method="POST" action="{% url 'eliminar_recurso' recurso.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="icon-button" title="Eliminar Recurso" onclick="return confirm('¿Estás seguro de que quieres eliminar este recurso?');">🗑️</button>
+          </form>
+        </li>
       {% empty %}
-        <li>No hay cursos asignados.</li>
+        <li>No hay recursos subidos aún.</li>
       {% endfor %}
     </ul>
-  </div>
 
   <script>
     // Función para alternar el modo oscuro
