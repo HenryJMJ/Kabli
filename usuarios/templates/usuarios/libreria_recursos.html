@@ -121,6 +121,32 @@
         height: 40px;
         font-size: 18px;
       }
+
+      /* Estilo para la lista de recursos en pantallas más pequeñas */
+      ul {
+        padding-left: 0;
+      }
+
+      ul li {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      ul li div:last-child {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      /* Ajuste de tamaño de texto */
+      h1, h2 {
+        font-size: 1.5rem;
+      }
+
+      .upload-button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -144,6 +170,62 @@
         bottom: 10px;
         right: 10px;
       }
+
+      /* Ajuste en el tamaño de los botones */
+      .upload-button {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      /* Ajuste de los títulos */
+      h1, h2 {
+        font-size: 1.3rem;
+      }
+
+      /* Diseño para la lista de recursos en pantallas muy pequeñas */
+      ul li {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      ul li div:last-child {
+        width: 100%;
+        justify-content: space-evenly;
+      }
+    }
+
+    /* Estilos para la lista de recursos */
+    ul li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    ul li div:first-child {
+      flex: 1;
+    }
+
+    ul li div:last-child {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Estilos para el botón de subir */
+    .upload-button {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .upload-button:hover {
+      background-color: #2980b9;
     }
   </style>
 </head>
@@ -175,7 +257,9 @@
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit" class="icon-button">📤 Subir Recurso</button>
+      <button type="submit" class="upload-button">
+        Subir 📤
+      </button>
     </form>
     
     <hr style="margin: 20px 0;">
@@ -185,23 +269,28 @@
     <ul>
       {% for recurso in recursos %}
         <li>
-          📄 <strong>{{ recurso.nombre }}</strong><br>
-          📝 {{ recurso.descripcion }}<br>
-          🔗 <a href="{{ recurso.archivo.url }}" target="_blank">Descargar</a><br>
-          
-          <!-- Botón de editar -->
-          <a href="{% url 'editar_recurso' recurso.id %}" class="icon-button" title="Editar Recurso">✏️</a>
-          
-          <!-- Botón de eliminar -->
-          <form method="POST" action="{% url 'eliminar_recurso' recurso.id %}" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="icon-button" title="Eliminar Recurso" onclick="return confirm('¿Estás seguro de que quieres eliminar este recurso?');">🗑️</button>
-          </form>
+          <div>
+            📄 <strong>{{ recurso.nombre }}</strong><br>
+            📝 {{ recurso.descripcion }}<br>
+            🔗 <a href="{{ recurso.archivo.url }}" target="_blank">Descargar</a>
+          </div>
+          <div>
+            <!-- Botón de editar -->
+            <a href="{% url 'editar_recurso' recurso.id %}" class="icon-button" title="Editar Recurso">✏️</a>
+
+            <!-- Botón de eliminar -->
+            <form method="POST" action="{% url 'eliminar_recurso' recurso.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="icon-button" title="Eliminar Recurso" onclick="return confirm('¿Estás seguro de que quieres eliminar este recurso?');">🗑️</button>
+            </form>
+          </div>
         </li>
       {% empty %}
         <li>No hay recursos subidos aún.</li>
       {% endfor %}
     </ul>
+
+  </div>
 
   <script>
     // Función para alternar el modo oscuro
