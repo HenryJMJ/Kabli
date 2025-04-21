@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseForbidden
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db import IntegrityError
@@ -288,8 +289,11 @@ def panel_docentes(request):
     except Perfil.DoesNotExist:
         return redirect('login')
 
+    recursos = Recurso.objects.filter(docente=request.user)  # Filtra los recursos por el docente actual
+
     return render(request, 'usuarios/panel_docentes.html', {
-        'username': request.user.username
+        'username': request.user.username,
+        'recursos': recursos  # Pasa los recursos filtrados a la plantilla
     })
 
 def libreria_cursos(request):
@@ -430,12 +434,14 @@ def libreria_recursos(request):
     if request.method == 'POST':
         form = RecursoForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            recurso = form.save(commit=False)  # 👈 No guardar aún
+            recurso.docente = request.user     # 👈 Asigna el docente actual
+            recurso.save()                     # 👈 Ahora sí guarda
             return redirect('libreria_recursos')
     else:
         form = RecursoForm()
     
-    recursos = Recurso.objects.all()
+    recursos = Recurso.objects.filter(docente=request.user)  # 👈 Mostrar solo los recursos del docente
     return render(request, 'usuarios/libreria_recursos.html', {
         'form': form,
         'recursos': recursos
@@ -445,11 +451,14 @@ def libreria_recursos(request):
 def editar_recurso(request, recurso_id):
     recurso = get_object_or_404(Recurso, id=recurso_id)
 
+    if recurso.docente != request.user:
+        return HttpResponseForbidden("No tienes permiso para editar este recurso.")
+
     if request.method == "POST":
         form = RecursoForm(request.POST, request.FILES, instance=recurso)
         if form.is_valid():
             form.save()
-            return redirect('libreria_recursos')  # Redirigir a la página de recursos
+            return redirect('libreria_recursos')
     else:
         form = RecursoForm(instance=recurso)
 
@@ -457,24 +466,26 @@ def editar_recurso(request, recurso_id):
 
 @login_required
 def eliminar_recurso(request, recurso_id):
-    # Obtener el recurso
     recurso = get_object_or_404(Recurso, id=recurso_id)
 
-    # Obtener la ruta del archivo en el sistema de archivos
+    if recurso.docente != request.user:
+        return HttpResponseForbidden("No tienes permiso para eliminar este recurso.")
+
     archivo_path = recurso.archivo.path if recurso.archivo else None
 
-    # Eliminar el recurso de la base de datos
     recurso.delete()
 
-    # Eliminar el archivo del sistema si existe
     if archivo_path and os.path.exists(archivo_path):
         os.remove(archivo_path)
 
-    # Redirigir a la página de recursos después de la eliminación
     return redirect('libreria_recursos')
 
 @login_required
 def detalle_recurso(request, recurso_id):
-    recurso = Recurso.objects.get(id=recurso_id)
-    archivo_nombre = recurso.archivo.name.split('/')[-1]  # Obtener solo el nombre del archivo
+    recurso = get_object_or_404(Recurso, id=recurso_id)
+
+    if recurso.docente != request.user:
+        return HttpResponseForbidden("No tienes permiso para ver este recurso.")
+
+    archivo_nombre = recurso.archivo.name.split('/')[-1]
     return render(request, 'usuarios/detalle_recurso.html', {'recurso': recurso, 'archivo_nombre': archivo_nombre})
