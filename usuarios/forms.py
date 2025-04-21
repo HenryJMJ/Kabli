@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Perfil
+from .models import PerfilEstudiante
 from .models import Curso
 from .models import Recurso
 
@@ -67,3 +68,14 @@ class RecursoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['nombre'].initial = 'Nombre del recurso'
+        
+class PerfilEstudianteForm(forms.ModelForm):
+    class Meta:
+        model = PerfilEstudiante
+        fields = ['identificacion', 'edad', 'telefono', 'departamento', 'ciudad']
+
+    def clean_edad(self):
+        edad = self.cleaned_data.get('edad')
+        if edad == '':
+            return None  # Si el campo está vacío, devolver None (o el valor predeterminado adecuado)
+        return edad

@@ -235,6 +235,10 @@
         font-size: 0.85rem;
       }
     }
+
+    .top-icons a {
+      pointer-events: auto;
+    }    
   </style>
 </head>
 <body>
@@ -264,9 +268,9 @@
       </div>
 
       <div class="top-icons">
-        <a href="{% url 'perfil_estudiante' %}">
-          <img src="{% static 'usuarios/img/icono.png' %}" alt="Perfil">
-        </a>        
+        <a href="{% url 'perfil_estudiante' %}" style="font-size: 28px; text-decoration: none;">
+          🧑‍🎓
+        </a>               
         <form method="POST" action="{% url 'logout' %}" style="display:inline;">
           {% csrf_token %}
           <button type="submit" class="logout-btn">Cerrar Sesión</button>

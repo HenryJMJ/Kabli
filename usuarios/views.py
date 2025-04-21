@@ -286,18 +286,43 @@ def panel_estudiantes(request):
 def cursos_disponibles(request):
     return render(request, 'usuarios/cursos_disponibles.html')
 
+@login_required
 def perfil_estudiante(request):
-    perfil, created = PerfilEstudiante.objects.get_or_create(user=request.user)
+    # Obtener o crear el perfil del estudiante
+    perfil_estudiante, created = PerfilEstudiante.objects.get_or_create(usuario=request.user)
 
-    if request.method == 'POST':
-        perfil.identificacion = request.POST.get('identificacion', '')
-        perfil.edad = request.POST.get('edad') or None
-        perfil.telefono = request.POST.get('telefono', '')
-        perfil.departamento = request.POST.get('departamento', '')
-        perfil.ciudad = request.POST.get('ciudad', '')
-        perfil.save()
+    if request.method == "POST":
+        # Actualizar los datos del usuario (nombre y correo)
+        request.user.first_name = request.POST.get('nombre', "")
+        request.user.email = request.POST.get('correo', "")
+        
+        # Actualizar los campos del perfil
+        perfil_estudiante.identificacion = request.POST.get('identificacion', "")
+        edad = request.POST.get('edad', "")
+        perfil_estudiante.edad = int(edad) if edad else None  # Asignar None si la edad está vacía
+        perfil_estudiante.telefono = request.POST.get('telefono', "")
+        perfil_estudiante.departamento = request.POST.get('departamento', "")
+        perfil_estudiante.ciudad = request.POST.get('ciudad', "")
 
-    return render(request, 'usuarios/perfil_estudiante.html', {'perfil': perfil})
+        # Guardar los cambios
+        try:
+            request.user.save()  # Guardar cambios del usuario
+            perfil_estudiante.save()  # Guardar cambios del perfil
+
+            # Mensaje de éxito
+            messages.success(request, "¡Perfil actualizado correctamente!")
+        except Exception as e:
+            messages.error(request, f"Hubo un error al actualizar el perfil: {e}")
+        
+        # Redireccionar a la misma página para mostrar el perfil actualizado
+        return redirect('perfil_estudiante')
+
+    # Renderizar la página con el perfil actual
+    return render(request, 'usuarios/perfil_estudiante.html', {
+        'usuario': request.user,
+        'perfil_estudiante': perfil_estudiante
+    })
+
 @login_required
 def panel_docentes(request):
     try:

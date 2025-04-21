@@ -3,27 +3,43 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Perfil del Estudiante</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
-      background: #f0f8ff;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    body {
+      background: linear-gradient(to right, #9dc9ff, #bce6ff);
+      min-height: 100vh;
+      transition: background 0.4s;
       padding: 40px;
     }
 
     .perfil-container {
       max-width: 600px;
       margin: auto;
-      background: white;
+      background: rgba(255, 255, 255, 0.95);
       padding: 30px;
       border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
 
     h2 {
       text-align: center;
       margin-bottom: 25px;
+      font-weight: bold;
+      font-size: 2rem;
     }
 
     .perfil-form label {
@@ -49,41 +65,128 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
+      width: 100%;
     }
 
     .perfil-form button:hover {
       background-color: #0056b3;
     }
+
+    .back-button {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .back-button a button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: #6c757d;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .back-button a button:hover {
+      background-color: #5a6268;
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px;
+      }
+
+      .perfil-container {
+        padding: 20px;
+        max-width: 100%;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .perfil-form label,
+      .perfil-form input {
+        font-size: 0.9rem;
+      }
+
+      .perfil-form button {
+        font-size: 1rem;
+        padding: 10px 15px;
+      }
+
+      .back-button a button {
+        padding: 8px 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+      }
+
+      .perfil-container {
+        padding: 15px;
+      }
+
+      h2 {
+        font-size: 1.6rem;
+      }
+
+      .perfil-form label,
+      .perfil-form input {
+        font-size: 0.85rem;
+      }
+
+      .perfil-form button {
+        font-size: 1rem;
+        padding: 10px 12px;
+      }
+
+      .back-button a button {
+        padding: 6px 12px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="perfil-container">
-    <h2>Perfil del Estudiante</h2>
+    <h2>Perfil de {{ user.first_name|default:user.username }}</h2>
+
+    <!-- Botón Volver -->
+    <div class="back-button">
+      <a href="{% url 'panel_estudiantes' %}">
+        <button type="button">← Volver</button>
+      </a>
+    </div>
+
     <form method="POST" class="perfil-form">
       {% csrf_token %}
       <label>Nombre</label>
-      <input type="text" value="{{ user.first_name }}" disabled>
-
+      <input type="text" name="nombre" value="{{ usuario.first_name|default:usuario.username }}">
+    
       <label>Correo</label>
-      <input type="email" value="{{ user.email }}" disabled>
-
+      <input type="email" name="correo" value="{{ usuario.email }}">
+    
       <label>Identificación</label>
-      <input type="text" name="identificacion" value="{{ perfil.identificacion|default:'' }}">
-
+      <input type="text" name="identificacion" value="{{ perfil_estudiante.identificacion|default:'' }}">
+    
       <label>Edad</label>
-      <input type="number" name="edad" value="{{ perfil.edad|default:'' }}">
-
+      <input type="number" name="edad" value="{{ perfil_estudiante.edad|default:'' }}">
+    
       <label>Teléfono</label>
-      <input type="text" name="telefono" value="{{ perfil.telefono|default:'' }}">
-
+      <input type="text" name="telefono" value="{{ perfil_estudiante.telefono|default:'' }}">
+    
       <label>Departamento</label>
-      <input type="text" name="departamento" value="{{ perfil.departamento|default:'' }}">
-
+      <input type="text" name="departamento" value="{{ perfil_estudiante.departamento|default:'' }}">
+    
       <label>Ciudad</label>
-      <input type="text" name="ciudad" value="{{ perfil.ciudad|default:'' }}">
-
+      <input type="text" name="ciudad" value="{{ perfil_estudiante.ciudad|default:'' }}">
+    
       <button type="submit">Guardar Cambios</button>
-    </form>
+    </form>    
   </div>
 </body>
 </html>
