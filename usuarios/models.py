@@ -92,13 +92,13 @@ class Curso(models.Model):
 class CursoDocente(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     docente = models.ForeignKey(User, on_delete=models.CASCADE)
+    publicado = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('curso', 'docente')  # Un docente no puede agregar el mismo curso dos veces
+        unique_together = ('curso', 'docente')
 
     def save(self, *args, **kwargs):
-        # Incrementar el contador de unidades cuando se guarda el curso-docente
-        if not self.pk:  # Si es un nuevo registro, no uno existente
+        if not self.pk:
             curso = self.curso
             if curso.unidades_completadas < curso.total_unidades:
                 curso.unidades_completadas += 1
@@ -107,7 +107,6 @@ class CursoDocente(models.Model):
 
     def __str__(self):
         return f"{self.docente.username} - {self.curso.nombre}"
-
     
 class Recurso(models.Model):
     nombre = models.CharField(max_length=100, default="Recurso sin nombre")

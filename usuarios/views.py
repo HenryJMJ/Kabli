@@ -285,7 +285,52 @@ def panel_estudiantes(request):
 
 @login_required
 def cursos_disponibles(request):
-    return render(request, 'usuarios/cursos_disponibles.html')
+    # Filtra solo los cursos donde "publicado=True"
+    cursos_publicados = CursoDocente.objects.filter(publicado=True)
+
+    # Divide la descripción en palabras y la pasa al template
+    for curso_docente in cursos_publicados:
+        descripcion_palabras = curso_docente.curso.descripcion.split(' ')
+        curso_docente.descripcion_palabras = descripcion_palabras
+
+    # Pasa la lista de cursos al template
+    return render(request, 'usuarios/cursos_disponibles.html', {
+        'cursos': cursos_publicados
+    })
+    
+@login_required
+def publicar_curso(request, curso_id):
+    # Busca la relación entre el curso y el docente
+    try:
+        curso_docente = CursoDocente.objects.get(curso__id=curso_id, docente=request.user)
+    except CursoDocente.DoesNotExist:
+        messages.error(request, "No se encontró el curso o no eres el docente de este curso.")
+        return redirect('panel_docentes')
+
+    # Publica el curso
+    curso_docente.publicado = True
+    curso_docente.save()
+    
+    messages.success(request, 'Curso publicado con éxito.')
+    return redirect('curso_docente')  # O el nombre de la vista que muestra los cursos del docente
+
+@login_required
+def despublicar_curso(request, curso_id):
+    curso_docente = get_object_or_404(CursoDocente, docente=request.user, curso__id=curso_id)
+    curso_docente.publicado = False
+    curso_docente.save()
+    return redirect('curso_docente')
+
+@login_required
+def detalle_curso(request, id):
+    curso_docente = get_object_or_404(CursoDocente, id=id, publicado=True)
+    curso = curso_docente.curso
+    docente = curso_docente.docente
+
+    return render(request, 'usuarios/detalle_curso.html', {
+        'curso': curso,
+        'docente': docente
+    })
 
 @login_required
 def perfil_estudiante(request):
@@ -394,9 +439,8 @@ def agregar_curso_docente(request, curso_id):
 
 @login_required
 def curso_docente(request):
-    # Recuperar todos los cursos asignados al docente
     cursos_asignados = CursoDocente.objects.filter(docente=request.user).select_related('curso')
-    return render(request, 'usuarios/curso_docente.html', {'cursos': [cd.curso for cd in cursos_asignados]})
+    return render(request, 'usuarios/curso_docente.html', {'cursos': cursos_asignados})
 
 @login_required
 def eliminar_curso_docente(request, curso_id):

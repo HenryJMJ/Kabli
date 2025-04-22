@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalle del Curso</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #9dc9ff, #bce6ff);
+      min-height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .course-details {
+      width: 80%;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    .course-details h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .course-details p {
+      font-size: 1.1rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .course-details .docentes {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .inscribir-btn {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      color: #fff;
+      background: #3498db;
+      padding: 12px 20px;
+      border-radius: 5px;
+      font-size: 1.2rem;
+      margin-top: 30px;
+      width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .inscribir-btn:hover {
+      background: #2980b9;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: rgba(255, 228, 181, 0.9);
+      padding: 15px 0;
+      border-top: 1px solid #ddd;
+    }
+
+    .footer a {
+      text-align: center;
+      text-decoration: none;
+      color: black;
+      pointer-events: none;
+    }
+
+    .footer img {
+      width: 40px;
+      margin-bottom: 5px;
+      transition: transform 0.2s;
+    }
+
+    .footer img:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="course-details">
+      <h1>{{ curso.nombre }}</h1>
+      <p>{{ curso.descripcion }}</p>
+      
+      <!-- Mostrar el docente que publicó el curso -->
+      <p class="docentes">Publicado por: 
+        {% if docente %}
+          <span>{{ docente.username }}</span>
+        {% else %}
+          <span>No hay docente asignado</span>
+        {% endif %}
+      </p>
+
+      <a href="#" class="inscribir-btn">Inscribirme</a>
+    </div>
+
+    <div class="footer">
+      <a href="#"><img src="{% static 'usuarios/img/inicio.png' %}" alt="Inicio"><div>INICIO</div></a>
+      <a href="#"><img src="{% static 'usuarios/img/calendario.png' %}" alt="Calendario"><div>CALENDARIO</div></a>
+      <a href="#"><img src="{% static 'usuarios/img/mensaje.png' %}" alt="Mensaje"><div>MENSAJES</div></a>
+    </div>
+  </div>
+</body>
+</html>
