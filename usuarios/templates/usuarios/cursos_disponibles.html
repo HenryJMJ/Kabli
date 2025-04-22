@@ -38,14 +38,14 @@
       z-index: 100;
     }
 
-    .hamburger-btn {
+    .hamburger-btn,
+    .regresar-btn {
       position: fixed;
       top: 20px;
-      left: 20px;
       background-color: #21618C;
       color: white;
-      font-size: 28px;
-      padding: 10px 14px;
+      font-size: 22px;
+      padding: 6px 10px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -53,7 +53,20 @@
       transition: opacity 0.3s ease;
     }
 
+    .regresar-btn {
+      left: 80px;
+    }
+
+    .hamburger-btn {
+      left: 20px;
+    }
+
     body.menu-open .hamburger-btn {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    body.menu-open .regresar-btn {
       opacity: 0;
       pointer-events: none;
     }
@@ -225,6 +238,7 @@
 <body>
   <div class="overlay" id="overlay"></div>
   <button class="hamburger-btn" id="hamburgerBtn">☰</button>
+  <button class="regresar-btn" onclick="window.location.href='{% url 'panel_estudiantes' %}'">←</button>
 
   <div class="container">
     <div class="sidebar" id="sidebar">
