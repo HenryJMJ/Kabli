@@ -37,7 +37,6 @@ class Perfil(models.Model):
     )
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     rol = models.CharField(max_length=20, choices=ROLES, default='estudiante')
-    cursos_asignados = models.ManyToManyField('Curso', blank=True, related_name='docentes_asignados')
 
     def __str__(self):
         return f"{self.usuario.username} - {self.get_rol_display()}"

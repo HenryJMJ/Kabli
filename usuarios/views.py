@@ -491,7 +491,7 @@ def cambiar_contraseña_view(request):
 
 @login_required
 def gestionar_cursos(request):
-    cursos = Curso.objects.filter(docente=request.user)
+    cursos = Curso.objects.all()
     return render(request, 'usuarios/cursos.html', {'cursos': cursos})
 
 @login_required
@@ -499,24 +499,34 @@ def crear_curso(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         descripcion = request.POST.get('descripcion')
-        Curso.objects.create(nombre=nombre, descripcion=descripcion, docente=request.user)
-        return redirect('gestionar_cursos')  # Asegúrate que esta URL exista
+        
+        # Crear el curso sin asignar docente
+        curso = Curso.objects.create(nombre=nombre, descripcion=descripcion)
+        
+        # Si el admin quiere asignar docentes, lo hace aquí (se puede modificar según los requisitos)
+        docentes = request.POST.getlist('docentes')  # 'docentes' es el campo que puede venir de un formulario o algo similar
+        for docente_id in docentes:
+            docente = User.objects.get(id=docente_id)
+            CursoDocente.objects.create(curso=curso, docente=docente)
+
+        return redirect('gestionar_cursos')  # Redirigir después de crear el curso
+    
     return render(request, 'usuarios/crear_curso.html')
 
 @login_required
 def editar_cursos(request):
-    cursos = Curso.objects.filter(docente=request.user)  # o todos los cursos si no querés filtrarlos
+    cursos = Curso.objects.all()
     return render(request, 'usuarios/editar_cursos.html', {'cursos': cursos})
 
 @login_required
 def editar_curso(request, curso_id):
-    curso = get_object_or_404(Curso, id=curso_id, docente=request.user)
+    curso = get_object_or_404(Curso, id=curso_id)  # Ya no filtramos por docente
 
     if request.method == 'POST':
         form = CursoForm(request.POST, instance=curso)
         if form.is_valid():
             form.save()
-            return redirect('editar_cursos')  # Vuelve al listado
+            return redirect('editar_cursos')  # Redirecciona al listado
     else:
         form = CursoForm(instance=curso)
 
@@ -524,14 +534,20 @@ def editar_curso(request, curso_id):
 
 @login_required
 def eliminar_curso(request, id):
-    curso = get_object_or_404(Curso, id=id, docente=request.user)
-    
-    if request.method == "POST":
-        curso.delete()
-        return redirect('editar_cursos')  # o 'editar_cursos' si ese es el nombre correcto
+    # Obtener el curso con el ID proporcionado
+    curso = get_object_or_404(Curso, id=id)
 
-    # Si alguien intenta acceder con GET, lo redirigimos
-    return redirect('gestionar_cursos')
+    # Verificar si el usuario es un administrador
+    if not request.user.is_staff:  # Si no es administrador, redirige
+        return redirect('gestionar_cursos')
+
+    if request.method == "POST":
+        # Eliminar el curso directamente (sin verificar relación docente)
+        curso.delete()
+        return redirect('gestionar_cursos')  # Redirigir a la página de gestión de cursos
+
+    # Si alguien intenta acceder con GET, mostrar la confirmación de eliminación
+    return render(request, 'usuarios/eliminar_curso.html', {'curso': curso})
 
 @login_required
 def libreria_recursos(request):
