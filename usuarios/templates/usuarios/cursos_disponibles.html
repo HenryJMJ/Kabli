@@ -126,14 +126,21 @@
     }
 
     .header {
-      margin-top: 60px;
+      margin-top: 20px;
       background: rgba(255, 255, 255, 0.7);
       padding: 10px 20px;
       border-radius: 10px;
       font-weight: bold;
       font-size: 18px;
       text-align: center;
+      align-items: center; /* Centrado vertical */
+      justify-content: space-between; /* Espaciado entre los elementos */
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .header .message {
+      flex-grow: 1; /* Asegura que el mensaje ocupe el espacio restante */
+      text-align: left;
     }
 
     .courses-list {

@@ -16,6 +16,59 @@
     body {
       background: linear-gradient(to right, #9dc9ff, #bce6ff);
       min-height: 100vh;
+      transition: background 0.4s;
+    }
+
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    body.menu-open .overlay {
+      display: block;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+    }
+
+    .hamburger-btn,
+    .regresar-btn {
+      position: fixed;
+      top: 20px;
+      background-color: #21618C;
+      color: white;
+      font-size: 22px;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 200;
+      transition: opacity 0.3s ease;
+    }
+
+    .regresar-btn {
+      left: 80px;
+    }
+
+    .hamburger-btn {
+      left: 20px;
+    }
+
+    body.menu-open .hamburger-btn {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    body.menu-open .regresar-btn {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .container {
@@ -23,15 +76,17 @@
       flex-direction: column;
       align-items: center;
       padding: 20px;
+      margin-top: 70px; /* Para que no se superponga con los botones fijos */
     }
 
     .course-details {
-      width: 80%;
+      width: 100%;
       background: rgba(255, 255, 255, 0.9);
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       margin-top: 20px;
+      max-width: 800px; /* Ajusta el ancho para que no sea demasiado grande */
     }
 
     .course-details h1 {
@@ -53,7 +108,9 @@
     }
 
     .inscribir-btn {
-      display: block;
+      position: fixed;
+      top: 20px;
+      right: 20px;
       text-align: center;
       text-decoration: none;
       color: #fff;
@@ -61,12 +118,9 @@
       padding: 12px 20px;
       border-radius: 5px;
       font-size: 1.2rem;
-      margin-top: 30px;
-      width: 200px;
-      margin-left: auto;
-      margin-right: auto;
       text-transform: uppercase;
       font-weight: bold;
+      z-index: 200;
     }
 
     .inscribir-btn:hover {
@@ -100,10 +154,66 @@
     .footer img:hover {
       transform: scale(1.1);
     }
+
+    .sidebar {
+      width: 250px;
+      background-color: #21618C;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: fixed;
+      height: 100vh;
+      top: 0;
+      left: -250px;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar.active {
+      transform: translateX(250px);
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2rem;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #154360;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .course-details {
+        width: 100%;
+        padding: 20px;
+      }
+
+      .footer {
+        display: none;
+      }
+    }
+
   </style>
 </head>
 <body>
+  <div class="overlay" id="overlay"></div>
+  <button class="hamburger-btn" id="hamburgerBtn">☰</button>
+  <button class="regresar-btn" onclick="window.location.href='{% url 'cursos_disponibles' %}'">←</button>
+
   <div class="container">
+    <div class="sidebar" id="sidebar">
+      <a href="#">Publicado</a>
+    </div>
+
     <div class="course-details">
       <h1>{{ curso.nombre }}</h1>
       <p>{{ curso.descripcion }}</p>
@@ -126,5 +236,21 @@
       <a href="#"><img src="{% static 'usuarios/img/mensaje.png' %}" alt="Mensaje"><div>MENSAJES</div></a>
     </div>
   </div>
+
+  <script>
+    const hamburgerBtn = document.getElementById("hamburgerBtn");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    hamburgerBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      document.body.classList.toggle("menu-open");
+    });
+
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("active");
+      document.body.classList.remove("menu-open");
+    });
+  </script>
 </body>
 </html>
