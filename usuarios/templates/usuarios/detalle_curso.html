@@ -76,7 +76,7 @@
       flex-direction: column;
       align-items: center;
       padding: 20px;
-      margin-top: 70px; /* Para que no se superponga con los botones fijos */
+      margin-top: 70px;
     }
 
     .course-details {
@@ -86,7 +86,7 @@
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       margin-top: 20px;
-      max-width: 800px; /* Ajusta el ancho para que no sea demasiado grande */
+      max-width: 800px;
     }
 
     .course-details h1 {
@@ -219,7 +219,6 @@
       <h1>{{ curso.nombre }}</h1>
       <p>{{ curso.descripcion }}</p>
       
-      <!-- Mostrar el docente que publicó el curso -->
       <p class="docentes">Publicado por: 
         {% if docente %}
           <span>{{ docente.username }}</span>
@@ -227,8 +226,6 @@
           <span>No hay docente asignado</span>
         {% endif %}
       </p>
-
-      <a href="#" class="inscribir-btn">Inscribirme</a>
     </div>
 
     <div class="footer">

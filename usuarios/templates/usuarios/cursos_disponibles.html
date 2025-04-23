@@ -12,21 +12,21 @@
       box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
     }
-
+  
     body {
       background: linear-gradient(to right, #9dc9ff, #bce6ff);
       min-height: 100vh;
       transition: background 0.4s;
     }
-
+  
     body.menu-open {
       overflow: hidden;
     }
-
+  
     body.menu-open .overlay {
       display: block;
     }
-
+  
     .overlay {
       display: none;
       position: fixed;
@@ -37,7 +37,7 @@
       background: rgba(0, 0, 0, 0.5);
       z-index: 100;
     }
-
+  
     .hamburger-btn,
     .regresar-btn {
       position: fixed;
@@ -52,30 +52,30 @@
       z-index: 200;
       transition: opacity 0.3s ease;
     }
-
+  
     .regresar-btn {
       left: 80px;
     }
-
+  
     .hamburger-btn {
       left: 20px;
     }
-
+  
     body.menu-open .hamburger-btn {
       opacity: 0;
       pointer-events: none;
     }
-
+  
     body.menu-open .regresar-btn {
       opacity: 0;
       pointer-events: none;
     }
-
+  
     .container {
       display: flex;
       height: 100vh;
     }
-
+  
     .sidebar {
       width: 250px;
       background-color: #21618C;
@@ -90,11 +90,11 @@
       height: 100vh;
       z-index: 150;
     }
-
+  
     .sidebar.active {
       transform: translateX(0);
     }
-
+  
     .sidebar a {
       color: white;
       text-decoration: none;
@@ -103,11 +103,11 @@
       border-radius: 5px;
       transition: background 0.3s;
     }
-
+  
     .sidebar a:hover {
       background-color: #154360;
     }
-
+  
     .content {
       flex-grow: 1;
       margin-left: 0;
@@ -119,12 +119,12 @@
       min-height: 100vh;
       transition: margin-left 0.3s ease, opacity 0.3s ease;
     }
-
+  
     .sidebar.active ~ .content {
       margin-left: 250px;
       opacity: 0.3;
     }
-
+  
     .header {
       margin-top: 20px;
       background: rgba(255, 255, 255, 0.7);
@@ -137,12 +137,12 @@
       justify-content: space-between; /* Espaciado entre los elementos */
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-
+  
     .header .message {
       flex-grow: 1; /* Asegura que el mensaje ocupe el espacio restante */
       text-align: left;
     }
-
+  
     .courses-list {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -151,7 +151,7 @@
       justify-items: center;
       transition: all 0.3s ease;
     }
-
+  
     .course-card {
       width: 250px;
       background: rgba(255, 255, 255, 0.9);
@@ -163,23 +163,23 @@
       cursor: pointer;
       position: relative;
     }
-
+  
     .course-card:hover {
       transform: translateY(-5px);
     }
-
+  
     .course-card h3 {
       font-size: 1.2rem;
       margin-top: 15px;
       font-weight: bold;
     }
-
+  
     .course-card p {
       font-size: 1rem;
       color: #666;
       margin: 10px 0;
     }
-
+  
     .course-card a {
       text-decoration: none;
       color: #fff;
@@ -189,53 +189,86 @@
       font-size: 1rem;
       transition: background 0.3s ease;
     }
-
+  
     .course-card a:hover {
       background: #2980b9;
     }
-
+  
     body.menu-open .courses-list {
       grid-template-columns: repeat(4, 1fr);
     }
-
+  
     body.menu-open .course-card {
       width: 220px;
     }
-
+  
+    .inscrito-msg {
+      display: inline-block;
+      background-color: #27ae60;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 1rem;
+      margin-top: 10px;
+    }  
+  
+    .alerta-mensaje {
+      background-color: #28a745;  /* Color de fondo verde */
+      color: white;               /* Color del texto blanco */
+      padding: 15px 20px;         /* Espaciado interno */
+      border-radius: 10px;        /* Bordes redondeados */
+      text-align: center;         /* Centrar el texto */
+      font-size: 1.2rem;          /* Tamaño de fuente */
+      position: fixed;            /* Posición fija */
+      top: 20px;                  /* 20px desde la parte superior */
+      left: 50%;                  /* Centrado horizontal */
+      transform: translateX(-50%);/* Centrado ajustado */
+      z-index: 1000;              /* Asegurarse de que el mensaje esté encima de otros elementos */
+      display: none;              /* Ocultarlo por defecto */
+      width: 80%;                 /* Ancho ajustado */
+      max-width: 600px;           /* Máximo ancho */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra para darle profundidad */
+    }
+  
+    .mensaje {
+      margin: 0;
+    }
+  
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
       }
-
+  
       .content {
         padding: 15px;
       }
-
+  
       .header {
         font-size: 16px;
         padding: 8px 15px;
       }
-
+  
       .courses-list {
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
       }
-
+  
       .course-card {
         width: 200px;
       }
-
+  
       body.menu-open .course-card {
         width: 180px;
       }
     }
-
+  
     @media (max-width: 480px) {
       .courses-list {
         grid-template-columns: 1fr;
         justify-items: center;
       }
-
+  
       .course-card {
         width: 100%;
       }
@@ -258,38 +291,65 @@
       </div>
 
       <div class="courses-list">
-        {% for curso_docente in cursos %}
-        <div class="course-card" onclick="window.location.href='{% url 'detalle_curso' curso_docente.id %}'">
-            <h3>{{ curso_docente.curso.nombre }}</h3>
+        {% for item in cursos_con_estado %}
+        <div class="course-card" onclick="window.location.href='{% url 'detalle_curso' item.curso.id %}'">
+            <h3>{{ item.curso.curso.nombre }}</h3>
             <p>
-              {% if curso_docente.descripcion_palabras|length > 3 %}
-                {{ curso_docente.descripcion_palabras|slice:":3"|join:" " }}...
-              {% else %}
-                {{ curso_docente.descripcion_palabras|join:" " }}
-              {% endif %}
+                {% if item.curso.descripcion_palabras|length > 3 %}
+                    {{ item.curso.descripcion_palabras|slice:":3"|join:" " }}...
+                {% else %}
+                    {{ item.curso.descripcion_palabras|join:" " }}
+                {% endif %}
             </p>
-            <a href="#" class="inscribir-btn" onclick="event.stopPropagation();">Inscribirme</a>
-          </div>
-        {% empty %}
-          <p>No hay cursos disponibles en este momento.</p>
+    
+            {% if item.inscrito %}
+            <span class="inscrito-msg">¡Inscrito!</span>
+            {% else %}
+            <a href="{% url 'inscribir_curso' item.curso.id %}" class="mt-2 inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full">Inscribirme</a>
+            {% endif %}
+        </div>
         {% endfor %}
       </div>
+
+      <!-- Mensaje de inscripción -->
+      {% if messages %}
+      <div class="alerta-mensaje" id="mensaje-inscripcion">
+        {% for message in messages %}
+          <div class="mensaje {{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
     </div>
   </div>
 
   <script>
-    const hamburgerBtn = document.getElementById("hamburgerBtn");
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
+    // Mostrar el mensaje de inscripción y ocultarlo
+    document.addEventListener("DOMContentLoaded", function() {
+      const mensaje = document.getElementById("mensaje-inscripcion");
+      if (mensaje) {
+        mensaje.style.display = 'block';
+        setTimeout(function() {
+          mensaje.style.display = 'none';
+        }, 3000);
+      }
 
-    hamburgerBtn.addEventListener("click", () => {
-      sidebar.classList.toggle("active");
-      document.body.classList.toggle("menu-open");
-    });
+      // Menú hamburguesa
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      const body = document.body;
 
-    overlay.addEventListener("click", () => {
-      sidebar.classList.remove("active");
-      document.body.classList.remove("menu-open");
+      hamburgerBtn.addEventListener("click", function () {
+        sidebar.classList.add("active");
+        body.classList.add("menu-open");
+      });
+
+      overlay.addEventListener("click", function () {
+        sidebar.classList.remove("active");
+        body.classList.remove("menu-open");
+      });
     });
   </script>
 </body>

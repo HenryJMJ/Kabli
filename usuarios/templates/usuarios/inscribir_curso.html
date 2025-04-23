@@ -1,0 +1,24 @@
+{% block content %}
+<div class="max-w-xl mx-auto p-6">
+    <h2 class="text-2xl font-bold mb-4">Confirmar inscripción</h2>
+    <div class="bg-white dark:bg-gray-800 shadow p-4 rounded-2xl">
+        <p class="mb-4">¿Deseas inscribirte en el curso <strong>{{ curso_docente.curso.nombre }}</strong>?</p>
+        
+        {% if mensaje %}
+            <p class="text-green-500 font-semibold">{{ mensaje }}</p>
+            <a href="{% url 'cursos_disponibles' %}" 
+               class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-xl">Volver a cursos</a>
+        {% else %}
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit"
+                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl transition">
+                    Confirmar inscripción
+                </button>
+                <a href="{% url 'cursos_disponibles' %}" 
+                   class="ml-4 text-gray-600 dark:text-gray-300 underline">Cancelar</a>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -16,12 +16,14 @@ import json
 import os
 from django.db.models import Count
 from django.db.models.functions import TruncDate
+from collections import defaultdict
 from .models import Notificacion
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from .models import Curso
 from .models import CursoDocente
+from .models import CursoInscrito
 from .models import PerfilEstudiante
 from .forms import CursoForm
 from .models import Recurso
@@ -288,14 +290,25 @@ def cursos_disponibles(request):
     # Filtra solo los cursos donde "publicado=True"
     cursos_publicados = CursoDocente.objects.filter(publicado=True)
 
-    # Divide la descripción en palabras y la pasa al template
+    # Verificar si el estudiante está inscrito en cada curso
+    cursos_con_estado = []
     for curso_docente in cursos_publicados:
+        # Divide la descripción en palabras
         descripcion_palabras = curso_docente.curso.descripcion.split(' ')
         curso_docente.descripcion_palabras = descripcion_palabras
+        
+        # Verificar si el estudiante está inscrito en este curso
+        esta_inscrito = CursoInscrito.objects.filter(estudiante=request.user, curso_docente=curso_docente).exists()
+        
+        # Añadir el estado de inscripción al curso
+        cursos_con_estado.append({
+            'curso': curso_docente,
+            'inscrito': esta_inscrito
+        })
 
-    # Pasa la lista de cursos al template
+    # Pasa la lista de cursos con su estado de inscripción al template
     return render(request, 'usuarios/cursos_disponibles.html', {
-        'cursos': cursos_publicados
+        'cursos_con_estado': cursos_con_estado
     })
     
 @login_required
@@ -323,14 +336,59 @@ def despublicar_curso(request, curso_id):
 
 @login_required
 def detalle_curso(request, id):
+    # Obtén el curso docente y el curso correspondiente
     curso_docente = get_object_or_404(CursoDocente, id=id, publicado=True)
     curso = curso_docente.curso
     docente = curso_docente.docente
 
+    # Verificar si el estudiante ya está inscrito en este curso
+    estudiante = request.user  # Suponiendo que el estudiante está autenticado
+    ya_inscrito = CursoInscrito.objects.filter(estudiante=estudiante, curso_docente=curso_docente).exists()
+
     return render(request, 'usuarios/detalle_curso.html', {
         'curso': curso,
-        'docente': docente
+        'docente': docente,
+        'ya_inscrito': ya_inscrito,
     })
+
+@login_required
+def inscribir_curso(request, curso_docente_id):
+    curso = get_object_or_404(CursoDocente, id=curso_docente_id)
+
+    if request.method == 'POST':
+        if CursoInscrito.objects.filter(curso_docente=curso, estudiante=request.user).exists():
+            return render(request, 'usuarios/ya_inscrito.html')
+        
+        CursoInscrito.objects.create(curso_docente=curso, estudiante=request.user)
+        
+        # Agregar mensaje de inscripción exitosa
+        messages.success(request, "¡Inscripción exitosa!")
+        
+        # Redirigir a la página de cursos disponibles
+        return redirect('cursos_disponibles')  # Cambiar 'cursos_disponibles' por la vista adecuada
+
+    return render(request, 'usuarios/inscribir_curso.html', {'curso': curso})
+
+@login_required
+def estudiantes_curso(request):
+    # Obtener los cursos publicados por el docente logueado
+    cursos_publicados = CursoDocente.objects.filter(docente=request.user, publicado=True)
+    
+    # Obtener las inscripciones a los cursos de ese docente
+    inscripciones = CursoInscrito.objects.filter(curso_docente__in=cursos_publicados).select_related('estudiante', 'curso_docente__curso')
+
+    # Organizar los estudiantes por curso
+    cursos_con_estudiantes = defaultdict(list)
+
+    for inscripcion in inscripciones:
+        curso_nombre = inscripcion.curso_docente.curso.nombre
+        estudiante_info = {
+            'nombre': inscripcion.estudiante.get_full_name() or inscripcion.estudiante.username,
+            'fecha': inscripcion.fecha_inscripcion.strftime('%d/%m/%Y %H:%M'),
+        }
+        cursos_con_estudiantes[curso_nombre].append(estudiante_info)
+
+    return render(request, 'usuarios/estudiantes_curso.html', {'cursos_con_estudiantes': dict(cursos_con_estudiantes)})
 
 @login_required
 def perfil_estudiante(request):
@@ -447,10 +505,6 @@ def eliminar_curso_docente(request, curso_id):
     # Eliminar la relación entre el docente y el curso
     CursoDocente.objects.filter(curso_id=curso_id, docente=request.user).delete()
     return redirect('curso_docente')
-
-# Vista para la lista de estudiantes inscritos en el curso
-def estudiantes_curso(request):
-    return render(request, 'usuarios/estudiantes_curso.html')
 
 @login_required
 def subir_recursos(request):

@@ -156,38 +156,22 @@
     </ul>
   </nav>
 
-  <!-- Botones flotantes -->
-  <div class="floating-buttons">
-    <form method="POST" action="{% url 'logout' %}">
-      {% csrf_token %}
-      <button class="icon-button" title="Cerrar sesión">🔚</button>
-    </form>
-    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
-  </div>
-
-  <!-- Contenido -->
   <div class="container">
-    <h1>Estudiantes Inscritos</h1>
-    <p>Consulta los estudiantes inscritos en tus cursos.</p>
-
-    <!-- Lista de estudiantes inscritos -->
-    <ul>
-      {% for estudiante in estudiantes %}
-        <li>{{ estudiante.nombre }} - {{ estudiante.curso }} - {{ estudiante.fecha_inscripcion }}</li>
-      {% empty %}
-        <li>No hay estudiantes inscritos en los cursos.</li>
-      {% endfor %}
-    </ul>
+    {% if cursos_con_estudiantes %}
+        {% for curso, lista_estudiantes in cursos_con_estudiantes.items %}
+            <div style="margin-bottom: 30px;">
+                <h2>{{ curso }}</h2>
+                <ul>
+                    {% for estudiante in lista_estudiantes %}
+                        <li>{{ estudiante.nombre }} – Inscrito el {{ estudiante.fecha }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No hay estudiantes inscritos en tus cursos publicados.</p>
+    {% endif %} 
   </div>
-
-  <script>
-    function toggleDarkMode() {
-      const body = document.body;
-      const toggle = document.getElementById('darkToggle');
-      body.classList.toggle('dark');
-      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
-    }
-  </script>
 </body>
 </html>
 {% endblock %}

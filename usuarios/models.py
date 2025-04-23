@@ -107,6 +107,18 @@ class CursoDocente(models.Model):
 
     def __str__(self):
         return f"{self.docente.username} - {self.curso.nombre}"
+ 
+class CursoInscrito(models.Model):
+    curso_docente = models.ForeignKey(CursoDocente, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(User, on_delete=models.CASCADE)
+    fecha_inscripcion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('curso_docente', 'estudiante')
+
+    def __str__(self):
+        return f"{self.estudiante.username} inscrito en {self.curso_docente.curso.nombre}"
+ 
     
 class Recurso(models.Model):
     nombre = models.CharField(max_length=100, default="Recurso sin nombre")
