@@ -28,6 +28,7 @@ from .models import PerfilEstudiante
 from .forms import CursoForm
 from .models import Recurso
 from .forms import RecursoForm
+from .forms import MensajeForm
 
 
 def home(request):
@@ -284,6 +285,65 @@ def panel_estudiantes(request):
 
     nombre = request.user.first_name or request.user.username
     return render(request, 'usuarios/panel_estudiantes.html', {'nombre_usuario': nombre})
+
+@login_required
+def academica(request):
+    cursos_inscritos = CursoInscrito.objects.filter(estudiante=request.user).select_related(
+        'curso_docente__curso', 'curso_docente__docente'
+    )
+    return render(request, 'usuarios/academica.html', {
+        'cursos_inscritos': cursos_inscritos
+    })
+
+@login_required
+def darse_de_baja(request, inscripcion_id):
+    inscripcion = get_object_or_404(CursoInscrito, id=inscripcion_id, estudiante=request.user)
+
+    if request.method == 'POST':
+        inscripcion.delete()
+        messages.success(request, "Te has dado de baja del curso exitosamente.")
+        return redirect('academica')  # Asegúrate de que este nombre de URL sea correcto
+
+    messages.error(request, "Ocurrió un error al intentar darte de baja.")
+    return redirect('academica')
+
+@login_required
+def gimnasio_mental(request):
+    return render(request, 'usuarios/gimnasio_mental.html')
+
+@login_required
+def mapa_del_saber(request):
+    return render(request, 'usuarios/mapa_del_saber.html')
+
+@login_required
+def fuego_del_aprendizaje(request):
+    return render(request, 'usuarios/fuego_del_aprendizaje.html')
+
+@login_required
+def enviar_mensaje(request):
+    if request.method == 'POST':
+        form = MensajeForm(request.POST)
+        if form.is_valid():
+            asunto = form.cleaned_data['asunto']
+            mensaje = form.cleaned_data['mensaje']
+            
+            # Enviar el mensaje por correo (ajusta esta parte para tu configuración)
+            send_mail(
+                asunto,
+                mensaje,
+                settings.DEFAULT_FROM_EMAIL,  # Aquí va el correo desde el que se enviarán los mensajes
+                ['henrymestra16@gmail.com'],  # Aquí va el correo de la institución
+                fail_silently=False,
+            )
+            return redirect('mensaje_enviado')
+    else:
+        form = MensajeForm()
+    
+    return render(request, 'usuarios/enviar_mensaje.html', {'form': form})
+
+@login_required
+def mensaje_enviado(request):
+    return render(request, 'usuarios/mensaje_enviado.html')
 
 @login_required
 def cursos_disponibles(request):

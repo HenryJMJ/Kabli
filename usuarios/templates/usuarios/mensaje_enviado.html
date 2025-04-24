@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mensaje Enviado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #2c3e50;
+    }
+
+    .mensaje {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    a {
+      text-decoration: none;
+      color: #3498db;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>¡Tu mensaje ha sido enviado con éxito!</h1>
+  <div class="mensaje">
+    Gracias por contactarnos. Nos pondremos en contacto contigo lo antes posible.
+  </div>
+  <a href="{% url 'panel_estudiantes' %}">Volver al panel</a>
+
+</body>
+</html>

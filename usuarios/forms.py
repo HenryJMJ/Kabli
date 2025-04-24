@@ -79,3 +79,7 @@ class PerfilEstudianteForm(forms.ModelForm):
         if edad == '':
             return None  # Si el campo está vacío, devolver None (o el valor predeterminado adecuado)
         return edad
+    
+class MensajeForm(forms.Form):
+    asunto = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Asunto'}))
+    mensaje = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Escribe tu mensaje aquí...'}))

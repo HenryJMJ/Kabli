@@ -208,6 +208,19 @@
       color: #555;
     }
 
+    a {
+      pointer-events: none;
+    }
+    
+    .content a,
+    .curso-box-link {
+      pointer-events: auto;
+    }
+    
+    .sidebar a {
+      pointer-events: auto;
+    }
+
     @media (max-width: 768px) {
       .curso-box {
         padding: 20px;
@@ -244,22 +257,23 @@
 <body>
   <div class="container">
     <div class="sidebar">
-      <a href="#">
-        <img src="{% static 'usuarios/img/birrete.png' %}" alt="Académico">
-        <div>ACADÉMICO</div>
-      </a>
-      <a href="#">
+      <div class="academico-button">
+        <a href="{% url 'academica' %}">
+          <button type="button">🎓 ACADÉMICO</button>
+        </a>
+      </div>
+      <a href="{% url 'gimnasio_mental' %}">
         <img src="{% static 'usuarios/img/crebro.jpg' %}" alt="Gimnasio Mental">
         <div>GIMNASIO MENTAL</div>
       </a>
-      <a href="#">
+      <a href="{% url 'mapa_del_saber' %}">
         <img src="{% static 'usuarios/img/mapa.jpg' %}" alt="Mapa del Saber">
         <div>MAPA DEL SABER</div>
       </a>
-      <a href="#">
-        <img src="{% static 'usuarios/img/fuego.jpg' %}" alt="Recursos">
+      <a href="{% url 'fuego_del_aprendizaje' %}">
+        <img src="{% static 'usuarios/img/fuego.jpg' %}" alt="Fuego del Aprendizaje">
         <div>FUEGO DEL APRENDIZAJE</div>
-      </a>
+      </a>      
     </div>
 
     <div class="content">
@@ -292,7 +306,10 @@
       <div class="footer">
         <a href="#"><img src="{% static 'usuarios/img/inicio.png' %}" alt="Inicio"><div>INICIO</div></a>
         <a href="#"><img src="{% static 'usuarios/img/calendario.png' %}" alt="Calendario"><div>CALENDARIO</div></a>
-        <a href="#"><img src="{% static 'usuarios/img/mensaje.png' %}" alt="Mensaje"><div>MENSAJES</div></a>
+        <a href="{% url 'enviar_mensaje' %}">
+          <img src="{% static 'usuarios/img/mensaje.png' %}" alt="Icono de mensaje">
+          <div>MENSAJES</div>
+        </a>
       </div>
     </div>
   </div>
