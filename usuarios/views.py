@@ -670,9 +670,10 @@ def crear_curso(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         descripcion = request.POST.get('descripcion')
+        imagen = request.FILES.get('imagen')  # Obtener la imagen desde el formulario
         
         # Crear el curso sin asignar docente
-        curso = Curso.objects.create(nombre=nombre, descripcion=descripcion)
+        curso = Curso.objects.create(nombre=nombre, descripcion=descripcion, imagen=imagen)
         
         # Si el admin quiere asignar docentes, lo hace aquí (se puede modificar según los requisitos)
         docentes = request.POST.getlist('docentes')  # 'docentes' es el campo que puede venir de un formulario o algo similar
@@ -694,10 +695,10 @@ def editar_curso(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)  # Ya no filtramos por docente
 
     if request.method == 'POST':
-        form = CursoForm(request.POST, instance=curso)
+        form = CursoForm(request.POST, request.FILES, instance=curso)  # Usar 'request.FILES' para cargar archivos
         if form.is_valid():
             form.save()
-            return redirect('editar_cursos')  # Redirecciona al listado
+            return redirect('gestionar_cursos')  # Redirecciona al listado después de guardar
     else:
         form = CursoForm(instance=curso)
 

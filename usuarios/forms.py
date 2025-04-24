@@ -58,7 +58,10 @@ class RegistroForm(UserCreationForm):
 class CursoForm(forms.ModelForm):
     class Meta:
         model = Curso
-        fields = ['nombre', 'descripcion']
+        fields = ['nombre', 'descripcion', 'total_sesiones', 'imagen']  # Asegúrate de incluir los nuevos campos
+
+    total_sesiones = forms.IntegerField(min_value=1, initial=20, required=True)  # Puedes hacer editable el número de sesiones
+    imagen = forms.ImageField(required=False)  # Campo para la imagen, no obligatorio
 
 class RecursoForm(forms.ModelForm):
     class Meta:

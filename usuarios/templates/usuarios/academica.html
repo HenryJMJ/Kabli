@@ -39,12 +39,27 @@
     }
 
     .curso {
+      display: flex;
       background-color: #fff;
       border: 1px solid #ddd;
       border-radius: 1rem;
-      padding: 1rem 1.5rem;
+      padding: 1rem;
       margin-bottom: 1.5rem;
       box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .curso img {
+      max-width: 200px;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .curso .info {
+      flex: 1;
+      padding-right: 1rem;
     }
 
     .curso h3 {
@@ -119,14 +134,24 @@
   {% if cursos_inscritos %}
     {% for inscripcion in cursos_inscritos %}
       <div class="curso">
-        <h3>{{ inscripcion.curso_docente.curso.nombre }}</h3>
-        <p>{{ inscripcion.curso_docente.curso.descripcion }}</p>
-        <p>Docente: {{ inscripcion.curso_docente.docente.get_full_name|default:inscripcion.curso_docente.docente.username }}</p>
-        <p>Inscrito el: {{ inscripcion.fecha_inscripcion|date:"d/m/Y g:i a" }}</p>
-        <form method="POST" action="{% url 'darse_de_baja' inscripcion.id %}" onsubmit="confirmarBaja(event)">
-          {% csrf_token %}
-          <button type="submit">Darse de baja</button>
-        </form>
+        <div class="info">
+          <h3>{{ inscripcion.curso_docente.curso.nombre }}</h3>
+          <p>{{ inscripcion.curso_docente.curso.descripcion }}</p>
+          <p>Docente: {{ inscripcion.curso_docente.docente.get_full_name|default:inscripcion.curso_docente.docente.username }}</p>
+          <p>Inscrito el: {{ inscripcion.fecha_inscripcion|date:"d/m/Y g:i a" }}</p>
+          <p><strong>Total de sesiones:</strong> {{ inscripcion.curso_docente.curso.total_sesiones }}</p>
+          <form method="POST" action="{% url 'darse_de_baja' inscripcion.id %}" onsubmit="confirmarBaja(event)">
+            {% csrf_token %}
+            <button type="submit">Darse de baja</button>
+          </form>
+        </div>
+
+        <!-- Imagen del curso (a la derecha) -->
+        {% if inscripcion.curso_docente.curso.imagen %}
+          <img src="{{ inscripcion.curso_docente.curso.imagen.url }}" alt="Imagen del curso">
+        {% else %}
+          <img src="{% static 'usuarios/img/curso_default.jpg' %}" alt="Curso sin imagen">
+        {% endif %}
       </div>
     {% endfor %}
   {% else %}

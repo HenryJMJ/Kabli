@@ -236,6 +236,10 @@
         <div class="curso-card {% if curso.cursos_asignados >= 3 %}completo{% endif %}">
           <h3>{{ curso.nombre }}</h3>
 
+          {% if curso.imagen %}
+            <img src="{{ curso.imagen.url }}" alt="{{ curso.nombre }}" style="width: 100%; height: auto; border-radius: 8px;">
+          {% endif %}
+
           {% if curso.cursos_asignados >= 3 %}
             <p style="margin-top: 10px; color: #e74c3c; font-weight: 600;">
               Curso completo (3/3 docentes)
@@ -244,6 +248,9 @@
             <p>{{ curso.descripcion }}</p>
             <div class="curso-info">
               Docentes asignados: {{ curso.cursos_asignados }}/3
+            </div>
+            <div class="curso-info">
+              Sesiones de la clase: {{ curso.total_sesiones }}
             </div>
           {% endif %}
 

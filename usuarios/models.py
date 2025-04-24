@@ -81,6 +81,8 @@ class Curso(models.Model):
     activo = models.BooleanField(default=True)
     total_unidades = models.PositiveIntegerField(default=3)  # Número de unidades de curso
     unidades_completadas = models.PositiveIntegerField(default=0)  # Unidades completadas por docentes
+    imagen = models.ImageField(upload_to='cursos/', null=True, blank=True)  # Campo de imagen
+    total_sesiones = models.PositiveIntegerField(default=20)  # Sesiones de clase, por defecto 20
 
     def __str__(self):
         return self.nombre

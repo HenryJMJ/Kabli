@@ -235,6 +235,19 @@
       margin: 0;
     }
   
+    .imagen-curso {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+  }
+  
+  .course-card:hover .imagen-curso {
+      transform: scale(1.03);
+  }
+  
+
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -293,6 +306,13 @@
       <div class="courses-list">
         {% for item in cursos_con_estado %}
         <div class="course-card" onclick="window.location.href='{% url 'detalle_curso' item.curso.id %}'">
+            
+            {% if item.curso.curso.imagen %}
+                <img src="{{ item.curso.curso.imagen.url }}" alt="Imagen del curso" class="imagen-curso mb-2">
+            {% else %}
+                <img src="{% static 'usuarios/img/curso_default.jpg' %}" alt="Curso sin imagen" class="imagen-curso mb-2">
+            {% endif %}
+    
             <h3>{{ item.curso.curso.nombre }}</h3>
             <p>
                 {% if item.curso.descripcion_palabras|length > 3 %}
@@ -309,7 +329,8 @@
             {% endif %}
         </div>
         {% endfor %}
-      </div>
+    </div>
+    
 
       <!-- Mensaje de inscripción -->
       {% if messages %}

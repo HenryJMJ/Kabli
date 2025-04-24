@@ -203,6 +203,7 @@
       <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     </div>
     <ul class="nav-links" id="navLinks">
+      <!-- Menú de navegación -->
       <li><a href="{% url 'panel_admin' %}">Inicio</a></li>
       <li><a href="{% url 'estadisticas' %}">Estadísticas</a></li>
       <li><a href="{% url 'lista_usuarios' %}">Usuarios</a></li>
@@ -235,7 +236,14 @@
       {% for curso in cursos %}
         <div class="curso-item">
           <strong>{{ curso.nombre }}</strong><br>
-          <small>{{ curso.descripcion }}</small>
+          <small>{{ curso.descripcion }}</small><br>
+          <!-- Mostrar imagen del curso si tiene, si no mostrar texto -->
+          {% if curso.imagen %}
+            <img src="{{ curso.imagen.url }}" alt="Imagen del curso" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px;">
+          {% else %}
+            <p>Imagen no disponible</p>
+          {% endif %}
+          <p><strong>Total de sesiones:</strong> {{ curso.total_sesiones }}</p>
         </div>
       {% endfor %}
     </div>

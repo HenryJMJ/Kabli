@@ -107,6 +107,20 @@
       margin-bottom: 20px;
     }
 
+    .course-details .sesiones {
+      font-size: 1.1rem;
+      color: #3498db;
+      margin-top: 10px;
+    }
+
+    .course-details img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;  /* Ajusta la imagen sin distorsionarla */
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
     .inscribir-btn {
       position: fixed;
       top: 20px;
@@ -128,14 +142,14 @@
     }
 
     .footer {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
       display: flex;
       justify-content: space-around;
       background: rgba(255, 228, 181, 0.9);
       padding: 15px 0;
       border-top: 1px solid #ddd;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
     }
 
     .footer a {
@@ -216,6 +230,13 @@
     </div>
 
     <div class="course-details">
+      <!-- Imagen del curso -->
+      {% if curso.imagen %}
+        <img src="{{ curso.imagen.url }}" alt="Imagen del curso">
+      {% else %}
+        <img src="{% static 'usuarios/img/curso_default.jpg' %}" alt="Curso sin imagen">
+      {% endif %}
+
       <h1>{{ curso.nombre }}</h1>
       <p>{{ curso.descripcion }}</p>
       
@@ -226,12 +247,9 @@
           <span>No hay docente asignado</span>
         {% endif %}
       </p>
-    </div>
 
-    <div class="footer">
-      <a href="#"><img src="{% static 'usuarios/img/inicio.png' %}" alt="Inicio"><div>INICIO</div></a>
-      <a href="#"><img src="{% static 'usuarios/img/calendario.png' %}" alt="Calendario"><div>CALENDARIO</div></a>
-      <a href="#"><img src="{% static 'usuarios/img/mensaje.png' %}" alt="Mensaje"><div>MENSAJES</div></a>
+      <!-- Mostrar el número de sesiones -->
+      <p class="sesiones">Número de sesiones: {{ curso.total_sesiones }}</p>
     </div>
   </div>
 

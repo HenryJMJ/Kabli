@@ -142,39 +142,38 @@
 </head>
 <body>
 
-  <div class="floating-buttons">
-    <form method="POST" action="{% url 'logout' %}">
-      {% csrf_token %}
-      <button class="icon-button" title="Cerrar sesión">🔚</button>
-    </form>
-    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
-  </div>
-
   <h2>📝 Editar Curso: {{ curso.nombre }}</h2>
 
-  <nav class="navbar">
-    <div class="logo">🏫 I.E. MIGUE</div>
-    <ul class="nav-links">
-      <li><a href="{% url 'panel_admin' %}">Inicio</a></li>
-      <li><a href="{% url 'gestionar_cursos' %}">Cursos</a></li>
-    </ul>
-  </nav>
-
   <div class="container">
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
-      {{ form.as_p }}
+      
+      <div>
+        <label for="nombre">Nombre del curso:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ curso.nombre }}" required>
+      </div>
+
+      <div>
+        <label for="descripcion">Descripción del curso:</label>
+        <textarea id="descripcion" name="descripcion" required>{{ curso.descripcion }}</textarea>
+      </div>
+
+      <div>
+        <label for="total_sesiones">Total de sesiones:</label>
+        <input type="number" id="total_sesiones" name="total_sesiones" value="{{ curso.total_sesiones }}" min="1" required>
+      </div>
+
+      <div>
+        <label for="imagen">Imagen del curso:</label>
+        <input type="file" id="imagen" name="imagen">
+        {% if curso.imagen %}
+          <p>Imagen actual: <img src="{{ curso.imagen.url }}" alt="Imagen del curso" style="max-width: 150px;"></p>
+        {% endif %}
+      </div>
+
       <button type="submit">Guardar cambios</button>
     </form>
   </div>
 
-  <script>
-    function toggleDarkMode() {
-      const body = document.body;
-      const toggle = document.getElementById('darkToggle');
-      body.classList.toggle('dark');
-      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
-    }
-  </script>
 </body>
 </html>

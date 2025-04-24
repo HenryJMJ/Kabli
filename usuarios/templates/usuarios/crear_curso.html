@@ -62,7 +62,7 @@
 
     form label { display: block; margin-bottom: 8px; font-weight: 600; }
 
-    form input, form textarea {
+    form input, form textarea, form input[type="file"] {
       width: 100%;
       padding: 10px;
       margin-bottom: 20px;
@@ -150,13 +150,17 @@
   </nav>
 
   <div class="container">
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <label for="nombre">Nombre del curso:</label>
       <input type="text" id="nombre" name="nombre" required>
 
       <label for="descripcion">Descripción:</label>
       <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+
+      <!-- Campo de imagen -->
+      <label for="imagen">Imagen del curso (opcional):</label>
+      <input type="file" id="imagen" name="imagen">
 
       <button type="submit">Crear curso</button>
     </form>
