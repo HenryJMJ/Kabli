@@ -36,6 +36,7 @@ urlpatterns = [
     path('mapa_del_saber/', views.mapa_del_saber, name='mapa_del_saber'),
     path('fuego_del_aprendizaje/', views.fuego_del_aprendizaje, name='fuego_del_aprendizaje'),
     path('enviar_mensaje/', views.enviar_mensaje, name='enviar_mensaje'),
+    path('chatbot/', views.chatbot_view, name='chatbot'),
     path('mensaje_enviado/', views.mensaje_enviado, name='mensaje_enviado'),
     path('perfil/', views.perfil_estudiante, name='perfil_estudiante'),
     path('cursos_disponibles/', views.cursos_disponibles, name='cursos_disponibles'),

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseForbidden
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.core.mail import EmailMessage
 from django.db import IntegrityError
 from .forms import RegistroForm
 from django.conf import settings
@@ -326,20 +327,32 @@ def enviar_mensaje(request):
         if form.is_valid():
             asunto = form.cleaned_data['asunto']
             mensaje = form.cleaned_data['mensaje']
-            
-            # Enviar el mensaje por correo (ajusta esta parte para tu configuración)
-            send_mail(
-                asunto,
-                mensaje,
-                settings.DEFAULT_FROM_EMAIL,  # Aquí va el correo desde el que se enviarán los mensajes
-                ['henrymestra16@gmail.com'],  # Aquí va el correo de la institución
-                fail_silently=False,
+            email_usuario = request.user.email
+            nombre_usuario = request.user.get_full_name() or request.user.username
+
+            cuerpo_mensaje = (
+                f"Mensaje enviado por: {nombre_usuario} ({email_usuario})\n\n"
+                f"{mensaje}"
             )
-            return redirect('mensaje_enviado')
+
+            email = EmailMessage(
+                subject=asunto,
+                body=cuerpo_mensaje,
+                from_email='no-responder@tudominio.com',
+                to=['henrymestra16@gmail.com'],
+                reply_to=[email_usuario],
+            )
+            email.send(fail_silently=False)
+
+            return render(request, 'usuarios/mensaje_enviado.html')  # redirige a plantilla de éxito
     else:
         form = MensajeForm()
-    
+
     return render(request, 'usuarios/enviar_mensaje.html', {'form': form})
+
+@login_required
+def chatbot_view(request):
+    return render(request, 'usuarios/chatbot.html')
 
 @login_required
 def mensaje_enviado(request):

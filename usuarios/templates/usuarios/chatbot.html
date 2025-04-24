@@ -1,0 +1,237 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot de la Institución</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    .volver {
+      display: inline-block;
+      margin-bottom: 1rem;
+      text-decoration: none;
+      color: #3498db;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .chat-container {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+
+    .messages {
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fafafa;
+    }
+
+    .message {
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      background-color: #f0f0f0;
+    }
+
+    .user-message {
+      background-color: #3498db;
+      color: white;
+      text-align: right;
+    }
+
+    .bot-message {
+      background-color: #e0e0e0;
+      color: #333;
+      text-align: left;
+    }
+
+    .input-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .chat-input {
+      width: 80%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+    }
+
+    .send-button {
+      padding: 10px 15px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .send-button:hover {
+      background-color: #2980b9;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .option-button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    .option-button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="{% url 'enviar_mensaje' %}" class="volver">← Volver</a>
+
+  <h1>Chatbot de la Institución</h1>
+
+  <div class="chat-container">
+    <div class="messages" id="chat-messages">
+      <!-- Mensajes de chat irán aquí -->
+    </div>
+
+    <div class="input-container">
+      <input type="text" class="chat-input" id="user-input" placeholder="Escribe tu mensaje..." />
+      <button class="send-button" id="send-btn">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    // Obtén los elementos del DOM
+    const sendButton = document.getElementById('send-btn');
+    const userInput = document.getElementById('user-input');
+    const chatMessages = document.getElementById('chat-messages');
+
+    let userName = '';
+  let chatState = 0;
+
+  function addUserMessage(message) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', 'user-message');
+    messageElement.textContent = message;
+    chatMessages.appendChild(messageElement);
+  }
+
+  function addBotMessage(message) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', 'bot-message');
+    messageElement.textContent = message;
+    chatMessages.appendChild(messageElement);
+  }
+
+  function addOptions() {
+    const optionsContainer = document.createElement('div');
+    optionsContainer.classList.add('button-container');
+
+    const option1 = document.createElement('button');
+    option1.classList.add('option-button');
+    option1.textContent = 'Problemas de inscripción';
+    option1.addEventListener('click', () => handleOptionSelection(1));
+
+    const option2 = document.createElement('button');
+    option2.classList.add('option-button');
+    option2.textContent = 'Problemas con tus cursos';
+    option2.addEventListener('click', () => handleOptionSelection(2));
+
+    const option3 = document.createElement('button');
+    option3.classList.add('option-button');
+    option3.textContent = 'Cuenta';
+    option3.addEventListener('click', () => handleOptionSelection(3));
+
+    optionsContainer.appendChild(option1);
+    optionsContainer.appendChild(option2);
+    optionsContainer.appendChild(option3);
+    chatMessages.appendChild(optionsContainer);
+  }
+
+  function handleOptionSelection(option) {
+    if (option === 1) {
+      addBotMessage('Lo siento por los inconvenientes con la inscripción. Por favor, indícanos más detalles sobre el problema que estás experimentando, como si no puedes completar el proceso o si te aparece algún error específico.');
+    } else if (option === 2) {
+      addBotMessage('Entiendo que tengas problemas con tus cursos. ¿Podrías especificar si es un problema con los materiales del curso, la programación de clases, o si tienes dificultades para acceder a los recursos del curso?');
+    } else if (option === 3) {
+      addBotMessage('Si tienes problemas con tu cuenta, ¿podrías decirme si es un problema con tu inicio de sesión, la recuperación de tu contraseña, o alguna otra configuración relacionada con tu cuenta?');
+    }
+  }
+
+  // Aquí va la función que solicitaste agregar
+  function handleUserResponse(message) {
+    if (chatState === 2) {
+      if (message.includes("inscripción")) {
+        addBotMessage('Gracias por la información. Lamento los inconvenientes con la inscripción. Este error puede ser causado por un problema temporal en el sistema. Te recomiendo intentar nuevamente después de unos minutos. Si el problema persiste, por favor envíanos el código de error o detalles adicionales, y te ayudaremos a resolverlo.');
+      } else if (message.includes("cursos")) {
+        addBotMessage('Entiendo que tienes problemas para acceder al material del curso. Asegúrate de estar correctamente inscrito en el curso y de tener acceso a la plataforma. Si todo parece estar en orden pero aún no puedes acceder, por favor, cuéntame más sobre el error que ves, y con gusto te ayudaré a solucionarlo.');
+      } else if (message.includes("contraseña")) {
+        addBotMessage('Lamento que hayas olvidado tu contraseña. No te preocupes, puedes restablecerla fácilmente. Por favor, visita la página de recuperación de contraseña y sigue las instrucciones para restablecerla. Si necesitas ayuda adicional, no dudes en preguntarme.');
+      } else {
+        addBotMessage('Lo siento, no pude entender completamente tu respuesta. Si tienes más detalles o si el problema persiste, por favor cuéntame más.');
+      }
+    }
+  }
+
+  // Modificada para usar handleUserResponse si corresponde
+  function sendMessage() {
+    const message = userInput.value.trim();
+    if (message) {
+      addUserMessage(message);
+      userInput.value = '';
+
+      if (chatState === 0) {
+        addBotMessage('¡Hola! ¿Cómo te llamas?');
+        chatState = 1;
+      } else if (chatState === 1) {
+        userName = message;
+        addBotMessage('¡Mucho gusto, ' + userName + '! ¿En qué puedo ayudarte?');
+        addOptions();
+        chatState = 2;
+      } else {
+        handleUserResponse(message);
+      }
+    }
+  }
+
+  sendButton.addEventListener('click', sendMessage);
+  userInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      sendMessage();
+    }
+  });
+  </script>
+
+</body>
+</html>

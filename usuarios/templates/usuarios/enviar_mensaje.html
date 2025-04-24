@@ -23,9 +23,29 @@
       font-size: 1rem;
     }
 
-    h1 {
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .header h1 {
       font-size: 2rem;
       color: #2c3e50;
+      margin: 0;
+    }
+
+    .chatbot-button {
+      font-size: 2rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .chatbot-button:hover {
+      transform: scale(1.2);
     }
 
     .form-container {
@@ -35,7 +55,8 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .form-container input, .form-container textarea {
+    .form-container input,
+    .form-container textarea {
       width: 100%;
       padding: 10px;
       margin-bottom: 1rem;
@@ -52,6 +73,7 @@
       border-radius: 5px;
       font-size: 1rem;
       cursor: pointer;
+      margin-top: 1rem;
     }
 
     .form-container button:hover {
@@ -63,13 +85,16 @@
 
   <a href="{% url 'panel_estudiantes' %}" class="volver">← Volver</a>
 
-  <h1>Enviar un Mensaje a la Institución</h1>
+  <div class="header">
+    <h1>Enviar un Mensaje a la Institución</h1>
+    <a href="{% url 'chatbot' %}" class="chatbot-button" title="Habla con el Chatbot">🤖</a>
+  </div>
 
   <div class="form-container">
     <form method="POST">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit">Enviar Mensaje</button>
+      <button type="submit">Enviar →</button>
     </form>
   </div>
 
