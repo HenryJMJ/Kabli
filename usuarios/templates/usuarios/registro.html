@@ -300,7 +300,7 @@
             <option value="{{ value }}" {% if form.rol.value == value %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
         </select>
-        <input type="text" name="username" placeholder="Nombre de usuario" value="{{ form.username.value|default_if_none:'' }}" required>
+        <input type="text" name="username" placeholder="Usuario" value="{{ form.username.value|default_if_none:'' }}" required>
         <input type="email" name="email" placeholder="Correo electrónico" value="{{ form.email.value|default_if_none:'' }}" required>
         <input type="password" name="password1" placeholder="Contraseña" required>
         <input type="password" name="password2" placeholder="Confirmar contraseña" required>
