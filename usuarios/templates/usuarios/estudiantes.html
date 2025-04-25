@@ -47,6 +47,12 @@
       flex-wrap: nowrap;
     }
 
+    .navbar img {
+      height: 40px; /* Ajusta la altura de la imagen para que coincida con el tamaño del texto */
+      object-fit: contain; /* Asegura que la imagen se ajuste sin perder la proporción */
+      margin-right: 10px; /* Añade un espacio de 10px entre la imagen y el texto */
+    }
+
     .navbar .logo {
       color: white;
       font-size: 1.5rem;
@@ -216,7 +222,7 @@
 
   <nav class="navbar">
     <div class="top">
-      <div class="logo">🏫 I.E. MIGUE</div>
+      <img src="{% static 'IEMIGUE.png' %}"/>
       <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     </div>
     <ul class="nav-links hidden" id="navLinks">

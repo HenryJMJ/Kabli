@@ -30,6 +30,12 @@
       position: relative;
     }
 
+    .navbar img {
+      height: 40px; /* Ajusta la altura de la imagen para que coincida con el tamaño del texto */
+      object-fit: contain; /* Asegura que la imagen se ajuste sin perder la proporción */
+      margin-right: 10px; /* Añade un espacio de 10px entre la imagen y el texto */
+    }
+
     .navbar .logo {
       color: white;
       font-size: 1.5rem;
@@ -254,7 +260,7 @@
 <h2>🔔 Notificaciones</h2>
 
 <nav class="navbar">
-  <div class="logo">🏫 I.E. MIGUE</div>
+  <img src="{% static 'IEMIGUE.png' %}"/>
   <!-- Botón hamburguesa -->
   <button class="hamburger" onclick="toggleMenu()">☰</button>
   <ul class="nav-links">
