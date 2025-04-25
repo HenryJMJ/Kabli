@@ -600,12 +600,27 @@ def enviar_codigo_view(request):
             code_instance = PasswordResetCode.objects.create(user=user)
             send_mail(
                 'Código de Verificación',
-                f'Tu código de verificación es: {code_instance.code}',
+                f'¡Hola!\n\n'
+                f'\n\n'
+                f'Este es tu código de verificación para recuperar tu contraseña: {code_instance.code}\n\n'
+                f'\n\n'
+                f'Ingresa el código correctamente para poder cambiar tu contraseña 🔑.\n\n'
+                f'\n\n'
+                f'⚠️ IMPORTANTE:\n\n'
+                f'• Este código es único y tiene un tiempo limitado para su uso ⏳.\n\n'
+                f'• No compartas tu código con nadie por seguridad 🔒.\n\n'
+                f'\n\n'
+                f'Si no solicitaste este código, por favor ignora este mensaje 🛑.\n\n'
+                f'\n\n'
+                f'¡Gracias por utilizar nuestros servicios! 🙏\n\n'
+                f'\n\n'
+                f'Saludos,\n\n'
+                f' El equipo de soporte.',
                 settings.DEFAULT_FROM_EMAIL,
                 [email]
             )
             request.session['reset_user_id'] = user.id
-            messages.success(request, 'Se ha enviado un código a tu correo.')
+            messages.success(request, 'Se ha enviado un código a tu correo, verifica en ingrésalo aquí')
             return redirect('verificar_codigo')
         else:
             messages.error(request, 'No existe una cuenta con ese correo.')
