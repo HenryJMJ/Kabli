@@ -58,6 +58,8 @@ urlpatterns = [
     path('recuperar/', views.enviar_codigo_view, name='enviar_codigo'),
     path('verificar/', views.verificar_codigo_view, name='verificar_codigo'),
     path('cambiar/', views.cambiar_contraseña_view, name='cambiar_contraseña'),
+    path('verificar_docente/', views.verificar_docente, name='verificar_docente'),
+    path('verificar_docente/accion/<int:user_id>/<str:accion>/', views.verificar_docente_accion, name='verificar_docente_accion'),
 ]
 
 if settings.DEBUG:

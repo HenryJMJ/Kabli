@@ -203,12 +203,17 @@ def registro(request):
         if form.is_valid():
             try:
                 user = form.save()
-
                 rol = form.cleaned_data['rol']
                 grupo, _ = Group.objects.get_or_create(name=rol)
                 user.groups.add(grupo)
 
-                # ✅ Crear notificación
+                # Si es docente, enviar correo y no permitir login aún
+                if rol == 'docente':
+                    user.is_active = False
+                    user.save()
+                    enviar_correo_verificacion_docente(user)
+
+                # ✅ Crear notificación para el admin
                 Notificacion.objects.create(
                     titulo="Nuevo registro de usuario",
                     contenido=f"Se ha registrado a {user.first_name} {user.last_name} con el rol de {rol.capitalize()}.",
@@ -229,6 +234,73 @@ def registro(request):
         form = RegistroForm()
 
     return render(request, 'usuarios/registro.html', {'form': form})
+
+
+def enviar_correo_verificacion_docente(user):
+    asunto = "Verificación de cuenta como docente"
+    mensaje = f"""
+Hola {user.first_name},
+
+Gracias por registrarte como docente en nuestra plataforma.
+
+Tu cuenta será revisada por nuestros administradores para verificar si calificas. 
+Este proceso puede tardar de 10 minutos a 1 hora.
+
+Te notificaremos por correo una vez sea aceptada o rechazada.
+
+Gracias por tu interés.
+
+Atentamente,
+El equipo académico.
+"""
+    send_mail(asunto, mensaje, settings.DEFAULT_FROM_EMAIL, [user.email])
+
+def verificar_docente(request):
+    docentes_pendientes = User.objects.filter(perfil__rol='docente', is_active=False)
+    return render(request, 'usuarios/verificar_docente.html', {'docentes': docentes_pendientes})
+
+def verificar_docente_accion(request, user_id, accion):
+    try:
+        # Obtener al docente que tiene el rol de 'docente'
+        docente = User.objects.get(id=user_id, perfil__rol='docente')
+
+        if accion == 'aceptar':
+            # Activar la cuenta del docente
+            docente.is_active = True
+            docente.save()
+
+            # Enviar correo notificando que la cuenta ha sido aceptada
+            send_mail(
+                subject="Acceso aprobado",
+                message=f"Felicidades docente {docente.username}, ya puedes acceder a tu cuenta.",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[docente.email],
+                fail_silently=True
+            )
+            messages.success(request, f"{docente.username} ha sido verificado correctamente.")
+        
+        elif accion == 'rechazar':
+            # Enviar correo notificando que la cuenta ha sido rechazada
+            send_mail(
+                subject="Acceso denegado",
+                message="Lo lamentamos, pero no has calificado. Puedes intentarlo en otra convocatoria.",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[docente.email],
+                fail_silently=True
+            )
+
+            # Eliminar al docente de la base de datos
+            docente.delete()
+            messages.info(request, f"{docente.username} ha sido rechazado y eliminado.")
+
+        else:
+            messages.error(request, "Acción no válida. No se puede procesar la solicitud.")
+
+    except User.DoesNotExist:
+        messages.error(request, "El usuario no existe o no es un docente válido.")
+
+    return redirect('verificar_docente')
+
 
 def lista_usuarios(request):
     query = request.GET.get("q")
@@ -254,30 +326,41 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            login(request, user)
-
-            if user.is_superuser or user.is_staff:
-                return redirect('panel_admin')
-            else:
+        try:
+            user = User.objects.get(username=username)
+            if user.check_password(password):
                 try:
                     perfil = user.perfil
-                    if perfil.rol == 'docente':
-                        return redirect('panel_docentes')
-                    elif perfil.rol == 'estudiante':
-                        return redirect('panel_estudiantes')
-                    else:
-                        messages.error(request, 'Tu rol no tiene acceso asignado.')
-                        return redirect('login')
+
+                    if perfil.rol == 'docente' and not user.is_active:
+                        messages.warning(request, 'Tu cuenta como docente está pendiente de verificación. Espera a ser aprobado.')
+                        return render(request, 'usuarios/login.html')
+
+                    user = authenticate(request, username=username, password=password)
+                    if user is not None:
+                        login(request, user)
+
+                        if user.is_superuser or user.is_staff:
+                            return redirect('panel_admin')
+                        elif perfil.rol == 'docente':
+                            return redirect('panel_docentes')
+                        elif perfil.rol == 'estudiante':
+                            return redirect('panel_estudiantes')
+                        else:
+                            messages.error(request, 'Tu rol no tiene acceso asignado.')
+                            return redirect('login')
+
                 except Perfil.DoesNotExist:
                     messages.error(request, 'Tu cuenta no tiene un perfil asignado.')
                     return redirect('login')
-        else:
+            else:
+                messages.error(request, 'Usuario o contraseña incorrectos.')
+        except User.DoesNotExist:
             messages.error(request, 'Usuario o contraseña incorrectos.')
 
     return render(request, 'usuarios/login.html')
+
 
 @login_required
 def panel_estudiantes(request):

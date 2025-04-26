@@ -1,0 +1,21 @@
+{% load static %}
+
+{% block content %}
+<h2>Docentes pendientes de verificación</h2>
+
+<a href="{% url 'panel_admin' %}" class="btn btn-secondary" style="margin-bottom: 15px;">← Volver</a>
+
+{% if docentes %}
+    <ul>
+        {% for docente in docentes %}
+            <li>
+                <strong>{{ docente.username }}</strong> - {{ docente.email }}
+                <a href="{% url 'verificar_docente_accion' docente.id 'aceptar' %}" class="btn btn-success">Aceptar</a>
+                <a href="{% url 'verificar_docente_accion' docente.id 'rechazar' %}" class="btn btn-danger">Rechazar</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay docentes pendientes.</p>
+{% endif %}
+{% endblock %}
