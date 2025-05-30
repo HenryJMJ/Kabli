@@ -151,10 +151,10 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '5565-181-78-74-83.ngrok-free.app']
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://kabliaprende.onrender.com',
+    'https://kabli.onrender.com',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000/", 
-    "https://kabliaprende.onrender.com", 
+    "https://kabli.onrender.com", 
 ]
