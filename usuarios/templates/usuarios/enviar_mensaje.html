@@ -32,7 +32,7 @@
 
     .header h1 {
       font-size: 2rem;
-      color: #2c3e50;
+      color:rgb(0, 0, 0);
       margin: 0;
     }
 
@@ -83,18 +83,24 @@
 </head>
 <body>
 
-  <a href="{% url 'panel_estudiantes' %}" class="volver">← Volver</a>
+  <a href="{% url 'panel_estudiantes' %}" class="volver" title="Volver">
+    <img src="{% static 'atras.png' %}" alt="Volver" style="width: 35px; height: 35px;">
+  </a>
 
   <div class="header">
-    <h1>Enviar un Mensaje a la Institución</h1>
-    <a href="{% url 'chatbot' %}" class="chatbot-button" title="Habla con el Chatbot">🤖</a>
+    <h1>Enviar un Mensaje</h1>
+    <a href="{% url 'chatbot' %}" class="chatbot-button" title="Habla con el Chatbot" style="display: inline-block;">
+      <img src="{% static 'chatbot.png' %}" alt="Hablar con el Chatbot" style="width: 35px; height: 35px;">
+    </a>
   </div>
 
   <div class="form-container">
     <form method="POST">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit">Enviar →</button>
+      <button type="submit" class="logout-btn" style="padding: 5px; border: none; background: transparent; cursor: pointer;">
+            <img src="{% static 'enviar.png' %}" alt="Enviar Mensaje" style="width: 24px; height: 24px;">
+          </button>
     </form>
   </div>
 

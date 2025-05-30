@@ -1,272 +1,181 @@
+{% extends "usuarios/cursos_disponibles.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Detalle del Curso</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+{% block search %}
+<!-- Ocultamos la barra de búsqueda -->
+{% endblock %}
 
-    body {
-      background: linear-gradient(to right, #9dc9ff, #bce6ff);
-      min-height: 100vh;
-      transition: background 0.4s;
-    }
+{% block style %}
+<style>
+  .course-details {
+    width: 100%;
+    max-width: 1278px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    transform: translate(125px, 30px);
+  }
 
-    body.menu-open {
-      overflow: hidden;
-    }
+  .course-details h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
 
-    body.menu-open .overlay {
-      display: block;
-    }
+  .course-details p {
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 15px;
+  }
 
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 100;
-    }
+  .course-details .docentes span {
+    font-weight: bold;
+    color: #2c3e50;
+  }
 
-    .hamburger-btn,
-    .regresar-btn {
-      position: fixed;
-      top: 20px;
-      background-color: #21618C;
-      color: white;
-      font-size: 22px;
-      padding: 6px 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      z-index: 200;
-      transition: opacity 0.3s ease;
-    }
+  .course-details .sesiones,
+  .course-details .costo {
+    color: #3498db;
+    font-weight: 500;
+  }
 
-    .regresar-btn {
-      left: 80px;
-    }
+  .course-details img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    cursor: pointer; /* Indicar que se puede clicar */
+  }
 
-    .hamburger-btn {
-      left: 20px;
-    }
+  .btn-volver {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 25px;
+    color: #3498db;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s ease;
+  }
 
-    body.menu-open .hamburger-btn {
-      opacity: 0;
-      pointer-events: none;
-    }
+  /* Modal styles */
+  .modal {
+    display: none; /* oculto por defecto */
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+    align-items: center;
+    justify-content: center;
+  }
 
-    body.menu-open .regresar-btn {
-      opacity: 0;
-      pointer-events: none;
-    }
+  .modal-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 10px;
+  }
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      margin-top: 70px;
-    }
+  .modal-content img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
 
-    .course-details {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-      max-width: 800px;
-    }
+  .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2rem;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
 
-    .course-details h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      text-align: center;
-    }
+</style>
+{% endblock %}
 
-    .course-details p {
-      font-size: 1.1rem;
-      color: #666;
-      margin-bottom: 20px;
-    }
+{% block contenido_detalle %}
+<div class="flex items-center justify-center min-h-screen px-4">
+  <div class="course-details">
 
-    .course-details .docentes {
-      font-size: 1rem;
-      color: #333;
-      margin-bottom: 20px;
-    }
+    {% if curso.imagen %}
+      <img id="cursoImagen" src="{{ curso.imagen.url }}" alt="Imagen del curso">
+    {% else %}
+      <img src="{% static 'usuarios/img/curso_default.jpg' %}" alt="Curso sin imagen" style="cursor: default;">
+    {% endif %}
 
-    .course-details .sesiones {
-      font-size: 1.1rem;
-      color: #3498db;
-      margin-top: 10px;
-    }
+    <h1>{{ curso.nombre }}</h1>
+    <p>{{ curso.descripcion }}</p>
+    <p><strong>Categoría:</strong> {{ curso.categoria.nombre }}</p>
 
-    .course-details img {
-      width: 100%;
-      height: auto;
-      object-fit: contain;  /* Ajusta la imagen sin distorsionarla */
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-
-    .inscribir-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      text-align: center;
-      text-decoration: none;
-      color: #fff;
-      background: #3498db;
-      padding: 12px 20px;
-      border-radius: 5px;
-      font-size: 1.2rem;
-      text-transform: uppercase;
-      font-weight: bold;
-      z-index: 50;
-    }
-
-    .inscribir-btn:hover {
-      background: #2980b9;
-    }
-
-    .footer {
-      display: flex;
-      justify-content: space-around;
-      background: rgba(255, 228, 181, 0.9);
-      padding: 15px 0;
-      border-top: 1px solid #ddd;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-
-    .footer a {
-      text-align: center;
-      text-decoration: none;
-      color: black;
-      pointer-events: none;
-    }
-
-    .footer img {
-      width: 40px;
-      margin-bottom: 5px;
-      transition: transform 0.2s;
-    }
-
-    .footer img:hover {
-      transform: scale(1.1);
-    }
-
-    .sidebar {
-      width: 250px;
-      background-color: #21618C;
-      color: white;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      position: fixed;
-      height: 100vh;
-      top: 0;
-      left: -250px;
-      transition: transform 0.3s ease;
-      z-index: 150;
-    }
-
-    .sidebar.active {
-      transform: translateX(250px);
-    }
-
-    .sidebar a {
-      color: white;
-      text-decoration: none;
-      font-size: 1.2rem;
-      padding: 10px;
-      border-radius: 5px;
-      transition: background 0.3s;
-    }
-
-    .sidebar a:hover {
-      background-color: #154360;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .course-details {
-        width: 100%;
-        padding: 20px;
-      }
-
-      .footer {
-        display: none;
-      }
-    }
-
-  </style>
-</head>
-<body>
-  <div class="overlay" id="overlay"></div>
-  <button class="hamburger-btn" id="hamburgerBtn">☰</button>
-  <button class="regresar-btn" onclick="window.location.href='{% url 'cursos_disponibles' %}'">←</button>
-
-  <div class="container">
-    <div class="sidebar" id="sidebar">
-      <a href="#">Publicado</a>
-    </div>
-
-    <div class="course-details">
-      <!-- Imagen del curso -->
-      {% if curso.imagen %}
-        <img src="{{ curso.imagen.url }}" alt="Imagen del curso">
+    <p class="docentes">Docente asignado: 
+      {% if docente %}
+        <span>{{ docente.username }}</span>
       {% else %}
-        <img src="{% static 'usuarios/img/curso_default.jpg' %}" alt="Curso sin imagen">
+        <span>No hay docente asignado</span>
       {% endif %}
+    </p>
 
-      <h1>{{ curso.nombre }}</h1>
-      <p>{{ curso.descripcion }}</p>
-      
-      <p class="docentes">Publicado por: 
-        {% if docente %}
-          <span>{{ docente.username }}</span>
-        {% else %}
-          <span>No hay docente asignado</span>
-        {% endif %}
-      </p>
+    <p class="costo">Costo: ${{ curso.costo|floatformat:2 }}</p>
+    <p>
+      <strong>Calificación:</strong>
+      {% with promedio=curso.promedio_calificaciones %}
+        {% for i in "12345" %}
+          {% if forloop.counter <= promedio %}
+            <span style="color: gold;">&#9733;</span> {# Estrella llena ★ #}
+          {% elif forloop.counter0 < promedio %}
+            <span style="color: gold;">&#x2BEA;</span> {# Estrella media ⯪ / alternativa ⯨ #}
+          {% else %}
+            <span style="color: lightgray;">&#9734;</span> {# Estrella vacía ☆ #}
+          {% endif %}
+        {% endfor %}
+      {% endwith %}
+    </p>
 
-      <!-- Mostrar el número de sesiones -->
-      <p class="sesiones">Número de sesiones: {{ curso.total_sesiones }}</p>
-    </div>
+    <a href="{% url 'cursos_disponibles' %}" class="btn-volver">← ver otros cursos</a>
   </div>
+</div>
 
-  <script>
-    const hamburgerBtn = document.getElementById("hamburgerBtn");
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
+{% if curso.imagen %}
+<!-- Modal -->
+<div id="modalImagen" class="modal">
+  <span class="modal-close" id="cerrarModal">&times;</span>
+  <div class="modal-content">
+    <img src="{{ curso.imagen.url }}" alt="Imagen completa del curso">
+  </div>
+</div>
+{% endif %}
+{% endblock %}
 
-    hamburgerBtn.addEventListener("click", () => {
-      sidebar.classList.toggle("active");
-      document.body.classList.toggle("menu-open");
-    });
+{% block script %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const imgCurso = document.getElementById('cursoImagen');
+    const modal = document.getElementById('modalImagen');
+    const cerrarModal = document.getElementById('cerrarModal');
 
-    overlay.addEventListener("click", () => {
-      sidebar.classList.remove("active");
-      document.body.classList.remove("menu-open");
-    });
-  </script>
-</body>
-</html>
+    if(imgCurso && modal) {
+      imgCurso.addEventListener('click', () => {
+        modal.style.display = 'flex';
+      });
+
+      cerrarModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      // Cerrar modal al hacer clic fuera de la imagen
+      modal.addEventListener('click', (e) => {
+        if(e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

@@ -204,93 +204,27 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
-
-    /* Responsivo */
-    @media (max-width: 768px) {
-      .main-content {
-        gap: 20px;
-        flex-direction: column;
-        justify-content: flex-start;
-      }
-
-      .illustration {
-        width: 70%;
-      }
-
-      .login-container {
-        padding: 30px;
-        width: 90%;
-      }
-
-      .footer {
-        font-size: 12px;
-      }
-
-      .floating-buttons {
-        bottom: 15px;
-        right: 15px;
-      }
-
-      .icon-button {
-        width: 40px;
-        height: 40px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .illustration {
-        width: 100%;
-      }
-
-      .login-container {
-        padding: 20px;
-        width: 95%;
-      }
-
-      h2 {
-        font-size: 18px;
-      }
-
-      button {
-        padding: 10px;
-        font-size: 14px;
-      }
-
-      .extra-links a {
-        font-size: 12px;
-      }
-    }
   </style>
 </head>
 <body>
 
   <div class="floating-buttons">
     <a href="{% url 'home' %}" class="icon-button" title="Inicio">🏠</a>
-    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
   </div>
 
   <div class="main-content">
     <div class="login-container">
       <h2>Crear Cuenta</h2>
 
-      <!-- Mensajes de error -->
-      {% if messages %}
-        <div class="messages">
+      <div class="messages">
+        {% if messages %}
           {% for message in messages %}
-            <div class="message {{ message.tags }}">{{ message }}</div>
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+              {{ message }}
+            </div>
           {% endfor %}
-        </div>
-      {% endif %}
-
-      {% if form.errors %}
-        <div class="messages">
-          {% for field in form %}
-            {% for error in field.errors %}
-              <div class="message">{{ error }}</div>
-            {% endfor %}
-          {% endfor %}
-        </div>
-      {% endif %}
+        {% endif %}
+      </div>
 
       <form method="POST">
         {% csrf_token %}
@@ -300,6 +234,15 @@
             <option value="{{ value }}" {% if form.rol.value == value %}selected{% endif %}>{{ label }}</option>
           {% endfor %}
         </select>
+        <div id="especialidad-container" style="display: none;">
+        <label for="especialidad">Especialidad:</label>
+        <select name="especialidad" id="especialidad">
+          <option value="">Selecciona una especialidad</option>
+          {% for categoria in categorias %}
+            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
         <input type="text" name="username" placeholder="Usuario" value="{{ form.username.value|default_if_none:'' }}" required>
         <input type="email" name="email" placeholder="Correo electrónico" value="{{ form.email.value|default_if_none:'' }}" required>
         <input type="password" name="password1" placeholder="Contraseña" required>
@@ -319,119 +262,22 @@
     © 2025 Plataforma Educativa | Inspirando el aprendizaje 🌟
   </div>
 
-  <script>
-    function toggleDarkMode() {
-      const body = document.body;
-      const toggle = document.getElementById('darkToggle');
-      body.classList.toggle('dark');
-      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+<script>
+  const rolSelect = document.getElementById('{{ form.rol.id_for_label }}');
+  const especialidadContainer = document.getElementById('especialidad-container');
+
+  function toggleEspecialidad() {
+    if (rolSelect.value === 'docente') {
+      especialidadContainer.style.display = 'block';
+    } else {
+      especialidadContainer.style.display = 'none';
     }
-  </script>
+  }
+
+  rolSelect.addEventListener('change', toggleEspecialidad);
+  document.addEventListener('DOMContentLoaded', toggleEspecialidad);
+</script>
 
 </body>
-</html>
+</html> 
 
-  <script>
-    function toggleDarkMode() {
-      const body = document.body;
-      const toggle = document.getElementById('darkToggle');
-      body.classList.toggle('dark');
-      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
-    }
-  
-    const ctx = document.getElementById('usuariosPorRol').getContext('2d');
-  
-    const dataCompleta = {
-      labels: ['Admin', 'Docente', 'Estudiante'],
-      counts: {{ roles_counts|safe }},
-      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-      borderColor: ['#2e59d9', '#17a673', '#2c9faf']
-    };
-  
-    const usuariosPorRolChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: dataCompleta.labels,
-        datasets: [{
-          label: 'Usuarios por Rol',
-          data: dataCompleta.counts,
-          backgroundColor: dataCompleta.backgroundColor,
-          borderColor: dataCompleta.borderColor,
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
-    });
-  
-    function mostrarGrafica(tipo) {
-      const grafica = document.querySelector(".grafica-container");
-      const panel = document.getElementById("panel-registros");
-    
-      grafica.style.display = "block";
-      panel.style.display = "none";
-    
-      if (tipo === 'usuarios') {
-        usuariosPorRolChart.data.labels = dataCompleta.labels;
-        usuariosPorRolChart.data.datasets[0].data = dataCompleta.counts;
-        usuariosPorRolChart.data.datasets[0].backgroundColor = dataCompleta.backgroundColor;
-        usuariosPorRolChart.data.datasets[0].borderColor = dataCompleta.borderColor;
-    
-      } else if (tipo === 'docentes') {
-        usuariosPorRolChart.data.labels = ['Docente'];
-        usuariosPorRolChart.data.datasets[0].data = [dataCompleta.counts[1]];
-        usuariosPorRolChart.data.datasets[0].backgroundColor = ['#1cc88a'];
-        usuariosPorRolChart.data.datasets[0].borderColor = ['#17a673'];
-    
-      } else if (tipo === 'estudiantes') {
-        usuariosPorRolChart.data.labels = ['Estudiante'];
-        usuariosPorRolChart.data.datasets[0].data = [dataCompleta.counts[2]];
-        usuariosPorRolChart.data.datasets[0].backgroundColor = ['#36b9cc'];
-        usuariosPorRolChart.data.datasets[0].borderColor = ['#2c9faf'];
-    
-      } else if (tipo === 'admin') {
-        usuariosPorRolChart.data.labels = ['Admin'];
-        usuariosPorRolChart.data.datasets[0].data = [dataCompleta.counts[0]];
-        usuariosPorRolChart.data.datasets[0].backgroundColor = ['#4e73df'];
-        usuariosPorRolChart.data.datasets[0].borderColor = ['#2e59d9'];
-      }
-    
-      usuariosPorRolChart.update();
-    }
-    
-    function mostrarPanelRegistros() {
-      const panel = document.getElementById("panel-registros");
-      const grafica = document.querySelector(".grafica-container");
-    
-      // Mostrar u ocultar la tabla
-      const mostrar = panel.style.display === "none";
-    
-      panel.style.display = mostrar ? "block" : "none";
-      grafica.style.display = mostrar ? "none" : "block";
-    }    
-    
-    function filtrarRegistros() {
-      const filtroFecha = document.getElementById('filtroFecha').value;
-      const filas = document.querySelectorAll('#panel-registros tbody tr');
-    
-      filas.forEach(fila => {
-        const fechaTexto = fila.children[2]?.textContent.trim(); // columna fecha
-        const mostrarPorFecha = !filtroFecha || fechaTexto === formatearFecha(filtroFecha);
-    
-        fila.style.display = mostrarPorFecha ? '' : 'none';
-      });
-    }
-    
-    function limpiarFiltros() {
-      document.getElementById('filtroFecha').value = '';
-      filtrarRegistros();
-    }
-    
-    function formatearFecha(fechaISO) {
-      const [anio, mes, dia] = fechaISO.split("-");
-      return `${dia}/${mes}/${anio}`; // formato mostrado en la tabla
-    }    
-  </script>  

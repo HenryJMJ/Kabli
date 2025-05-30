@@ -1,12 +1,8 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editar Curso</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
+{% extends "usuarios/cursos.html" %}
+{% block title %}Editar Curso: {{ curso.nombre }}{% endblock %}
+
+{% block content %}
+<style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
     body {
@@ -78,7 +74,7 @@
       font-weight: 600;
     }
 
-    form input, form textarea {
+    form input, form textarea, form select {
       width: 100%;
       padding: 10px;
       border: 1px solid #ccc;
@@ -86,6 +82,7 @@
       margin-top: 5px;
       margin-bottom: 15px;
       font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
     }
 
     form button {
@@ -138,36 +135,76 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-  </style>
-</head>
-<body>
 
-  <h2>📝 Editar Curso: {{ curso.nombre }}</h2>
+    .errorlist {
+      color: #e74c3c;
+      font-size: 0.9rem;
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+
+    .back-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .btn-back {
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #3498db;
+      transition: color 0.3s ease;
+    }
+
+    .btn-back:hover {
+      color: #2980b9;
+    }
+  </style>
+
+  <h2>Editar Curso: {{ curso.nombre }}</h2>
 
   <div class="container">
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
-      
+
+      {% if form.non_field_errors %}
+        <div class="errorlist">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
       <div>
-        <label for="nombre">Nombre del curso:</label>
-        <input type="text" id="nombre" name="nombre" value="{{ curso.nombre }}" required>
+        {{ form.nombre.label_tag }}
+        {{ form.nombre }}
+        {% if form.nombre.errors %}
+          <div class="errorlist">{{ form.nombre.errors }}</div>
+        {% endif %}
       </div>
 
       <div>
-        <label for="descripcion">Descripción del curso:</label>
-        <textarea id="descripcion" name="descripcion" required>{{ curso.descripcion }}</textarea>
+        {{ form.descripcion.label_tag }}
+        {{ form.descripcion }}
+        {% if form.descripcion.errors %}
+          <div class="errorlist">{{ form.descripcion.errors }}</div>
+        {% endif %}
       </div>
 
       <div>
-        <label for="total_sesiones">Total de sesiones:</label>
-        <input type="number" id="total_sesiones" name="total_sesiones" value="{{ curso.total_sesiones }}" min="1" required>
+        {{ form.categoria.label_tag }}
+        {{ form.categoria }}
+        {% if form.categoria.errors %}
+          <div class="errorlist">{{ form.categoria.errors }}</div>
+        {% endif %}
       </div>
 
       <div>
-        <label for="imagen">Imagen del curso:</label>
-        <input type="file" id="imagen" name="imagen">
+        {{ form.imagen.label_tag }}
+        {{ form.imagen }}
         {% if curso.imagen %}
           <p>Imagen actual: <img src="{{ curso.imagen.url }}" alt="Imagen del curso" style="max-width: 150px;"></p>
+        {% endif %}
+        {% if form.imagen.errors %}
+          <div class="errorlist">{{ form.imagen.errors }}</div>
         {% endif %}
       </div>
 
@@ -175,5 +212,7 @@
     </form>
   </div>
 
-</body>
-</html>
+  <div class="back-container">
+    <a href="{% url 'gestionar_cursos' %}" class="btn-back">← Volver</a>
+  </div>
+{% endblock %}

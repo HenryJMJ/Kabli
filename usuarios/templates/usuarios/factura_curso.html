@@ -1,0 +1,47 @@
+{% extends 'usuarios/panel_estudiantes.html' %}
+
+{% block content %}
+<h1 style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333;">Factura del Curso</h1>
+
+<div style="
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 650px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #444;
+    border: 1px solid #ddd;
+">
+  <div style="border-bottom: 2px solid #007BFF; margin-bottom: 1.5rem; padding-bottom: 0.5rem;">
+    <h2 style="margin: 0; color: #007BFF;">Detalles del Curso</h2>
+  </div>
+  
+  <p><strong>Curso:</strong> {{ inscripcion.curso_docente.curso.nombre }}</p>
+  <p><strong>Descripción:</strong> {{ inscripcion.curso_docente.curso.descripcion }}</p>
+  <p><strong>Docente:</strong> {{ inscripcion.curso_docente.docente.get_full_name|default:inscripcion.curso_docente.docente.username }}</p>
+  <p><strong>Fecha de inscripción:</strong> {{ inscripcion.fecha_inscripcion|date:"d/m/Y H:i" }}</p>
+
+  <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid #007BFF;">
+    <p><strong>Monto pagado:</strong> <span style="color: #28a745; font-weight: 700;">${{ inscripcion.curso_docente.curso.costo }}</span></p>
+    <p><strong>Número de transacción:</strong> {{ inscripcion.numero_transaccion }}</p> {# Ajusta si tienes este campo en tu modelo #}
+    <p><strong>Método de pago:</strong> {{ inscripcion.metodo_pago }}</p> {# Ajusta también #}
+  </div>
+
+  <a href="{% url 'academica' %}" 
+     style="
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 0.5rem 1.5rem;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+     "
+     onmouseover="this.style.backgroundColor='#0056b3';"
+     onmouseout="this.style.backgroundColor='#007BFF';"
+  >Volver</a>
+</div>
+{% endblock %}

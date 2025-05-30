@@ -86,6 +86,7 @@
             </div>            
             <p><strong>Usuario:</strong> {{ docente.username }}</p>
             <p><strong>Correo:</strong> {{ docente.email }}</p>
+            <p><strong>Especialidad:</strong> {{ docente.perfil.categoria.nombre|default:"No asignada" }}</p>
             <div class="acciones">
                 <a href="{% url 'verificar_docente_accion' docente.id 'aceptar' %}" class="btn-aceptar">Aceptar</a>
                 <a href="{% url 'verificar_docente_accion' docente.id 'rechazar' %}" class="btn-rechazar">Rechazar</a>

@@ -1,0 +1,149 @@
+{% extends 'usuarios/panel_docentes.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .contenedor-unidad {
+    margin: 1.5rem 0;
+    padding: 1.5rem 1.8rem;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    background-color: #fff;
+    position: relative;
+    transition: box-shadow 0.3s ease;
+  }
+  .contenedor-unidad:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  }
+
+  .titulo-unidad {
+    margin-bottom: 0.3rem;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #2c3e50;
+  }
+
+  .descripcion-unidad {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    background-color: transparent;
+    color: #1d72b8;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    gap: 0.5rem;
+    border: 2px solid #1d72b8;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background-color: #1d72b8;
+    color: white;
+  }
+  .btn-danger {
+    background-color: transparent;
+    color: #e74c3c;
+    border: 2px solid #e74c3c;
+    padding: 0.35rem 0.75rem;
+    justify-content: center;
+  }
+  .btn-danger:hover {
+    background-color: #e74c3c;
+    color: white;
+  }
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+    border-radius: 4px;
+  }
+
+  ul.sesiones-lista {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 0;
+  }
+
+  ul.sesiones-lista li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid #eee;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  ul.sesiones-lista li:last-child {
+    border-bottom: none;
+  }
+
+  ul.sesiones-lista li strong {
+    font-weight: 600;
+  }
+
+  /* Estilo para iconos en botones */
+  .btn img.icono {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+
+  /* Iconos de eliminar (botones pequeños) */
+  .btn-eliminar img.icono-eliminar {
+    width: 18px;
+    height: 18px;
+  }
+</style>
+
+<h2 style="color:#34495e; margin-bottom:1rem;">{{ curso.nombre }} - Unidades</h2>
+
+<a href="{% url 'agregar_unidad' curso.id %}" class="btn" style="margin-bottom:1.5rem; display:inline-flex; align-items:center;">
+  <img src="{% static 'unidad.png' %}" alt="Icono Unidad" class="icono" />
+  Agregar Unidad
+</a>
+
+{% for unidad in unidades %}
+  <div class="contenedor-unidad">
+    <h3 class="titulo-unidad">Unidad {{ unidad.orden }}: {{ unidad.titulo }}</h3>
+    <p class="descripcion-unidad">{{ unidad.descripcion }}</p>
+
+    <a href="{% url 'eliminar_unidad' unidad.id %}" 
+       class="btn btn-danger btn-eliminar" 
+       style="position: absolute; top: 1.2rem; right: 1.2rem;"
+       onclick="return confirm('¿Seguro que quieres eliminar esta unidad?');"
+       title="Eliminar Unidad">
+       <img src="{% static 'eliminarunidad.png' %}" alt="Eliminar Unidad" class="icono-eliminar" />
+    </a>
+
+    <a href="{% url 'agregar_sesion' unidad.id %}" class="btn" style="margin-bottom: 1rem; display:inline-flex; align-items:center;">
+      <img src="{% static 'asesion.png' %}" alt="Icono Sesión" class="icono" />
+      Agregar Sesión
+    </a>
+
+    <ul class="sesiones-lista">
+      {% for sesion in unidad.sesiones.all %}
+        <li>
+          <strong>{{ sesion.titulo }}</strong> ({{ sesion.orden }})
+          <a href="{% url 'eliminar_sesion' sesion.id %}" 
+             class="btn btn-danger btn-sm btn-eliminar"
+             onclick="return confirm('¿Seguro que quieres eliminar esta sesión?');"
+             title="Eliminar Sesión">
+             <img src="{% static 'cerrar.png' %}" alt="Eliminar Sesión" class="icono-eliminar" />
+          </a>
+        </li>
+      {% empty %}
+        <li>No hay sesiones aún.</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% empty %}
+  <p style="font-style: italic; color: #888;">No hay unidades aún.</p>
+{% endfor %}
+{% endblock %}

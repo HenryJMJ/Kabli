@@ -5,6 +5,7 @@ from .models import Perfil
 from .models import PerfilEstudiante
 from .models import Curso
 from .models import Recurso
+from .models import Unidad, Sesion, CalificacionCurso
 
 
 class RegistroForm(UserCreationForm):
@@ -56,12 +57,30 @@ class RegistroForm(UserCreationForm):
         return username
     
 class CursoForm(forms.ModelForm):
+    imagen = forms.ImageField(
+        required=False,
+        widget=forms.ClearableFileInput(attrs={
+            'class': 'form-control',
+        })
+    )
+
     class Meta:
         model = Curso
-        fields = ['nombre', 'descripcion', 'total_sesiones', 'imagen']  # Asegúrate de incluir los nuevos campos
-
-    total_sesiones = forms.IntegerField(min_value=1, initial=20, required=True)  # Puedes hacer editable el número de sesiones
-    imagen = forms.ImageField(required=False)  # Campo para la imagen, no obligatorio
+        fields = ['nombre', 'descripcion', 'imagen', 'categoria']
+        widgets = {
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nombre del curso'
+            }),
+            'descripcion': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Descripción del curso'
+            }),
+            'categoria': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+        }
 
 class RecursoForm(forms.ModelForm):
     class Meta:
@@ -86,3 +105,32 @@ class PerfilEstudianteForm(forms.ModelForm):
 class MensajeForm(forms.Form):
     asunto = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Asunto'}))
     mensaje = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Escribe tu mensaje aquí...'}))
+    
+class EditarPerfilDocenteForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+        
+class UnidadForm(forms.ModelForm):
+    class Meta:
+        model = Unidad
+        fields = ['titulo', 'descripcion', 'orden']
+        
+class SesionForm(forms.ModelForm):
+    class Meta:
+        model = Sesion
+        fields = ['titulo', 'contenido_texto', 'video_url', 'archivo', 'orden']
+        
+class CalificacionForm(forms.ModelForm):
+    class Meta:
+        model = CalificacionCurso
+        fields = ['puntuacion', 'comentario']
+        widgets = {
+            'puntuacion': forms.RadioSelect(choices=[(i, f"{i} ⭐") for i in range(1,6)]),
+            'comentario': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Tu opinión...'}),
+        }
+        
+class ImagenPerfilForm(forms.ModelForm):
+    class Meta:
+        model = Perfil
+        fields = ['imagen']

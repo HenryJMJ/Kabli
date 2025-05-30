@@ -1,0 +1,13 @@
+<h2>Factura de Pago</h2>
+
+<p>Hola {{ usuario.get_full_name }},</p>
+
+{% if varios %}
+  <p>Has pagado {{ cantidad }} cursos por un total de <strong>${{ total }}</strong>.</p>
+  <p>Ya puedes acceder al contenido de tus cursos.</p>
+{% else %}
+  <p>Has pagado el curso: <strong>{{ curso }}</strong></p>
+  <p>Docente: {{ docente }}</p>
+  <p>Monto: <strong>${{ monto|floatformat:2 }}</strong></p>
+  <p>Gracias por tu pago. <strong>Ya puedes acceder al contenido de tu curso.</strong></p>
+{% endif %}

@@ -1,0 +1,202 @@
+{% extends 'usuarios/panel_estudiantes.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  h1 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+  }
+
+  p {
+    font-size: 1rem;
+    color: #555;
+  }
+
+  section {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+  }
+
+  section h2 {
+    font-size: 1.5rem;
+    color: #007bff;
+    margin-bottom: 0.5rem;
+  }
+
+  section h4 {
+    font-size: 1.2rem;
+    margin: 0.8rem 0 0.3rem;
+    color: #343a40;
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  li {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.75rem;
+    border: 1px solid #e0e0e0;
+  }
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .volver-btn {
+    display: inline-block;
+    font-size: 1rem;
+    color: #007bff;
+    text-decoration: none;
+    margin-top: 2rem;
+    font-weight: bold;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    border: 2px solid #007bff;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .volver-btn:hover {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .volver-btn::before {
+    content: "← ";
+    margin-right: 0.5rem;
+  }
+
+  .marcar-btn {
+    background-color: transparent;
+    color: #28a745;
+    font-weight: 600;
+    border: 2px solid #28a745;
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+  }
+
+  .marcar-btn:hover {
+    background-color: #28a745;
+    color: white;
+    transform: scale(1.03);
+  }
+
+  .marcar-btn:active {
+    transform: scale(0.97);
+  }
+
+  .marcar-btn .check-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-color: currentColor;
+    mask: url('data:image/svg+xml;utf8,<svg fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M13.485 1.929a1.5 1.5 0 0 1 2.121 2.121L6.207 13.449a1.5 1.5 0 0 1-2.121 0L.394 9.758a1.5 1.5 0 1 1 2.121-2.121l2.121 2.121L13.485 1.93z"/></svg>') no-repeat center;
+    mask-size: contain;
+  }
+
+  .sesion-completada {
+    display: inline-block;
+    font-weight: bold;
+    background-color: #d4edda;
+    color: #155724;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ curso.nombre }}</h1>
+<p>{{ curso.descripcion }}</p>
+
+{% if unidades %}
+  {% for unidad in unidades %}
+    <section>
+      <h2>Unidad {{ unidad.orden }}: {{ unidad.titulo }}</h2>
+      {% if unidad.descripcion %}
+        <p>{{ unidad.descripcion }}</p>
+      {% endif %}
+
+      {% if unidad.sesiones.all %}
+        <ul>
+          {% for sesion in unidad.sesiones.all %}
+            <li>
+              <h4>Sesión {{ sesion.orden }}: {{ sesion.titulo }}</h4>
+              {% if sesion.contenido_texto %}
+                <p>{{ sesion.contenido_texto|linebreaks }}</p>
+              {% endif %}
+              {% if sesion.video_url %}
+                <p>
+                  <img src="{% static 'sesion.png' %}" alt="Icono sesión" style="width:20px; height:20px; vertical-align:middle; margin-right:6px;">
+                  <a href="{{ sesion.video_url }}" target="_blank">Ver Video</a>
+                </p>
+              {% endif %}
+              {% if sesion.archivo %}
+                {% with archivo_ext=sesion.archivo.url|slice:"-4:"|lower %}
+                  {% if archivo_ext == ".pdf" %}
+                    <p>Material:</p>
+                    <embed src="{{ sesion.archivo.url }}" type="application/pdf" style="width: 100%; max-width: 600px; height: 200px; border-radius: 8px;" />
+                  {% elif archivo_ext == ".jpg" or archivo_ext == ".png" or archivo_ext == ".jpeg" or archivo_ext == ".gif" %}
+                    <p>Material:</p>
+                    <img src="{{ sesion.archivo.url }}" alt="Material" style="max-width: 100%; max-width: 200px; height: auto; border-radius: 8px;" />
+                  {% elif archivo_ext == ".mp4" %}
+                    <p>Material:</p>
+                    <video controls style="width: 100%; max-width: 200px; height: 100px; border-radius: 8px; margin-bottom: 1rem;">
+                      <source src="{{ sesion.archivo.url }}" type="video/mp4">
+                      Tu navegador no soporta el video.
+                    </video>
+                  {% else %}
+                    <p><a href="{{ sesion.archivo.url }}" download>📄 Descargar material</a></p>
+                  {% endif %}
+                {% endwith %}
+              {% endif %}
+            {% if sesion.id in sesiones_completadas_ids %}
+              <p class="sesion-completada">Sesión completada</p>
+            {% else %}
+              <form method="POST" action="{% url 'marcar_sesion_completada' sesion.id %}">
+                {% csrf_token %}
+                <button type="submit" class="marcar-btn mt-2">
+                  <span class="check-icon"></span> Marcar como completada
+                </button>
+              </form>
+            {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No hay sesiones aún en esta unidad.</p>
+      {% endif %}
+    </section>
+  {% endfor %}
+{% else %}
+  <p>Este curso no tiene unidades aún.</p>
+{% endif %}
+{% endblock %}

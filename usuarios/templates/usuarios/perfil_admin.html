@@ -1,274 +1,96 @@
-<!DOCTYPE html>
+{% extends 'usuarios/panel_admin.html' %}
 {% load static %}
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mi Perfil - Admin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+{% block title %}Mi Perfil - Admin{% endblock %}
 
-    body {
-      background: linear-gradient(to right, #9dc9ff, #bce6ff);
-      min-height: 100vh;
-      padding: 40px;
-      transition: background 0.4s;
-    }
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(to right, #9dc9ff, #bce6ff);
+    min-height: 100vh;
+    padding: 40px;
+    transition: background 0.4s;
+  }
 
-    body.dark {
-      background: #1e272e;
-      color: white;
-    }
+  body.dark {
+    background: #1e272e;
+    color: white;
+  }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 2rem;
-    }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
 
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #3498db;
-      padding: 15px 30px;
-      border-radius: 10px;
-      margin-bottom: 30px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-      flex-wrap: wrap;
-    }
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.6s ease;
+  }
 
-    .navbar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
+  body.dark .container {
+    background-color: #2f3640;
+  }
 
-    .navbar img {
-      height: 40px; /* Ajusta la altura de la imagen para que coincida con el tamaño del texto */
-      object-fit: contain; /* Asegura que la imagen se ajuste sin perder la proporción */
-      margin-right: 10px; /* Añade un espacio de 10px entre la imagen y el texto */
-    }
+  .profile-info h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #2c3e50;
+  }
 
-    .logo {
-      color: white;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
+  body.dark .profile-info h3 {
+    color: #f1f1f1;
+  }
 
-    .hamburger {
-      display: none;
-      font-size: 28px;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-    }
+  .profile-info p {
+    font-size: 1rem;
+    color: #34495e;
+    margin-bottom: 6px;
+  }
 
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-      width: 100%;
-      justify-content: center;
-    }
+  body.dark .profile-info p {
+    color: #dcdde1;
+  }
 
-    .nav-links li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
+  .btn-edit {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+  }
 
-    .nav-links li a:hover {
-      color: #ecf0f1;
-    }
+  .btn-edit:hover {
+    background-color: #2980b9;
+  }
 
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-      animation: fadeIn 0.6s ease;
-    }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
 
-    body.dark .container {
-      background-color: #2f3640;
-    }
+<!-- Título -->
+<h2>👤 Mi Perfil</h2>
 
-    .profile-info {
-      margin-bottom: 25px;
-    }
-
-    .profile-info h3 {
-      font-size: 1.4rem;
-      margin-bottom: 10px;
-      color: #2c3e50;
-    }
-
-    body.dark .profile-info h3 {
-      color: #f1f1f1;
-    }
-
-    .profile-info p {
-      font-size: 1rem;
-      color: #34495e;
-      margin-bottom: 6px;
-    }
-
-    body.dark .profile-info p {
-      color: #dcdde1;
-    }
-
-    .btn-edit {
-      display: inline-block;
-      background-color: #3498db;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: background 0.3s ease;
-    }
-
-    .btn-edit:hover {
-      background-color: #2980b9;
-    }
-
-    .floating-buttons {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      display: flex;
-      gap: 12px;
-      z-index: 999;
-    }
-
-    .icon-button {
-      background: white;
-      border: none;
-      border-radius: 50%;
-      width: 45px;
-      height: 45px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      text-decoration: none;
-      color: black;
-      transition: all 0.3s ease;
-    }
-
-    .icon-button:hover {
-      transform: scale(1.1);
-    }
-
-    body.dark .icon-button {
-      background: #2f3640;
-      color: white;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .hamburger {
-        display: block;
-      }
-
-      .nav-links {
-        display: none;
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px 0;
-        background-color: #3498db;
-        border-radius: 10px;
-        margin-top: 10px;
-      }
-
-      .nav-links.show {
-        display: flex;
-      }
-
-      .nav-links li {
-        text-align: center;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Botones flotantes -->
-  <div class="floating-buttons">
-    <form method="POST" action="{% url 'logout' %}">
-      {% csrf_token %}
-      <button class="icon-button" title="Cerrar sesión">🔚</button>
-    </form>
-    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
+<!-- Contenido del perfil -->
+<div class="container">
+  <div class="profile-info">
+    <h3>Información del Administrador</h3>
+    <p><strong>Nombre:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+    <p><strong>Correo:</strong> {{ user.email }}</p>
+    <p><strong>Usuario:</strong> {{ user.username }}</p>
+    <p><strong>Rol:</strong> Administrador</p>
   </div>
 
-  <!-- Título -->
-  <h2>👤 Mi Perfil</h2>
+  <a href="{% url 'editar_perfil_admin' %}" class="btn-edit">Editar Perfil</a>
+</div>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="navbar-header">
-      <img src="{% static 'IEMIGUE.png' %}"/>
-      <button class="hamburger" onclick="toggleMenu()">☰</button>
-    </div>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="{% url 'panel_admin' %}">Inicio</a></li>
-      <li><a href="{% url 'estadisticas' %}">Estadísticas</a></li>
-      <li><a href="{% url 'lista_usuarios' %}">Usuarios</a></li>
-      <li><a href="{% url 'gestion_academica' %}">Académico</a></li>
-      <li><a href="{% url 'gestionar_cursos' %}">Cursos</a></li>
-      <li><a href="{% url 'ver_estudiantes' %}">Estudiantes</a></li>
-      <li><a href="{% url 'configuracion' %}">Configuración</a></li>
-      <li><a href="{% url 'perfil_admin' %}">Mi Perfil</a></li>
-      <li><a href="{% url 'notificaciones' %}">Notificaciones</a></li>
-    </ul>
-  </nav>
-
-  <!-- Contenido del perfil -->
-  <div class="container">
-    <div class="profile-info">
-      <h3>Información del Administrador</h3>
-      <p><strong>Nombre:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-      <p><strong>Correo:</strong> {{ user.email }}</p>
-      <p><strong>Usuario:</strong> {{ user.username }}</p>
-      <p><strong>Rol:</strong> Administrador</p>
-    </div>
-
-    <a href="{% url 'editar_perfil_admin' %}" class="btn-edit">✏️ Editar Perfil</a>
-  </div>
-
-  <script>
-    function toggleDarkMode() {
-      const body = document.body;
-      const toggle = document.getElementById('darkToggle');
-      body.classList.toggle('dark');
-      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
-    }
-
-    function toggleMenu() {
-      const nav = document.getElementById('navLinks');
-      nav.classList.toggle('show');
-    }
-  </script>
-
-</body>
-</html>
+{% endblock %}

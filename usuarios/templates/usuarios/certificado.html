@@ -1,0 +1,217 @@
+{% extends 'usuarios/panel_estudiantes.html' %}
+{% load static %}
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+    .certificado-container {
+        max-width: 1000px;
+        margin: 50px auto;
+        padding: 50px 60px;
+        border: 12px solid #bfa046;
+        border-radius: 22px;
+        background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+        font-family: 'Georgia', serif;
+        color: #222;
+        position: relative;
+        text-align: center;
+    }
+
+    .certificado-titulo {
+        font-size: 3rem;
+        font-weight: 900;
+        color: #004085;
+        margin-bottom: 0.2rem;
+        letter-spacing: 3px;
+    }
+
+    .linea-decorativa {
+        width: 500px;
+        height: 4px;
+        background-color: #bfa046; /* dorado sólido */
+        margin: 10px auto 30px auto;
+        border-radius: 2px;
+    }
+
+    .certificado-subtitulo {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        font-style: italic;
+        color: #555;
+    }
+
+    .nombre-usuario {
+        font-weight: 700;
+        font-size: 1.7rem;
+        color: #bfa046;
+    }
+
+    .nombre-curso {
+        font-size: 2rem;
+        font-weight: 700;
+        color: rgb(74, 0, 97);
+        margin-bottom: 1rem;
+    }
+
+    .fecha-finalizacion {
+        font-size: 1.1rem;
+        margin-top: 1.5rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .felicitacion {
+        margin-top: 45px;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #bfa046;
+        font-family: 'Brush Script MT', cursive;
+        letter-spacing: 1.5px;
+        user-select: none;
+    }
+
+    .frase-motivadora {
+        margin-top: 25px;
+        font-style: italic;
+        font-size: 1.1rem;
+        color: #666;
+        user-select: none;
+    }
+
+    .firma-container {
+        margin-top: 60px;
+        display: flex;
+        justify-content: center;
+        gap: 80px;
+    }
+
+    .firma-container > div {
+        text-align: center;
+    }
+
+    .firma {
+        font-family: 'Great Vibes', cursive;
+        font-size: 2.3rem;
+        color: rgb(74, 0, 97);
+        user-select: none;
+        margin-bottom: 8px;
+    }
+
+    .cargo-firma {
+        font-size: 1rem;
+        color: #000;
+        font-weight: 600;
+        user-select: none;
+        margin-top: -6px;
+    }
+
+    .sello {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        border: 3px solid rgb(74, 0, 97);
+        padding: 12px 18px;
+        border-radius: 50%;
+        font-weight: 900;
+        font-size: 1.1rem;
+        color: rgb(74, 0, 97);
+        background-color: #e9ecef;
+        box-shadow: 0 0 10px rgba(0, 64, 133, 0.3);
+        user-select: none;
+    }
+
+    /* Estilo botón descarga */
+    #btn-descargar {
+        background-color: #bfa046;
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 10px;
+        cursor: pointer;
+        margin: 40px auto 0 auto;
+        display: block;
+        transition: background-color 0.3s ease;
+    }
+    #btn-descargar:hover {
+        background-color: #a88635;
+    }
+</style>
+
+<div id="certificado" class="certificado-container">
+    <h2 class="certificado-titulo">🎓 ¡Certificado de Finalización!</h2>
+    <div class="linea-decorativa"></div>
+
+    <p class="certificado-subtitulo">
+        Este certificado reconoce que 
+        <span class="nombre-usuario">
+            {{ user.get_full_name|default:user.username }}
+        </span>
+        ha completado satisfactoriamente el curso:
+    </p>
+
+    <h3 class="nombre-curso">"{{ curso.nombre }}"</h3>
+
+    <p class="fecha-finalizacion">Fecha de finalización: <strong>{{ fecha_finalizacion }}</strong></p>
+
+    <div class="felicitacion">Kabli te felicita por tu esfuerzo</div>
+
+    <p class="frase-motivadora">"El aprendizaje es el tesoro que seguirá a su dueño a todas partes."</p>
+
+    <div class="firma-container">
+        <div>
+            <div class="firma">Miguel Bohorquez</div>
+            <div class="cargo-firma">Director de Kabli</div>
+        </div>
+        <div>
+            <div class="firma">Delia Herazo</div>
+            <div class="cargo-firma">Coordinadora Académica</div>
+        </div>
+    </div>
+
+    <div class="sello">Kabli</div>
+</div>
+
+<!-- Contenedor con número, botón y QR -->
+<div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+    <div style="font-size: 0.95rem; color: #555;">
+        <strong>Número de certificado:</strong> {{ numero_certificado }}
+    </div>
+
+    <!-- Botón ubicado entre número y QR -->
+    <button id="btn-descargar" type="button" style="cursor: pointer; display: flex; align-items: center; border: none; background: none; padding: 0; color: #000;">
+        <img src="{% static 'pdf.png' %}" alt="Descargar PDF" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 6px;">
+        Descargar en PDF
+    </button>
+
+    <div>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ url_verificacion }}&size=100x100" 
+             alt="Código QR de verificación"
+             style="border: 1px solid #ccc; border-radius: 8px;">
+    </div>
+</div>
+
+<!-- jsPDF y html2canvas para generar PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+    document.getElementById('btn-descargar').addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const certificado = document.getElementById('certificado');
+
+        html2canvas(certificado, { scale: 2 }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'pt',
+                format: [canvas.width, canvas.height]
+            });
+            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.save('certificado-{{ user.username }}.pdf');
+        });
+    });
+</script>
+
+{% endblock %}

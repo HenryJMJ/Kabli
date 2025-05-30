@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>I.E. MIGUE</title>
+  <title>Kabli</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
     * {
@@ -135,32 +135,6 @@
       display: block;
     }
 
-    .carousel-controls {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: space-between;
-      padding: 0 1rem;
-      transform: translateY(-50%);
-    }
-
-    .carousel-controls button {
-      background-color: rgba(0, 0, 0, 0.3);
-      color: white;
-      border: none;
-      font-size: 2rem;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 1rem;
-      transition: background 0.3s ease;
-    }
-
-    .carousel-controls button:hover {
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-
     .carousel-dots {
       text-align: center;
       margin-top: 0.5rem;
@@ -187,67 +161,15 @@
       font-size: 1rem;
       color: #333;
     }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 1.4rem;
-      }
-
-      .info-box p {
-        font-size: 1rem;
-      }
-
-      .carousel-container {
-        height: 250px;
-      }
-
-      .carousel-controls button {
-        font-size: 1.5rem;
-      }
-
-      .info-box button {
-        font-size: 0.9rem;
-        padding: 0.7rem 1.2rem;
-      }
-
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      nav {
-        justify-content: flex-start;
-        margin-top: 0.5rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .hero h1 {
-        font-size: 1.2rem;
-      }
-
-      nav a {
-        font-size: 1rem;
-      }
-
-      header .logo {
-        font-size: 1.3rem;
-      }
-    }
   </style>
 </head>
 <body>
 
 <header>
   <div class="logo">
-    <img src="{% static 'IEMIGUE.png' %}"/>
-    I.E. MIGUE
+    Kabli
   </div>
   <nav>
-    <a href="#">Inicio</a>
-    <a href="#">Acerca de</a>
-    <a href="#">Contacto</a>
   </nav>
 </header>
 
@@ -273,10 +195,6 @@
       <div class="carousel-item">
         <img src="{% static 'carrusel3.jpg' %}" alt="Estudio en línea">
       </div>
-    </div>
-    <div class="carousel-controls">
-      <button onclick="prevSlide()">‹</button>
-      <button onclick="nextSlide()">›</button>
     </div>
   </div>
   <div class="carousel-dots" id="carousel-dots"></div>

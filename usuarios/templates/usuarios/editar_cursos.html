@@ -1,12 +1,10 @@
+{% extends 'usuarios/cursos.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editar Cursos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
+
+{% block title %}Editar Cursos{% endblock %}
+
+{% block content %}
+<style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
     body {
@@ -142,25 +140,8 @@
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
-</head>
-<body>
 
-  <div class="floating-buttons">
-    <form method="POST" action="{% url 'logout' %}">{% csrf_token %}
-      <button class="icon-button" title="Cerrar sesión">🔚</button>
-    </form>
-    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
-  </div>
-
-  <h2>✏️ Editar Cursos</h2>
-
-  <nav class="navbar">
-    <div class="logo">🏫 I.E. MIGUE</div>
-    <ul class="nav-links">
-      <li><a href="{% url 'panel_admin' %}">Inicio</a></li>
-      <li><a href="{% url 'gestionar_cursos' %}">Cursos</a></li>
-    </ul>
-  </nav>
+  <h2>Editar Cursos</h2>
 
   <div class="container">
     <table>
@@ -175,10 +156,10 @@
         {% for curso in cursos %}
         <tr>
           <td>{{ curso.nombre }}</td>
-          <td>{{ curso.descripcion }}</td>
+          <td>{{ curso.descripcion|truncatewords:20}}</td>
           <td>
             <div class="btn-group">
-              <a href="{% url 'editar_curso' curso.id %}" class="btn-editar">✏️ Editar</a>
+              <a href="{% url 'editar_curso' curso.id %}" class="btn-editar">Editar</a>
               <form method="POST" action="{% url 'eliminar_curso' curso.id %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="btn-eliminar" onclick="return confirm('¿Estás seguro de eliminar este curso?')">🗑️</button>
@@ -194,14 +175,7 @@
       </tbody>
     </table>
   </div>
-
-  <script>
-    function toggleDarkMode() {
-      const body = document.body;
-      const toggle = document.getElementById('darkToggle');
-      body.classList.toggle('dark');
-      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
-    }
-  </script>
-</body>
-</html>
+  <div class="back-container" style="margin-top: 20px; text-align: center;">
+      <a href="{% url 'gestionar_cursos' %}" class="btn-back">←</a>
+    </div>
+{% endblock %}

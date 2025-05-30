@@ -20,81 +20,74 @@
       min-height: 100vh;
       padding: 40px;
       transition: background 0.4s;
-    }
-
-    body.dark {
-      background: #1e272e;
-      color: white;
+      color: #333;
     }
 
     .navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #3498db;
+      background-color: rgb(255, 255, 255);
       padding: 15px 30px;
       border-radius: 10px;
       margin-bottom: 30px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.1);
       position: relative;
-      flex-wrap: wrap; /* Esto asegura que todo se mantenga en el mismo contenedor */
+      flex-wrap: wrap; /* Mantiene elementos en el contenedor */
     }
 
     .navbar img {
-      height: 40px; /* Ajusta la altura de la imagen para que coincida con el tamaño del texto */
-      object-fit: contain; /* Asegura que la imagen se ajuste sin perder la proporción */
-      margin-right: 8px; /* Añade un espacio de 10px entre la imagen y el texto */
+      height: 40px;
+      object-fit: contain;
+      margin-right: 8px;
     }
 
     .navbar .logo {
-      color: white;
+      color: rgb(82, 17, 110);
       font-size: 1.5rem;
       font-weight: bold;
-      z-index: 2; /* Asegura que el logo esté sobre otros elementos */
-      flex-grow: 1; /* Esto hace que el logo ocupe el espacio disponible a la izquierda */
+      z-index: 2;
+      flex-grow: 1;
     }
 
     .navbar .nav-links {
       list-style: none;
       display: flex;
-      gap: 20px;
-      z-index: 1; /* Asegura que las opciones del menú estén detrás del logo */
-      flex-grow: 2; /* Esto hace que las opciones de menú ocupen el espacio restante */
-      justify-content: flex-end;
+      gap: 16px;
+      align-items: center;
+      padding: 0;
+      margin: 0;
     }
 
     .navbar .nav-links li {
-      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .navbar .nav-links li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    .navbar .nav-links li a:hover {
-      color: #ecf0f1;
-    }
-
-    body.dark .navbar {
-      background-color: #2f3640;
-    }
-
-    body.dark .navbar .nav-links li a {
-      color: #dcdde1;
-    }
-
-    .menu-toggle {
-      display: none;
+    .navbar .nav-links li a,
+    .navbar .nav-links li button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
       background: none;
       border: none;
-      font-size: 2rem;
-      color: white;
       cursor: pointer;
-      z-index: 2; /* Asegura que el icono de hamburguesa esté sobre el menú */
-      flex-shrink: 0; /* Esto evita que el ícono se haga pequeño cuando el tamaño cambia */
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links li a img,
+    .navbar .nav-links li button img {
+      display: block;
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .navbar .nav-links li:last-child button {
+      padding: 0;
     }
 
     h2 {
@@ -102,51 +95,7 @@
       margin-bottom: 30px;
       font-size: 2rem;
       animation: fadeIn 0.8s ease-in-out;
-    }
-
-    .floating-buttons {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      display: flex;
-      gap: 12px;
-      z-index: 999;
-    }
-
-    .icon-button {
-      background: white;
-      border: none;
-      border-radius: 50%;
-      width: 45px;
-      height: 45px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      text-decoration: none;
-      color: black;
-      transition: all 0.3s ease;
-    }
-
-    .icon-button:hover {
-      transform: scale(1.1);
-    }
-
-    body.dark .icon-button {
-      background: #2f3640;
-      color: white;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .welcome-wrapper {
-      position: relative;
-      height: calc(100vh - 210px);
+      color: #333;
     }
 
     .welcome-popup {
@@ -167,135 +116,6 @@
       z-index: 10;
     }
 
-    @keyframes fadeInOut {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, -60%);
-      }
-      10%, 90% {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -60%);
-      }
-    }
-
-    body.dark .welcome-popup {
-      background: linear-gradient(135deg, #2f3640, #4b4b4b);
-      color: #f5f6fa;
-    }
-
-    /* Estilos responsivos */
-    @media (max-width: 1024px) {
-      .navbar {
-        flex-direction: row;
-        align-items: center;
-        padding: 10px 15px;
-      }
-
-      .navbar .logo {
-        margin-right: auto;
-      }
-
-      .navbar .nav-links {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-      }
-
-      .menu-toggle {
-        display: block;
-        font-size: 2rem;
-        color: white;
-        margin-left: auto;
-      }
-
-      .nav-links.hidden {
-        display: none;
-      }
-
-      .floating-buttons {
-        bottom: 15px;
-        right: 15px;
-      }
-
-      .icon-button {
-        width: 40px;
-        height: 40px;
-      }
-
-      h2 {
-        font-size: 1.5rem;
-      }
-
-      .welcome-popup {
-        font-size: 1.5rem;
-        max-width: 90%;
-        padding: 15px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .navbar .nav-links {
-        grid-template-columns: 1fr;
-      }
-
-      .icon-button {
-        width: 35px;
-        height: 35px;
-      }
-
-      .nav-links {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-        background-color: #3498db;
-        padding: 20px;
-        border-radius: 10px;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        right: 0;
-        display: none;
-        z-index: 1;
-      }
-
-      .nav-links.show {
-        display: flex;
-      }
-
-      .navbar .logo {
-        margin-right: auto;
-      }
-
-      .menu-toggle {
-        font-size: 2rem;
-        color: white;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .navbar .nav-links {
-        grid-template-columns: 1fr;
-      }
-
-      h2 {
-        font-size: 1.2rem;
-      }
-
-      .welcome-popup {
-        font-size: 1.2rem;
-      }
-
-      .icon-button {
-        width: 30px;
-        height: 30px;
-      }
-    }
-    
     .btn-verificacion {
       display: inline-block;
       background-color: white;
@@ -317,52 +137,103 @@
       transform: translateY(-2px);
     }
     
-    body.dark .btn-verificacion {
-      background-color: #f1f1f1;
-      color: #111;
-      border-color: #999;
+    .opciones-panel {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
     }
-    
-    body.dark .btn-verificacion:hover {
-      background-color: #e0e0e0;
-      color: #000;
+
+    .tarjeta-opcion {
+      display: block;
+      background-color: #f5f7fa;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      width: 300px;
+      text-decoration: none;
+      color: #333;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
     }
-    
+
+    .tarjeta-opcion:hover {
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      transform: translateY(-5px);
+      color: #0056b3;
+    }
+
+    .tarjeta-opcion h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
+
+    .tarjeta-opcion p {
+      font-size: 1rem;
+      margin-bottom: 0;
+    }
+
+    .notification-icon {
+      position: relative;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 0px;
+      right: 10px;
+      min-width: 18px;
+      height: 18px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 50%;
+      padding: 2px 5px;
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 1s infinite;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- Botones flotantes -->
-  <div class="floating-buttons">
-    <form method="POST" action="{% url 'logout' %}">
-      {% csrf_token %}
-      <button class="icon-button" title="Cerrar sesión">🔚</button>
-    </form>
-    <button class="icon-button" onclick="toggleDarkMode()" id="darkToggle" title="Modo oscuro/claro">🌙</button>
-  </div>
-
-  <h2>Panel de Administración</h2>
-
   <!-- Barra de navegación -->
   <nav class="navbar">
-    <img src="{% static 'IEMIGUE.png' %}"/>
-    <div class="logo">I.E. MIGUE</div>
-    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="logo">Kabli</div>
     <ul class="nav-links hidden">
-      <li><a href="{% url 'panel_admin' %}">Inicio</a></li>
-      <li><a href="{% url 'estadisticas' %}">Estadísticas</a></li>
-      <li><a href="{% url 'lista_usuarios' %}">Usuarios</a></li>
-      <li><a href="{% url 'gestion_academica' %}">Académico</a></li>
-      <li><a href="{% url 'gestionar_cursos' %}">Cursos</a></li>
-      <li><a href="{% url 'ver_estudiantes' %}">Estudiantes</a></li>
-      <li><a href="{% url 'configuracion' %}">Configuración</a></li>
-      <li><a href="{% url 'perfil_admin' %}">Mi Perfil</a></li>
-      <li><a href="{% url 'notificaciones' %}">Notificaciones</a></li>
+      <li>
+        <a href="{% url 'inicio' %}" aria-label="Inicio">
+          <img src="{% static 'inicio.png' %}" alt="Inicio" />
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'perfil_admin' %}" class="text-large">
+          <img src="{% static 'perfil.png' %}" alt="Perfil" />
+        </a>
+      </li>
+      <li style="margin-top: 4px;">
+        <div style="position: relative;">
+          <a href="{% url 'notificaciones' %}" aria-label="Notificaciones" style="display: inline-block;">
+            <img src="{% static 'notificaciones.png' %}" alt="Notificaciones" />
+            {% if notificaciones_no_vistas > 0 %}
+            <span class="notification-badge">{{ notificaciones_no_vistas }}</span>
+            {% endif %}
+          </a>
+        </div>
+      </li>
+      <li>
+        <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="logout-btn">
+            <img src="{% static 'cerrar_sesión.png' %}" alt="Cerrar sesión" />
+          </button>
+        </form>
+      </li>
     </ul>
   </nav>
-
-  <a href="{% url 'verificar_docente' %}" class="btn-verificacion">Docentes en verificación</a>
 
   <!-- Mensaje de bienvenida centrado -->
   {% if show_welcome %}
@@ -374,18 +245,6 @@
   {% endif %}
 
   <script>
-    function toggleDarkMode() {
-      const body = document.body;
-      const toggle = document.getElementById('darkToggle');
-      body.classList.toggle('dark');
-      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
-    }
-
-    function toggleMenu() {
-      const nav = document.querySelector('.nav-links');
-      nav.classList.toggle('show');
-    }
-
     // Ocultar mensaje de bienvenida después de 5 segundos
     setTimeout(() => {
       const welcome = document.getElementById('welcomeMessage');
@@ -393,11 +252,11 @@
     }, 5000);
   </script>
 
-   <!-- Contenido dinámico -->
-   <div class="contenido-panel">
+  <div class="contenido-panel">
     {% block content %}
     <!-- Aquí se insertan las vistas hijas -->
     {% endblock %}
+  </div>
 
 </body>
 </html>

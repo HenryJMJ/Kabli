@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Chatbot de la Institución</title>
+  <title>Chatbot</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
@@ -25,7 +25,7 @@
 
     h1 {
       font-size: 2rem;
-      color: #2c3e50;
+      color:rgb(0, 0, 0);
       text-align: center;
     }
 
@@ -81,17 +81,13 @@
     }
 
     .send-button {
-      padding: 10px 15px;
-      background-color: #3498db;
-      color: white;
+      background: none;
       border: none;
-      border-radius: 5px;
-      font-size: 1rem;
+      padding: 0;
       cursor: pointer;
-    }
-
-    .send-button:hover {
-      background-color: #2980b9;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .button-container {
@@ -116,9 +112,15 @@
 </head>
 <body>
 
-  <a href="{% url 'enviar_mensaje' %}" class="volver">← Volver</a>
+  <a href="{% url 'enviar_mensaje' %}" class="volver" title="Volver">
+    <img src="{% static 'atras.png' %}" alt="Volver" style="width: 35px; height: 35px;">
+  </a>
 
-  <h1>Chatbot de la Institución</h1>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+  <h1 style="margin: 0;">Chatbot</h1>
+  <img src="{% static 'chatbot.png' %}" alt="Hablar con el Chatbot" style="width: 35px; height: 35px;">
+</div>
+
 
   <div class="chat-container">
     <div class="messages" id="chat-messages">
@@ -126,9 +128,12 @@
     </div>
 
     <div class="input-container">
-      <input type="text" class="chat-input" id="user-input" placeholder="Escribe tu mensaje..." />
-      <button class="send-button" id="send-btn">Enviar</button>
-    </div>
+  <input type="text" class="chat-input" id="user-input" placeholder="Escribe tu mensaje..." />
+  <button class="send-button" id="send-btn" title="Enviar">
+    <img src="{% static 'enviar.png' %}" alt="Enviar Mensaje" style="width: 24px; height: 24px;">
+  </button>
+</div>
+
   </div>
 
   <script>

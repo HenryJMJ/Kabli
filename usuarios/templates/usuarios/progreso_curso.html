@@ -1,0 +1,160 @@
+{% extends 'usuarios/panel_estudiantes.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .unidad-lista {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 1rem 2rem;
+    }
+
+    .unidad-item {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 20px 25px;
+    }
+
+    .unidad-header {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 0.7rem;
+        color: #004085;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .unidad-descripcion {
+        font-size: 1rem;
+        color: #444;
+        margin-bottom: 1rem;
+    }
+
+    .progress {
+        height: 28px;
+        border-radius: 14px;
+        background-color: #e9ecef;
+        overflow: hidden;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .progress-bar {
+        height: 100%;
+        font-weight: 600;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        transition: width 0.5s ease;
+    }
+
+    .progress-bar.progreso {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    .progress-bar.sin-progreso {
+        background-color: rgb(212, 220, 228);
+        color: #000;
+        width: 100%;
+    }
+
+    .list-group-item {
+        font-size: 1rem;
+        border: none;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.4em 0.7em;
+        border-radius: 12px;
+    }
+
+    .sesiones-lista {
+        display: none;
+        margin-top: 10px;
+    }
+
+    .toggle-icon {
+        font-size: 1.1rem;
+        margin-left: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    .unidad-header.open .toggle-icon {
+        transform: rotate(90deg);
+    }
+</style>
+
+<h2 class="text-center mb-4 mt-4">Progreso detallado del curso: {{ curso.nombre }}</h2>
+
+<div class="unidad-lista">
+    {% if unidades_info %}
+        {% for item in unidades_info %}
+            <div class="unidad-item">
+                <div class="unidad-header" onclick="toggleSesiones('{{ forloop.counter0 }}')" id="unidad-header-{{ forloop.counter0 }}">
+                    <span>Unidad {{ item.unidad.orden }}: {{ item.unidad.titulo }}</span>
+                    <span class="toggle-icon">▶</span>
+                </div>
+                <div class="unidad-descripcion">
+                    {{ item.unidad.descripcion|default:"Sin descripción" }}
+                </div>
+                <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ item.porcentaje }}">
+                    {% if item.porcentaje > 0 %}
+                        <div class="progress-bar progreso" style="width: {{ item.porcentaje }}%;">
+                            {{ item.porcentaje }}%
+                        </div>
+                    {% else %}
+                        <div class="progress-bar sin-progreso">
+                            0%
+                        </div>
+                    {% endif %}
+                </div>
+                <ul class="list-group sesiones-lista" id="sesiones-{{ forloop.counter0 }}">
+                    {% for sesion_item in item.sesiones %}
+                        <li class="list-group-item">
+                            {{ sesion_item.sesion.orden }}. {{ sesion_item.sesion.titulo }}
+                            {% if sesion_item.completada %}
+                                <span class="badge bg-success">Completada</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Pendiente</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info text-center mt-5">
+            No se encontraron unidades para este curso.
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    function toggleSesiones(index) {
+        const lista = document.getElementById('sesiones-' + index);
+        const header = document.getElementById('unidad-header-' + index);
+        if (lista.style.display === "none" || lista.style.display === "") {
+            lista.style.display = "block";
+            header.classList.add('open');
+        } else {
+            lista.style.display = "none";
+            header.classList.remove('open');
+        }
+    }
+</script>
+{% endblock %}

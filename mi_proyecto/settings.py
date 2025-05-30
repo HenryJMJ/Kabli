@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'widget_tweaks',
     'usuarios',
 ]
 
@@ -63,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'usuarios.context_processors.notificaciones_context',
             ],
         },
     },
@@ -141,18 +143,18 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "henrymestra16@gmail.com"  # Tu correo de Gmail
-EMAIL_HOST_PASSWORD = "oacy qgre jmtt cbqu"  # La que generaste
+EMAIL_HOST_USER = "kabliaprende@gmail.com"  # Tu correo de Gmail
+EMAIL_HOST_PASSWORD = "sygz zbuq otez enpu"  # La que generaste
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '5565-181-78-74-83.ngrok-free.app']
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://i-e-migue.onrender.com',
+    'https://kabliaprende.onrender.com',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000/", 
-    "https://i-e-migue.onrender.com", 
+    "https://kabliaprende.onrender.com", 
 ]

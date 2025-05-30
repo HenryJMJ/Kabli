@@ -1,0 +1,83 @@
+{% extends 'usuarios/panel_admin.html' %}
+{% load static %}
+{% block content %}
+<style>
+.tarjeta-opcion {
+  display: block;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  padding: 20px 25px;
+  width: 400px;
+  text-align: left;
+  text-decoration: none;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.tarjeta-opcion:hover {
+  background-color: #e0e7ff; /* azul claro al pasar el mouse */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.tarjeta-opcion h2 {
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.tarjeta-opcion h2 img {
+  height: 28px;
+  width: 28px;
+  object-fit: contain;
+}
+
+.tarjeta-opcion p {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #555;
+}
+
+</style>
+  <div class="container">
+    <h1 class="titulo">Bienvenido al Panel Administrativo</h1>
+    <p class="descripcion">Desde aquí podrás gestionar los cursos, usuarios, recursos y mucho más.</p>
+
+    <div class="opciones-panel">
+      <a href="{% url 'verificar_docente' %}" class="tarjeta-opcion">
+        <h2>
+          <img src="{% static 'verificardocente.png' %}" alt="Docentes en verificación" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+          Docentes en verificación
+        </h2>
+        <p>Revisa y aprueba los docentes pendientes.</p>
+      </a>
+
+      <a href="{% url 'estadisticas' %}" class="tarjeta-opcion">
+        <h2>
+          <img src="{% static 'estadisticas.png' %}" alt="Estadísticas" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+          Estadísticas
+        </h2>
+        <p>Visualiza datos de usuarios.</p>
+      </a>
+
+      <a href="{% url 'lista_usuarios' %}" class="tarjeta-opcion">
+        <h2>
+          <img src="{% static 'usuarios.png' %}" alt="Usuarios" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+          Usuarios
+        </h2>
+        <p>Visualiza todos los usuarios registrados.</p>
+      </a>
+
+      <a href="{% url 'gestionar_cursos' %}" class="tarjeta-opcion">
+        <h2>
+          <img src="{% static 'crearcurso.png' %}" alt="Cursos" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+          Cursos
+        </h2>
+        <p>Crear y visualiza todos los cursos de la plataforma.</p>
+      </a>
+    </div>
+  </div>
+{% endblock %}

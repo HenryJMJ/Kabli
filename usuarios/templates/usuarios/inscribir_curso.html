@@ -1,24 +1,72 @@
-{% block content %}
-<div class="max-w-xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Confirmar inscripción</h2>
-    <div class="bg-white dark:bg-gray-800 shadow p-4 rounded-2xl">
-        <p class="mb-4">¿Deseas inscribirte en el curso <strong>{{ curso_docente.curso.nombre }}</strong>?</p>
-        
-        {% if mensaje %}
-            <p class="text-green-500 font-semibold">{{ mensaje }}</p>
-            <a href="{% url 'cursos_disponibles' %}" 
-               class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-xl">Volver a cursos</a>
-        {% else %}
-            <form method="POST">
-                {% csrf_token %}
-                <button type="submit"
-                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl transition">
-                    Confirmar inscripción
-                </button>
-                <a href="{% url 'cursos_disponibles' %}" 
-                   class="ml-4 text-gray-600 dark:text-gray-300 underline">Cancelar</a>
-            </form>
-        {% endif %}
-    </div>
+{% extends "usuarios/cursos_disponibles.html" %}
+{% block search %}
+<!-- Ocultamos la barra de búsqueda -->
+{% endblock %}
+{% block style %}
+<style>
+  .btn-confirmar {
+      background: linear-gradient(to right, #22c55e, #16a34a);
+      color: white;
+      font-weight: 600;
+      padding: 0.5rem 1.5rem;
+      border-radius: 1rem;
+      border: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+  }
+
+  .btn-confirmar:hover {
+      background: linear-gradient(to right, #16a34a, #15803d);
+      transform: scale(1.05);
+  }
+
+  .btn-cancelar {
+      background: linear-gradient(to right, #f87171, #ef4444);
+      color: white;
+      font-weight: 600;
+      padding: 0.5rem 1.5rem;
+      border-radius: 1rem;
+      border: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+  }
+
+  .btn-cancelar:hover {
+      background: linear-gradient(to right, #dc2626, #b91c1c);
+      transform: scale(1.05);
+  }
+
+  /* Contenedor centrado */
+  .contenedor-derecha {
+    margin: 2rem auto;
+    max-width: 500px;
+    position: relative;
+    transform: translateX(-335px);
+  }
+</style>
+{% endblock %}
+
+{% block inscripcion %}
+<div class="contenedor-derecha bg-white dark:bg-gray-800 shadow p-6 rounded-2xl mb-6">
+  <h2 class="text-2xl font-bold mb-4">Confirmar inscripción</h2>
+  <p class="mb-4">¿Deseas inscribirte en el curso <strong>{{ curso_docente.curso.nombre }}</strong>?</p>
+
+  {% if mensaje %}
+      <p class="text-green-500 font-semibold">{{ mensaje }}</p>
+      <a href="{% url 'cursos_disponibles' %}" class="btn-cancelar">Volver a cursos</a>
+  {% else %}
+      <form method="POST" class="flex flex-col sm:flex-row gap-4 mt-4">
+          {% csrf_token %}
+          <button type="submit" class="btn-confirmar">
+              Confirmar inscripción
+          </button>
+          <a href="{% url 'cursos_disponibles' %}" class="btn-cancelar">
+              Cancelar
+          </a>
+      </form>
+  {% endif %}
 </div>
 {% endblock %}

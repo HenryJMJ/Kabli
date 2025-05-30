@@ -1,0 +1,178 @@
+{% extends 'usuarios/panel_estudiantes.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .pago-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .pago-container h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 25px;
+  }
+
+  .pago-container p {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .pago-container label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  .pago-container select,
+  .pago-container input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border 0.3s ease;
+  }
+
+  .pago-container select:focus,
+  .pago-container input[type="text"]:focus {
+    border-color: #28a745;
+    outline: none;
+  }
+
+  .pago-container button {
+    margin-top: 25px;
+    width: 100%;
+    padding: 12px;
+    background-color: #28a745;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .pago-container button:hover {
+    background-color: #218838;
+  }
+
+  .volver-btn {
+    display: block;
+    margin: 20px auto 0;
+    text-align: center;
+    color: #888;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .volver-btn:hover {
+    color: #333;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .pago-container {
+      background-color: #1e1e1e;
+      color: #f1f1f1;
+    }
+
+    .pago-container label,
+    .pago-container p {
+      color: #ddd;
+    }
+
+    .pago-container select,
+    .pago-container input[type="text"] {
+      background-color: #2b2b2b;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    .volver-btn {
+      color: #aaa;
+    }
+
+    .volver-btn:hover {
+      color: #fff;
+    }
+  }
+</style>
+
+<div class="pago-container">
+  <h1>Formulario de Pago</h1>
+
+  {% if varios %}
+    <p>Estás a punto de pagar <strong>{{ cantidad }}</strong> cursos.</p>
+    <p><strong>Total a pagar:</strong> ${{ total }}</p>
+  {% else %}
+    <p>Curso: <strong>{{ inscripcion.curso_docente.curso.nombre }}</strong></p>
+    <p><strong>Docente:</strong> {{ inscripcion.curso_docente.docente.username }}</p>
+    <p><strong>Costo:</strong> ${{ monto }}</p>
+  {% endif %}
+
+ <form method="POST">
+  {% csrf_token %}
+
+  <label for="numero_pago">Número (tarjeta o cuenta):</label>
+  <input type="text" name="numero_pago" id="numero_pago" required oninput="detectarMetodoPago()">
+
+  <label for="metodo_pago">Método de pago:</label>
+  <select name="metodo_pago" id="metodo_pago" disabled required>
+    <option value="">Detectando...</option>
+    <option value="tarjeta">Tarjeta de crédito o débito</option>
+    <option value="nequi">Nequi</option>
+    <option value="daviplata">Daviplata</option>
+  </select>
+
+  <label for="numero_transaccion">Número de transacción:</label>
+  <input type="text" name="numero_transaccion" id="numero_transaccion" readonly required>
+
+  <button type="submit">Confirmar Pago</button>
+</form>
+
+<script>
+  function detectarMetodoPago() {
+    const input = document.getElementById('numero_pago').value.trim();
+    const metodo = document.getElementById('metodo_pago');
+    const transaccion = document.getElementById('numero_transaccion');
+
+    if (/^\d{16}$/.test(input)) {
+      metodo.value = 'tarjeta';
+    } else if (/^3\d{9,10}$/.test(input)) {
+      // Aquí puedes diferenciar entre Nequi y Daviplata si quieres
+      metodo.value = 'nequi';
+    } else {
+      metodo.value = '';
+      transaccion.value = '';
+      return;
+    }
+
+    // Genera número de transacción solo si no existe o es distinto
+    if (!transaccion.value) {
+      const codigo = generarCodigoTransaccion();
+      transaccion.value = codigo;
+    }
+
+    // Habilitar el select para que el valor se envíe
+    metodo.disabled = false;
+  }
+
+  function generarCodigoTransaccion() {
+    const ahora = new Date();
+    const timestamp = ahora.getTime().toString(); // milisegundos
+    const aleatorio = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    return 'TX' + timestamp + aleatorio;
+  }
+</script>
+{% endblock %}

@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel Estudiantil</title>
+  <title>{% block title %}Panel Estudiantil{% endblock %}</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -25,10 +25,6 @@
       transition: background 0.4s;
     }
 
-    a {
-      pointer-events: none;
-    }
-
     .content a,
     .curso-box-link {
       pointer-events: auto;
@@ -44,14 +40,38 @@
     }
 
     .sidebar {
-      width: 120px;
+      width: 170px;
       background: white;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
       padding: 20px 0;
       box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      /* Quitar justify-content: space-between */
+    }
+
+    .menu-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px; /* Espacio entre botones */
+      width: 100%;
+      align-items: flex-start;
+      padding-left: 20px;
+    }
+
+    .sidebar button {
+      background: none;
+      border: none;
+      color: black;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 10px 0;
+      transition: color 0.3s;
+    }
+
+    .sidebar button:hover {
+      color: #007bff; /* Azul al pasar el mouse */
+      text-decoration: underline;
     }
 
     .sidebar a {
@@ -68,27 +88,12 @@
 
     .content {
       flex-grow: 1;
-      background-image: url("{% static 'usuarios/img/fondo1.png' %}");
       background-size: cover;
       background-position: center;
       position: relative;
       overflow-x: hidden;
       padding: 20px;
       max-width: 100vw;
-    }
-
-    .header {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.7);
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 18px;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
     .top-icons {
@@ -120,34 +125,6 @@
       cursor: pointer;
       color: #333;
       text-decoration: none;
-    }
-
-    .footer {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background: rgba(255, 228, 181, 0.9);
-      padding: 15px 0;
-      border-top: 1px solid #ddd;
-    }
-
-    .footer a {
-      text-align: center;
-      text-decoration: none;
-      color: black;
-      pointer-events: none;
-    }
-
-    .footer img {
-      width: 40px;
-      margin-bottom: 5px;
-      transition: transform 0.2s;
-    }
-
-    .footer img:hover {
-      transform: scale(1.1);
     }
 
     .overlay-box {
@@ -221,65 +198,95 @@
       pointer-events: auto;
     }
 
-    @media (max-width: 768px) {
-      .curso-box {
-        padding: 20px;
-      }
-
-      .curso-box h1 {
-        font-size: 1.4rem;
-      }
-
-      .curso-box p {
-        font-size: 0.9rem;
-      }
+    .notification-icon {
+      position: relative;
     }
 
-    @media (max-width: 480px) {
-      .curso-box {
-        padding: 15px;
-      }
-
-      .curso-box h1 {
-        font-size: 1.2rem;
-      }
-
-      .curso-box p {
-        font-size: 0.85rem;
-      }
-    }
-
-    .top-icons a {
-      pointer-events: auto;
-    }    
+    .notification-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      min-width: 18px;
+      height: 18px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 50%;
+      padding: 2px 5px;
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 1s infinite;
+    }  
   </style>
+
+  {% block extra_css %}{% endblock %}
 </head>
 <body>
   <div class="container">
     <div class="sidebar">
-      <div class="academico-button">
-        <a href="{% url 'academica' %}">
-          <button type="button">🎓 ACADÉMICO</button>
-        </a>
-      </div>
-          
+  <div class="menu-links">
+    <div class="academico-button">
+      <a href="{% url 'academica' %}">
+        <img src="{% static 'academico.png' %}" alt="Inicio" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 6px;">
+        <button type="button">Académico</button>
+      </a>
     </div>
+    <div class="academico-button">
+      <a href="{% url 'cursos_pagados' %}">
+        <img src="{% static 'miscursos.png' %}" alt="Inicio" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 6px;">
+        <button type="button">Mis Cursos</button>
+      </a>
+    </div>
+    <div class="academico-button">
+      <a href="{% url 'progreso' %}">
+        <img src="{% static 'progreso.png' %}" alt="Inicio" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 6px;">
+        <button type="button">Progreso</button>
+      </a>
+    </div>
+    <div class="academico-button">
+      <a href="{% url 'certificados_cursos' %}">
+        <img src="{% static 'certificados.png' %}" alt="Inicio" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 6px;">
+        <button type="button">Certificados</button>
+      </a>
+    </div>
+    <div class="academico-button">
+      <a href="{% url 'enviar_mensaje' %}">
+        <img src="{% static 'contacto.png' %}" alt="Inicio" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 6px;">
+        <button type="button">Contáctanos</button>
+      </a>
+    </div>
+  </div>
+</div>
 
     <div class="content">
-      <div class="header">
-        Aprende con nosotros cada tema académico con información de todo el mundo.
-      </div>
-
       <div class="top-icons">
-        <a href="{% url 'perfil_estudiante' %}" style="font-size: 28px; text-decoration: none;">
-          🧑‍🎓
-        </a>               
+        <a href="{% url 'panel_estudiantes' %}" style="display: inline-block; transform: translateY(2px);">
+          <img src="{% static 'inicio.png' %}" alt="Inicio" style="width: 24px; height: 24px; margin-right: 6px;">
+        </a>
+        <a href="{% url 'perfil_estudiante' %}" style="font-size: 28px; text-decoration: none; display: inline-block; transform: translateY(-3px);">
+          <img src="{% static 'perfil.png' %}" alt="Inicio" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 6px;">
+        </a>
+        <div style="position: relative;">
+          <a href="{% url 'notificaciones_estudiante' %}" aria-label="Notificaciones" style="display: inline-block;">
+            <img src="{% static 'notificaciones.png' %}" alt="Notificaciones" style="width: 24px; height: 24px;">
+            {% if notificaciones_no_vistas > 0 %}
+              <span class="notification-badge">{{ notificaciones_no_vistas }}</span>
+            {% endif %}
+          </a>
+        </div>               
         <form method="POST" action="{% url 'logout' %}" style="display:inline;">
           {% csrf_token %}
-          <button type="submit" class="logout-btn">Cerrar Sesión</button>
+          <button type="submit" class="logout-btn" style="padding: 5px; border: none; background: transparent; cursor: pointer;">
+            <img src="{% static 'cerrar_sesión.png' %}" alt="Cerrar sesión" style="width: 24px; height: 24px;">
+          </button>
         </form>
       </div>
 
+      {% block content %}
       <div class="overlay-box">
         <h1>¡Bienvenid@, {{ nombre_usuario }}!</h1>
         <p>Explora tus recursos, actividades y progreso en un solo lugar.</p>
@@ -291,14 +298,10 @@
           <p>Haz clic para escoger el curso que más te convenga, qué esperas!</p>
         </div>
       </a>
-
-      <div class="footer">
-        <a href="{% url 'enviar_mensaje' %}">
-          <img src="{% static 'usuarios/img/mensaje.png' %}" alt="Icono de mensaje">
-          <div>MENSAJES</div>
-        </a>
-      </div>
+      {% endblock %}
     </div>
   </div>
+
+  {% block extra_js %}{% endblock %}
 </body>
 </html>

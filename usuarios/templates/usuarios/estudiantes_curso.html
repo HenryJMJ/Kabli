@@ -1,177 +1,199 @@
+{% extends "usuarios/panel_docentes.html" %}
 {% load static %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estudiantes Inscritos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+<style>
+  .container {
+    max-width: 1500px;
+    margin: auto;
+    padding: 20px;
+  }
 
-    body {
-      background: linear-gradient(to right, #9dc9ff, #bce6ff);
-      min-height: 100vh;
-      padding: 40px;
-      transition: background 0.4s;
+  h2.curso-titulo {
+    margin-top: 40px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  h2.curso-titulo:hover {
+    color: #007bff;
+  }
+
+  .estudiantes-grid {
+    display: none;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .estudiante-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .estudiante-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .estudiante-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+  }
+
+  .estudiante-nombre {
+    font-weight: bold;
+    font-size: 16px;
+    color: #34495e;
+  }
+
+  .estudiante-detalle {
+    font-size: 14px;
+    color: #555;
+  }
+
+  .pagado {
+    color: green;
+    font-weight: bold;
+  }
+
+  .no-pagado {
+    color: red;
+    font-weight: bold;
+  }
+
+  /* Estilos para modal imagen */
+  .modal {
+    display: none; 
+    position: fixed; 
+    z-index: 9999; 
+    padding-top: 60px; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.8);
+  }
+
+  .modal-content {
+    margin: auto;
+    display: block;
+    max-width: 80%;
+    max-height: 80vh;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #000;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .modal-close:hover {
+    color: #bbb;
+  }
+
+  @media screen and (max-width: 700px) {
+    .modal-content {
+      max-width: 95%;
+      max-height: 60vh;
     }
-
-    body.dark { background: #1e272e; color: white; }
-
-    h1, h2 { text-align: center; margin-bottom: 20px; font-size: 2rem; }
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #3498db;
-      padding: 15px 30px;
-      border-radius: 10px;
-      margin-bottom: 30px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    }
-
-    .navbar .logo { color: white; font-size: 1.5rem; font-weight: bold; }
-
-    .navbar .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
-    .navbar .nav-links li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    .navbar .nav-links li a:hover { color: #ecf0f1; }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-      animation: fadeIn 0.6s ease;
-    }
-
-    body.dark .container { background-color: #2f3640; }
-
-    .floating-buttons {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      display: flex;
-      gap: 12px;
-      z-index: 999;
-    }
-
-    .icon-button {
-      background: white;
-      border: none;
-      border-radius: 50%;
-      width: 45px;
-      height: 45px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      text-decoration: none;
-      color: black;
-      transition: all 0.3s ease;
-    }
-
-    .icon-button:hover { transform: scale(1.1); }
-
-    body.dark .icon-button {
-      background: #2f3640;
-      color: white;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Responsividad */
-    @media (max-width: 768px) {
-      .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-      }
-
-      .container {
-        padding: 20px;
-      }
-
-      .floating-buttons {
-        bottom: 15px;
-        right: 15px;
-      }
-
-      .icon-button {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .navbar .logo {
-        font-size: 1.2rem;
-      }
-
-      .navbar .nav-links {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-      }
-
-      .icon-button {
-        width: 35px;
-        height: 35px;
-        font-size: 16px;
-      }
-
-      .floating-buttons {
-        bottom: 10px;
-        right: 10px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <!-- Barra superior -->
-  <nav class="navbar">
-    <div class="logo">🏫 I.E. MIGUE</div>
-    <ul class="nav-links">
-      <li><a href="{% url 'panel_docentes' %}">Inicio</a></li>
-    </ul>
-  </nav>
-
-  <div class="container">
-    {% if cursos_con_estudiantes %}
-        {% for curso, lista_estudiantes in cursos_con_estudiantes.items %}
-            <div style="margin-bottom: 30px;">
-                <h2>{{ curso }}</h2>
-                <ul>
-                    {% for estudiante in lista_estudiantes %}
-                        <li>{{ estudiante.nombre }} – Inscrito el {{ estudiante.fecha }}</li>
-                    {% endfor %}
-                </ul>
+  }
+</style>
+<div class="container">
+  <h2>Listas de Estudiantes</h2>
+  {% if cursos_con_estudiantes %}
+    {% for curso, lista_estudiantes in cursos_con_estudiantes.items %}
+      <div>
+        <h2 class="curso-titulo" onclick="toggleEstudiantes('{{ forloop.counter0 }}')">
+          {{ curso }}
+        </h2>
+        <div id="estudiantes-{{ forloop.counter0 }}" class="estudiantes-grid">
+          {% for estudiante in lista_estudiantes %}
+            <div class="estudiante-card">
+              <div class="estudiante-header">
+                {% if estudiante.foto_perfil_url %}
+                  <img src="{{ estudiante.foto_perfil_url }}" alt="Foto de perfil" class="estudiante-img modal-img" style="cursor:pointer;">
+                {% else %}
+                  <img src="{% static 'noimg.png' %}" alt="Sin imagen" class="estudiante-img modal-img" style="cursor:pointer;">
+                {% endif %}
+                <div class="estudiante-nombre">{{ estudiante.nombre }}</div>
+              </div>
+              <div class="estudiante-detalle">Inscrito el {{ estudiante.fecha }}</div>
+              <div class="estudiante-detalle">
+                {% if estudiante.pagado %}
+                  <span class="pagado">Pagado ✔️</span>
+                {% else %}
+                  <span class="no-pagado">No pagado ❌</span>
+                {% endif %}
+              </div>
             </div>
-        {% endfor %}
-    {% else %}
-        <p>No hay estudiantes inscritos en tus cursos publicados.</p>
-    {% endif %} 
-  </div>
-</body>
-</html>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No hay estudiantes inscritos en tus cursos publicados.</p>
+  {% endif %}
+</div>
+
+<!-- Modal para imagen -->
+<div id="imgModal" class="modal">
+  <span class="modal-close" id="modalClose">&times;</span>
+  <img class="modal-content" id="imgModalContent">
+</div>
+
+<script>
+  function toggleEstudiantes(index) {
+    const grid = document.getElementById(`estudiantes-${index}`);
+    if (grid.style.display === "grid") {
+      grid.style.display = "none";
+    } else {
+      grid.style.display = "grid";
+    }
+  }
+
+  // Modal para imagen
+  const modal = document.getElementById("imgModal");
+  const modalImg = document.getElementById("imgModalContent");
+  const modalClose = document.getElementById("modalClose");
+
+  document.querySelectorAll(".modal-img").forEach(img => {
+    img.onclick = function() {
+      modal.style.display = "block";
+      modalImg.src = this.src;
+      modalImg.alt = this.alt;
+    }
+  });
+
+  modalClose.onclick = function() {
+    modal.style.display = "none";
+  }
+
+  // Cerrar modal clic fuera de la imagen
+  modal.onclick = function(event) {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  }
+</script>
 {% endblock %}

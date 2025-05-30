@@ -1,421 +1,46 @@
+{% extends 'usuarios/panel_admin.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Notificaciones</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #9dc9ff, #bce6ff);
-      padding: 40px;
-      min-height: 100vh;
-      transition: background 0.4s;
-    }
 
-    body.dark {
-      background-color: #1e272e;
-      color: white;
-    }
+{% block content %}
+<h2>Notificaciones</h2>
 
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      background-color: #3498db;
-      padding: 15px 30px;
-      border-radius: 10px;
-      margin-bottom: 30px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-      position: relative;
-    }
+{% if notificaciones %}
+  <ul style="list-style: none; padding: 0;">
+    {% for noti in notificaciones %}
+      <li style="
+          background-color: #f1f1f1; 
+          padding: 10px; 
+          margin-bottom: 10px; 
+          border-left: 5px solid 
+            {% if noti.tipo == 'info' %}#17a2b8
+            {% elif noti.tipo == 'advertencia' %}#ffc107
+            {% elif noti.tipo == 'mensaje' %}#28a745
+            {% else %}#ccc
+            {% endif %};
+          border-radius: 5px;
+          position: relative;
+        ">
+        <strong>{{ noti.titulo }}</strong><br>
+        {{ noti.contenido }}<br>
+        <small style="color: gray;">{{ noti.fecha|date:"d M Y - H:i" }}</small><br>
+        <small>Usuario registrado: 
+          {% if noti.usuario %}
+            {{ noti.usuario.first_name }} {{ noti.usuario.last_name }} ({{ noti.usuario.username }})
+          {% else %}
+            Sistema
+          {% endif %}
+        </small>
 
-    .navbar img {
-      height: 40px; /* Ajusta la altura de la imagen para que coincida con el tamaño del texto */
-      object-fit: contain; /* Asegura que la imagen se ajuste sin perder la proporción */
-      margin-right: 10px; /* Añade un espacio de 10px entre la imagen y el texto */
-    }
-
-    .navbar .logo {
-      color: white;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    /* Botón hamburguesa */
-    .hamburger {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 30px;
-      color: white;
-      cursor: pointer;
-      position: absolute;
-      top: 15px;
-      right: 20px;
-    }
-
-    .navbar .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
-    .navbar .nav-links li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .notificacion {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      position: relative;
-      cursor: pointer;
-    }
-
-    .notificacion small {
-      display: block;
-      margin-top: 8px;
-      color: #777;
-    }
-
-    .icon-button {
-      background: white;
-      border: none;
-      border-radius: 50%;
-      width: 45px;
-      height: 45px;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .floating-buttons {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      display: flex;
-      gap: 12px;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 10000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(5px);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background-color: white;
-      padding: 30px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      position: relative;
-    }
-
-    .modal-content h3 {
-      margin-top: 0;
-    }
-
-    .modal-content .close {
-      position: absolute;
-      top: 12px;
-      right: 15px;
-      cursor: pointer;
-      font-size: 20px;
-    }
-
-    body.dark .modal-content {
-      background-color: #2f3640;
-      color: white;
-    }
-
-    body.dark .notificacion {
-      background-color: #2f3640;
-      color: white;
-    }
-
-    body.dark .notificacion small {
-      color: #ccc;
-    }
-
-    /* Media Queries para Responsividad */
-    @media (max-width: 768px) {
-      .navbar {
-        flex-direction: column;
-        padding: 15px;
-      }
-
-      .navbar .nav-links {
-        flex-direction: column;
-        gap: 15px;
-        align-items: center;
-        width: 100%;
-        display: none;
-      }
-
-      .navbar .nav-links.active {
-        display: block;
-      }
-
-      .navbar .nav-links li a {
-        font-size: 1.1rem;
-      }
-
-      .notificacion {
-        padding: 15px;
-      }
-
-      .notificacion small {
-        font-size: 0.9rem;
-      }
-
-      .modal-content {
-        width: 95%;
-      }
-
-      h2 {
-        font-size: 1.8rem;
-        text-align: center;
-      }
-
-      .floating-buttons {
-        bottom: 15px;
-        right: 15px;
-      }
-
-      .hamburger {
-        display: block;
-      }
-    }
-
-    @media (max-width: 1024px) {
-      .navbar .nav-links li a {
-        font-size: 1.2rem;
-      }
-
-      h2 {
-        font-size: 1.9rem;
-      }
-
-      .notificacion small {
-        font-size: 1rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      h2 {
-        font-size: 1.6rem;
-      }
-
-      .notificacion {
-        padding: 12px;
-      }
-
-      .notificacion small {
-        font-size: 0.9rem;
-      }
-
-      .modal-content {
-        width: 90%;
-        padding: 20px;
-      }
-
-      .icon-button {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-      }
-    }
-  </style>
-</head>
-<body>
-
-<!-- Modal -->
-<div class="modal" id="detalleModal">
-  <div class="modal-content" id="modalContent">
-    <span class="close" onclick="cerrarModal()">✖</span>
-    <h3 id="modalTitulo"></h3>
-    <p id="modalContenido"></p>
-    <small id="modalFecha"></small><br>
-    <small id="modalUsuario"></small>
-  </div>
-</div>
-
-<h2>🔔 Notificaciones</h2>
-
-<nav class="navbar">
-  <img src="{% static 'IEMIGUE.png' %}"/>
-  <!-- Botón hamburguesa -->
-  <button class="hamburger" onclick="toggleMenu()">☰</button>
-  <ul class="nav-links">
-    <li><a href="{% url 'panel_admin' %}">Inicio</a></li>
-    <li><a href="{% url 'estadisticas' %}">Estadísticas</a></li>
-    <li><a href="{% url 'lista_usuarios' %}">Usuarios</a></li>
-    <li><a href="{% url 'gestion_academica' %}">Académico</a></li>
-    <li><a href="{% url 'gestionar_cursos' %}">Cursos</a></li>
-    <li><a href="{% url 'ver_estudiantes' %}">Estudiantes</a></li>
-    <li><a href="{% url 'configuracion' %}">Configuración</a></li>
-    <li><a href="{% url 'perfil_admin' %}">Mi Perfil</a></li>
-    <li><a href="{% url 'notificaciones' %}">Notificaciones</a></li>
+        <div style="margin-top: 5px;">
+          {% if not noti.visto %}
+            <a href="{% url 'marcar_notificacion_leida' noti.id %}" style="color: blue; margin-right: 10px;">Marcar como leída</a>
+          {% endif %}
+          <a href="{% url 'eliminar_notificacion' noti.id %}" style="color: red;">Eliminar</a>
+        </div>
+      </li>
+    {% endfor %}
   </ul>
-</nav>
-
-<div id="toast-container" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;"></div>
-
-{% for n in notificaciones %}
-  <div class="notificacion" 
-    id="noti-{{ n.id }}"
-    onclick="mostrarDesdeAtributos(this)"
-    data-titulo="{{ n.titulo|escapejs }}"
-    data-contenido="{{ n.contenido|escapejs }}"
-    data-fecha="{{ n.fecha|date:'d/m/Y H:i' }}"
-    data-usuario="{% if n.usuario_afectado %}{{ n.usuario_afectado.first_name|default_if_none:'' }} {{ n.usuario_afectado.last_name|default_if_none:'' }} ({{ n.usuario_afectado.username }}){% else %}Sistema{% endif %}"
-    data-correo="{% if n.usuario_afectado and n.usuario_afectado.email %}{{ n.usuario_afectado.email|escapejs }}{% else %}-{% endif %}">
-    
-    <button onclick="event.stopPropagation(); eliminarNotificacion({{ n.id }}, '{{ n.titulo|escapejs }}')" 
-       title="Eliminar" 
-       style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 18px; color: #888; cursor: pointer;">✖</button>
-
-    <strong>{{ n.titulo }}</strong>
-    <p>{{ n.contenido }}</p>
-    <small>{{ n.fecha|date:"d M Y H:i" }} • Usuario registrado: 
-      {% if n.usuario_afectado %}
-        {{ n.usuario_afectado.first_name }} {{ n.usuario_afectado.last_name }} ({{ n.usuario_afectado.username }})
-      {% else %}
-        Sistema
-      {% endif %}
-    </small>
-  </div>
-{% empty %}
-  <p>No hay notificaciones por el momento.</p>
-{% endfor %}
-
-<script>
-  let undoData = null;
-
-  function eliminarNotificacion(id, titulo) {
-    const notiElement = document.getElementById(`noti-${id}`);
-    const backupHTML = notiElement.outerHTML;
-    notiElement.style.display = 'none';
-
-    fetch(`/notificaciones/eliminar/${id}/`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': '{{ csrf_token }}',
-        'Content-Type': 'application/json'
-      }
-    });
-
-    mostrarToast(`Eliminaste: <strong>${titulo}</strong>`, () => {
-      fetch(`/notificaciones/restaurar/${id}/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}',
-          'Content-Type': 'application/json'
-        }
-      }).then(() => {
-        window.location.href = window.location.pathname + "?restaurado=1";
-      });
-    });
-
-    undoData = { id: id, element: notiElement, html: backupHTML };
-  }
-
-  function mostrarToast(mensaje, deshacerCallback) {
-    const toastContainer = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.innerHTML = `
-      <div style="background:#333;color:white;padding:15px 20px;border-radius:10px;display:flex;justify-content:space-between;">
-        <span>${mensaje}</span>
-        <button onclick="deshacerEliminacion()" style="background:none;border:none;color:#00d8ff;font-weight:bold;">Deshacer</button>
-      </div>
-    `;
-    toastContainer.appendChild(toast);
-
-    setTimeout(() => {
-      if (toast.parentNode) toast.remove();
-      undoData = null;
-    }, 3000);
-  }
-
-  function deshacerEliminacion() {
-    if (undoData) {
-      fetch(`/notificaciones/restaurar/${undoData.id}/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}',
-          'Content-Type': 'application/json'
-        }
-      }).then(() => {
-        undoData.element.style.display = 'block';
-        undoData = null;
-      });
-    }
-  }
-
-  function toggleDarkMode() {
-    document.body.classList.toggle('dark');
-    document.getElementById('darkToggle').textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-  }
-
-  function mostrarDetalle(titulo, contenido, fecha, usuario, correo) {
-    document.getElementById('modalTitulo').textContent = titulo;
-    document.getElementById('modalContenido').textContent = contenido;
-    document.getElementById('modalFecha').innerHTML = "📅 Fecha: " + fecha;
-
-    const esSistema = usuario.trim().toLowerCase() === 'sistema';
-
-    let textoUsuario = esSistema
-    ? "👤 Usuario: Sistema"
-    : `👤 Usuario: ${usuario}<br>📧 Correo: ${correo}`;
-    document.getElementById('modalUsuario').innerHTML = textoUsuario;
-    document.getElementById('detalleModal').style.display = 'flex';
-  }
-
-  function mostrarDesdeAtributos(el) {
-    const titulo = el.getAttribute('data-titulo');
-    const contenido = el.getAttribute('data-contenido');
-    const fecha = el.getAttribute('data-fecha');
-    const usuario = el.getAttribute('data-usuario');
-    const correo = el.getAttribute('data-correo');
-    mostrarDetalle(titulo, contenido, fecha, usuario, correo);
-  }
-
-  function cerrarModal() {
-    document.getElementById('detalleModal').style.display = 'none';
-  }
-
-  // Función para alternar el menú hamburguesa
-  function toggleMenu() {
-    const navLinks = document.querySelector('.nav-links');
-    navLinks.classList.toggle('active');
-  }
-</script>
-
-<!-- Botones -->
-<div class="floating-buttons">
-  <form method="POST" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button class="icon-button" title="Cerrar sesión">🔚</button>
-  </form>
-  <button class="icon-button" onclick="toggleDarkMode()" title="Modo oscuro/claro" id="darkToggle">🌙</button>
-</div>
-
-</body>
-</html>
+{% else %}
+  <p>No tienes notificaciones.</p>
+{% endif %}
+{% endblock %}

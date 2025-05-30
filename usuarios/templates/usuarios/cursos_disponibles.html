@@ -2,9 +2,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Cursos Disponibles</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
       margin: 0;
@@ -12,89 +12,29 @@
       box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
     }
-  
+
     body {
       background: linear-gradient(to right, #9dc9ff, #bce6ff);
       min-height: 100vh;
       transition: background 0.4s;
     }
-  
-    body.menu-open {
-      overflow: hidden;
-    }
-  
-    body.menu-open .overlay {
-      display: block;
-    }
-  
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 100;
-    }
-  
-    .hamburger-btn,
-    .regresar-btn {
-      position: fixed;
-      top: 20px;
-      background-color: #21618C;
-      color: white;
-      font-size: 22px;
-      padding: 6px 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      z-index: 200;
-      transition: opacity 0.3s ease;
-    }
-  
-    .regresar-btn {
-      left: 80px;
-    }
-  
-    .hamburger-btn {
-      left: 20px;
-    }
-  
-    body.menu-open .hamburger-btn {
-      opacity: 0;
-      pointer-events: none;
-    }
-  
-    body.menu-open .regresar-btn {
-      opacity: 0;
-      pointer-events: none;
-    }
-  
-    .container {
-      display: flex;
-      height: 100vh;
-    }
-  
+
     .sidebar {
-      width: 250px;
-      background-color: #21618C;
+      width: 200px;
+      background-color:rgb(63, 5, 117);
       color: white;
-      padding: 20px;
+      padding: 15px;
       display: flex;
       flex-direction: column;
       gap: 20px;
-      transition: transform 0.3s ease;
-      transform: translateX(-100%);
       position: fixed;
       height: 100vh;
+      top: 0;
+      left: 0;
       z-index: 150;
+      transform: none !important;
     }
-  
-    .sidebar.active {
-      transform: translateX(0);
-    }
-  
+
     .sidebar a {
       color: white;
       text-decoration: none;
@@ -103,28 +43,21 @@
       border-radius: 5px;
       transition: background 0.3s;
     }
-  
+
     .sidebar a:hover {
-      background-color: #154360;
+      background-color:rgb(107, 54, 190);
     }
-  
+
     .content {
-      flex-grow: 1;
-      margin-left: 0;
-      background-image: url("{% static 'usuarios/img/fondo1.png' %}");
+      padding-top: 10px;
+      padding-left: 100px;
       background-size: cover;
       background-position: center;
       overflow-x: hidden;
-      padding: 20px;
       min-height: 100vh;
       transition: margin-left 0.3s ease, opacity 0.3s ease;
     }
-  
-    .sidebar.active ~ .content {
-      margin-left: 250px;
-      opacity: 0.3;
-    }
-  
+
     .header {
       margin-top: 20px;
       background: rgba(255, 255, 255, 0.7);
@@ -133,27 +66,62 @@
       font-weight: bold;
       font-size: 18px;
       text-align: center;
-      align-items: center; /* Centrado vertical */
-      justify-content: space-between; /* Espaciado entre los elementos */
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 90%;
+      margin: 0 auto;
+      margin-right: 20px;
     }
-  
-    .header .message {
-      flex-grow: 1; /* Asegura que el mensaje ocupe el espacio restante */
-      text-align: left;
+
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
     }
-  
+
+    .search-bar form {
+      position: relative;
+      width: 60%;
+      max-width: 600px;
+    }
+
+    .search-bar input[type="text"] {
+      width: 100%;
+      padding: 10px 40px 10px 20px;
+      border-radius: 30px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar input[type="text"]:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 8px rgba(52, 152, 219, 0.4);
+    }
+
+    .search-bar img {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
     .courses-list {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
+      gap: 60px 10px;
       margin-top: 40px;
       justify-items: center;
-      transition: all 0.3s ease;
+      justify-content: end;
+      margin-right: 20px;
+      padding-left: 120px;
     }
-  
+
     .course-card {
-      width: 250px;
+      width: 280px;
       background: rgba(255, 255, 255, 0.9);
       border-radius: 15px;
       padding: 20px;
@@ -163,23 +131,23 @@
       cursor: pointer;
       position: relative;
     }
-  
+
     .course-card:hover {
       transform: translateY(-5px);
     }
-  
+
     .course-card h3 {
       font-size: 1.2rem;
       margin-top: 15px;
       font-weight: bold;
     }
-  
+
     .course-card p {
       font-size: 1rem;
       color: #666;
       margin: 10px 0;
     }
-  
+
     .course-card a {
       text-decoration: none;
       color: #fff;
@@ -189,19 +157,11 @@
       font-size: 1rem;
       transition: background 0.3s ease;
     }
-  
+
     .course-card a:hover {
       background: #2980b9;
     }
-  
-    body.menu-open .courses-list {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  
-    body.menu-open .course-card {
-      width: 220px;
-    }
-  
+
     .inscrito-msg {
       display: inline-block;
       background-color: #27ae60;
@@ -211,91 +171,182 @@
       font-weight: bold;
       font-size: 1rem;
       margin-top: 10px;
-    }  
-  
-    .alerta-mensaje {
-      background-color: #28a745;  /* Color de fondo verde */
-      color: white;               /* Color del texto blanco */
-      padding: 15px 20px;         /* Espaciado interno */
-      border-radius: 10px;        /* Bordes redondeados */
-      text-align: center;         /* Centrar el texto */
-      font-size: 1.2rem;          /* Tamaño de fuente */
-      position: fixed;            /* Posición fija */
-      top: 20px;                  /* 20px desde la parte superior */
-      left: 50%;                  /* Centrado horizontal */
-      transform: translateX(-50%);/* Centrado ajustado */
-      z-index: 1000;              /* Asegurarse de que el mensaje esté encima de otros elementos */
-      display: none;              /* Ocultarlo por defecto */
-      width: 80%;                 /* Ancho ajustado */
-      max-width: 600px;           /* Máximo ancho */
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra para darle profundidad */
     }
-  
+
+    .alerta-mensaje {
+      background-color: rgb(95, 255, 132);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.2rem;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: none;
+      width: 80%;
+      max-width: 600px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
     .mensaje {
       margin: 0;
     }
-  
+
     .imagen-curso {
       width: 100%;
       height: 180px;
       object-fit: cover;
       border-radius: 12px;
       transition: transform 0.3s ease;
-  }
-  
-  .course-card:hover .imagen-curso {
-      transform: scale(1.03);
-  }
-  
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-  
-      .content {
-        padding: 15px;
-      }
-  
-      .header {
-        font-size: 16px;
-        padding: 8px 15px;
-      }
-  
-      .courses-list {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-      }
-  
-      .course-card {
-        width: 200px;
-      }
-  
-      body.menu-open .course-card {
-        width: 180px;
-      }
     }
-  
-    @media (max-width: 480px) {
-      .courses-list {
-        grid-template-columns: 1fr;
-        justify-items: center;
-      }
-  
-      .course-card {
-        width: 100%;
-      }
+
+    .course-card:hover .imagen-curso {
+      transform: scale(1.03);
+    }
+
+     /* Ocultar la lista inicialmente */
+    #categoria-lista {
+      display: none;
+      list-style: none;
+      padding-left: 0;
+      margin-top: 10px;
+    }
+
+    /* Cambiar cursor para el título clickeable */
+    #categoria-toggle {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Opcional: animación de despliegue */
+    #categoria-lista.show {
+      display: block;
+    }
+
+    #categoria-lista a {
+      font-size: 0.9rem;
+      display: inline-block;
+      transition: transform 0.2s ease;
+      transform-origin: center center;
+      padding: 4px 8px;
+      border-radius: 5px;
+      color: inherit;
+    }
+
+    #categoria-lista a:hover {
+      transform: scale(1.15);
+      background-color: transparent;
+      color: #ffd700;
+    }
+
+    /* Cambiar cursor para los títulos clickeables */
+    #categoria-toggle,
+    #recomendados-toggle,
+    #populares-toggle {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Animación de despliegue para las listas */
+    #categoria-lista.show,
+    #recomendados-lista.show,
+    #populares-lista.show {
+      display: block;
+    }
+
+    /* Estilos para los links dentro de las listas */
+    #categoria-lista a,
+    #recomendados-lista a,
+    #populares-lista a {
+      font-size: 0.9rem;
+      display: inline-block;
+      transition: transform 0.2s ease;
+      transform-origin: center center;
+      padding: 4px 8px;
+      border-radius: 5px;
+      color: inherit;
+    }
+
+    /* Efecto hover */
+    #categoria-lista a:hover,
+    #recomendados-lista a:hover,
+    #populares-lista a:hover {
+      transform: scale(1.15);
+      background-color: transparent;
+      color: #ffd700;
     }
   </style>
 </head>
 <body>
   <div class="overlay" id="overlay"></div>
-  <button class="hamburger-btn" id="hamburgerBtn">☰</button>
   <button class="regresar-btn" onclick="window.location.href='{% url 'panel_estudiantes' %}'">←</button>
 
   <div class="container">
     <div class="sidebar" id="sidebar">
-      <a href="#">Favoritos</a>
+      <!-- Filtro por categoría -->
+      <h3 id="categoria-toggle" style="margin-top: 20px; font-weight: 600;">
+        Filtrar por Categoría ▼
+      </h3>
+      <ul id="categoria-lista">
+        <li>
+          <a href="{% url 'cursos_disponibles' %}" 
+            style="{% if not categoria_filtrada %}font-weight: bold; color: #ffd700;{% endif %}">
+            Todas
+          </a>
+        </li>
+        {% for cat in categorias %}
+        <li>
+          <a href="{% url 'cursos_disponibles' %}?categoria={{ cat.id }}"
+            style="{% if categoria_filtrada == cat.id|stringformat:'s' %}font-weight: bold; color: #ffd700;{% endif %}">
+            {{ cat.nombre }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+
+      <!-- NUEVA SECCIÓN: Recomendados para ti -->
+      <hr style="border-color: rgba(255, 255, 255, 0.3);">
+      <h3 id="recomendados-toggle" style="font-weight: 600; font-size: 1.1rem; cursor: pointer;">
+        Recomendados para ti ▼
+      </h3>
+      <ul id="recomendados-lista" style="list-style: none; padding-left: 0; display: none;">
+        {% for curso in recomendados %}
+        <li>
+          <a href="{% url 'detalle_curso' curso.id %}" style="font-size: 0.95rem;">
+            {{ curso.curso.nombre|truncatechars:22 }}
+          </a>
+        </li>
+        {% empty %}
+        <li style="font-size: 0.9rem; color: #ccc;">No hay recomendaciones aún.</li>
+        {% endfor %}
+      </ul>
+
+      <!-- Línea divisoria nueva -->
+      <hr style="border-color: rgba(255, 255, 255, 0.3);">
+
+      <!-- Sección: Populares -->
+      <h3 id="populares-toggle" style="font-weight: 600; font-size: 1.1rem; cursor: pointer;">
+        Populares ▼
+      </h3>
+      <ul id="populares-lista" style="list-style: none; padding-left: 0; display: none;">
+        {% for curso in populares %}
+        <li>
+          <a href="{% url 'detalle_curso' curso.id %}" style="font-size: 0.95rem;">
+            {{ curso.curso.nombre|truncatechars:22 }}
+          </a>
+        </li>
+        {% empty %}
+        <li style="font-size: 0.9rem; color: #ccc;">No hay cursos populares aún.</li>
+        {% endfor %}
+      </ul>
+
+      <!-- Línea divisoria nueva -->
+      <hr style="border-color: rgba(255, 255, 255, 0.3);">
+      
+      <a href="{% url 'panel_estudiantes' %}">←</a>
     </div>
 
     <div class="content" id="mainContent">
@@ -303,42 +354,50 @@
         Explora todos los cursos disponibles y comienza tu aprendizaje hoy.
       </div>
 
+      <!-- BARRA DE BÚSQUEDA -->
+      {% block search %}
+        <div class="search-bar">
+          <form method="get" action="{% url 'cursos_disponibles' %}" id="busqueda-form">
+            <input type="text" name="q" placeholder="Buscar cursos..." value="{{ request.GET.q }}">
+            <img src="{% static 'busqueda.png' %}" alt="Buscar" onclick="document.getElementById('busqueda-form').submit();">
+          </form>
+        </div>
+        {% endblock %}
+
+      {% block style %}{% endblock %}
+      {% block inscripcion %}{% endblock %}
+      {% block contenido_detalle %}{% endblock %}
+      {% block script %}{% endblock %}
+
       <div class="courses-list">
         {% for item in cursos_con_estado %}
         <div class="course-card" onclick="window.location.href='{% url 'detalle_curso' item.curso.id %}'">
-            
-            {% if item.curso.curso.imagen %}
-                <img src="{{ item.curso.curso.imagen.url }}" alt="Imagen del curso" class="imagen-curso mb-2">
+          {% if item.curso.curso.imagen %}
+          <img src="{{ item.curso.curso.imagen.url }}" alt="Imagen del curso" class="imagen-curso mb-2" />
+          {% else %}
+          <img src="{% static 'usuarios/img/curso_default.jpg' %}" alt="Curso sin imagen" class="imagen-curso mb-2" />
+          {% endif %}
+          <h3>{{ item.curso.curso.nombre }}</h3>
+          <p>
+            {% if item.curso.descripcion_palabras|length > 3 %}
+            {{ item.curso.descripcion_palabras|slice:":3"|join:" " }}...
             {% else %}
-                <img src="{% static 'usuarios/img/curso_default.jpg' %}" alt="Curso sin imagen" class="imagen-curso mb-2">
+            {{ item.curso.descripcion_palabras|join:" " }}
             {% endif %}
-    
-            <h3>{{ item.curso.curso.nombre }}</h3>
-            <p>
-                {% if item.curso.descripcion_palabras|length > 3 %}
-                    {{ item.curso.descripcion_palabras|slice:":3"|join:" " }}...
-                {% else %}
-                    {{ item.curso.descripcion_palabras|join:" " }}
-                {% endif %}
-            </p>
-    
-            {% if item.inscrito %}
-            <span class="inscrito-msg">¡Inscrito!</span>
-            {% else %}
-            <a href="{% url 'inscribir_curso' item.curso.id %}" class="mt-2 inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full">Inscribirme</a>
-            {% endif %}
+          </p>
+          {% if item.inscrito %}
+          <span class="inscrito-msg">¡Inscrito!</span>
+          {% else %}
+          <a href="{% url 'inscribir_curso' item.curso.id %}">Inscribirme</a>
+          {% endif %}
         </div>
         {% endfor %}
-    </div>
-    
+      </div>
 
-      <!-- Mensaje de inscripción -->
       {% if messages %}
       <div class="alerta-mensaje" id="mensaje-inscripcion">
         {% for message in messages %}
-          <div class="mensaje {{ message.tags }}">
-            {{ message }}
-          </div>
+        <div class="mensaje {{ message.tags }}">{{ message }}</div>
         {% endfor %}
       </div>
       {% endif %}
@@ -346,7 +405,6 @@
   </div>
 
   <script>
-    // Mostrar el mensaje de inscripción y ocultarlo
     document.addEventListener("DOMContentLoaded", function() {
       const mensaje = document.getElementById("mensaje-inscripcion");
       if (mensaje) {
@@ -355,23 +413,25 @@
           mensaje.style.display = 'none';
         }, 3000);
       }
-
-      // Menú hamburguesa
-      const hamburgerBtn = document.getElementById("hamburgerBtn");
-      const sidebar = document.getElementById("sidebar");
-      const overlay = document.getElementById("overlay");
-      const body = document.body;
-
-      hamburgerBtn.addEventListener("click", function () {
-        sidebar.classList.add("active");
-        body.classList.add("menu-open");
-      });
-
-      overlay.addEventListener("click", function () {
-        sidebar.classList.remove("active");
-        body.classList.remove("menu-open");
-      });
     });
+
+    function toggleSection(buttonId, listId) {
+    const btn = document.getElementById(buttonId);
+    const list = document.getElementById(listId);
+    btn.addEventListener('click', () => {
+      if (list.style.display === 'none' || list.style.display === '') {
+        list.style.display = 'block';
+        btn.textContent = btn.textContent.replace('▼', '▲');
+      } else {
+        list.style.display = 'none';
+        btn.textContent = btn.textContent.replace('▲', '▼');
+      }
+    });
+  }
+
+  toggleSection('categoria-toggle', 'categoria-lista');
+  toggleSection('recomendados-toggle', 'recomendados-lista');
+  toggleSection('populares-toggle', 'populares-lista');
   </script>
 </body>
 </html>

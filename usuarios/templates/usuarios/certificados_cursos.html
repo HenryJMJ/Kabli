@@ -1,0 +1,88 @@
+{% extends 'usuarios/panel_estudiantes.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .certificado-lista {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        max-width: 1500px;
+        margin: 30px auto;
+        padding: 0 1rem;
+        font-family: Arial, sans-serif;
+    }
+
+    .certificado-item {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 20px 25px;
+        cursor: pointer; /* Cambiado a pointer */
+        transition: background-color 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .certificado-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .certificado-info {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+    }
+
+    .certificado-titulo {
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: #004085;
+    }
+
+    .certificado-detalle {
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .certificado-numero {
+        font-family: monospace;
+        background-color: #f1f1f1;
+        padding: 3px 6px;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+    .certificado-icono {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        user-select: none;
+        flex-shrink: 0;
+    }
+</style>
+
+<h2 class="text-center mb-4 mt-4">🎓 Mis Certificados</h2>
+
+<div class="certificado-lista">
+    {% if certificados %}
+        {% for cert in certificados %}
+            <div class="certificado-item" onclick="window.location.href='{% url 'ver_certificado' cert.curso.id %}'" title="Ver certificado de {{ cert.curso.nombre }}">
+                <div class="certificado-info">
+                    <div class="certificado-titulo">"{{ cert.curso.nombre }}"</div>
+                    <div class="certificado-detalle">Finalizado el: <strong>{{ cert.fecha_finalizacion }}</strong></div>
+                    <div class="certificado-detalle">Número de certificado: <span class="certificado-numero">{{ cert.numero_certificado }}</span></div>
+                </div>
+                <img src="{% static 'certificado.png' %}" alt="Icono certificado" class="certificado-icono">
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info text-center mt-5" style="max-width: 900px; margin: auto;">
+            Aún no has completado ningún curso para obtener un certificado.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

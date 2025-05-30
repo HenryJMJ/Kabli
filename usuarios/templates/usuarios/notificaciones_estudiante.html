@@ -1,0 +1,32 @@
+{% extends 'usuarios/panel_estudiantes.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Notificaciones</h2>
+
+{% if notificaciones %}
+  <ul style="list-style: none; padding: 0;">
+    {% for noti in notificaciones %}
+      <li style="background-color: #f1f1f1; padding: 10px; margin-bottom: 10px; border-left: 5px solid 
+        {% if noti.tipo == 'info' %}#17a2b8
+        {% elif noti.tipo == 'advertencia' %}#ffc107
+        {% elif noti.tipo == 'mensaje' %}#28a745
+        {% else %}#ccc{% endif %}; border-radius: 5px; position: relative;">
+
+        <strong>{{ noti.titulo }}</strong><br>
+        {{ noti.contenido }}<br>
+        <small style="color: gray;">{{ noti.fecha|date:"d M Y - H:i" }}</small><br>
+
+        <div style="margin-top: 5px;">
+          {% if not noti.visto %}
+            <a href="{% url 'marcar_notificacion_leida_estudiante' noti.id %}" style="color: blue; margin-right: 10px;">Marcar como leída</a>
+          {% endif %}
+          <a href="{% url 'eliminar_notificacion_estudiante' noti.id %}" style="color: red;">Eliminar</a>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No tienes notificaciones.</p>
+{% endif %}
+{% endblock %}

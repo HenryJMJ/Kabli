@@ -48,7 +48,9 @@
       margin-top: 15px;
     }
 
-    .perfil-form input {
+    .perfil-form input[type="text"],
+    .perfil-form input[type="email"],
+    .perfil-form input[type="number"] {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
@@ -69,7 +71,7 @@
     }
 
     .perfil-form button:hover {
-      background-color: #0056b3;
+      background-color:rgb(33, 129, 231);
     }
 
     .back-button {
@@ -77,77 +79,162 @@
       margin-bottom: 20px;
     }
 
-    .back-button a button {
-      padding: 10px 18px;
-      border: none;
-      border-radius: 8px;
-      background-color: #6c757d;
+    .back-button a img {
+      width: 35px;
+      height: 35px;
+      cursor: pointer;
+    }
+
+    .foto-perfil-preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      background-color: #ccc;
+      margin: 0 auto 15px auto;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .foto-perfil-preview:hover {
+      transform: scale(1.05);
+    }
+
+    .file-label {
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .file-label input[type="file"] {
+      display: none;
+    }
+
+    .custom-file-btn {
+      display: inline-block;
+      padding: 10px 15px;
+      background-color: #007bff;
       color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .custom-file-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+    }
+
+    .modal-content {
+      display: block;
+      margin: 80px auto;
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+
+    .close {
+      position: absolute;
+      top: 30px;
+      right: 50px;
+      color: white;
+      font-size: 40px;
       font-weight: bold;
       cursor: pointer;
-      text-decoration: none;
     }
 
-    .back-button a button:hover {
-      background-color: #5a6268;
+    .close:hover {
+      color: #ccc;
     }
 
-    /* Media Queries */
-    @media (max-width: 768px) {
-      body {
-        padding: 20px;
-      }
-
-      .perfil-container {
-        padding: 20px;
-        max-width: 100%;
-      }
-
-      h2 {
-        font-size: 1.8rem;
-      }
-
-      .perfil-form label,
-      .perfil-form input {
-        font-size: 0.9rem;
-      }
-
-      .perfil-form button {
-        font-size: 1rem;
-        padding: 10px 15px;
-      }
-
-      .back-button a button {
-        padding: 8px 15px;
-      }
+    .foto-perfil-preview {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: #ccc;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      margin: 0 auto 15px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
-    @media (max-width: 480px) {
-      body {
-        padding: 15px;
-      }
+    .texto-circulo {
+      color: rgba(0, 0, 0, 0.84);
+      font-weight: 600;
+      padding: 0 10px;
+      font-size: 15px;
+      user-select: none;
+      position: relative;
+      top: 57px;
+      left: -5px;
+    }
 
-      .perfil-container {
-        padding: 15px;
-      }
+    .iconos-edicion {
+      display: flex;
+      justify-content: space-between; /* editar izquierda, eliminar derecha */
+      align-items: center; /* Alinea verticalmente */
+      gap: 90px;
+      width: 150px; /* mismo ancho que la foto */
+      margin: 0 auto;
+      margin-top: 10px;
+    }
 
-      h2 {
-        font-size: 1.6rem;
-      }
+    .editar-btn {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      cursor: pointer;
+    }
 
-      .perfil-form label,
-      .perfil-form input {
-        font-size: 0.85rem;
-      }
+    .editar-btn img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      display: block;
+    }
 
-      .perfil-form button {
-        font-size: 1rem;
-        padding: 10px 12px;
-      }
+    .eliminar-btn {
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      transform: translateY(-2px);
+    }
 
-      .back-button a button {
-        padding: 6px 12px;
-      }
+    .eliminar-btn img {
+      width: 31px;
+      height: 31px;
+      object-fit: contain;
+      display: block;
     }
   </style>
 </head>
@@ -157,36 +244,99 @@
 
     <!-- Botón Volver -->
     <div class="back-button">
-      <a href="{% url 'panel_estudiantes' %}">
-        <button type="button">← Volver</button>
+      <a href="{% url 'panel_estudiantes' %}" title="Volver">
+        <img src="{% static 'atras.png' %}" alt="Volver">
       </a>
     </div>
 
-    <form method="POST" class="perfil-form">
+    <form method="POST" class="perfil-form" enctype="multipart/form-data">
       {% csrf_token %}
+
+      <!-- Vista previa de imagen -->
+      {% if perfil_estudiante.foto_perfil %}
+      <!-- Imagen presente: clic abre modal -->
+      <div class="foto-perfil-preview"
+          style="background-image: url('{{ perfil_estudiante.foto_perfil.url }}');"
+          onclick="openModal('{{ perfil_estudiante.foto_perfil.url }}')">
+      </div>
+
+      <!-- Íconos de editar y eliminar -->
+      <div class="iconos-edicion">
+        <!-- Ícono de editar -->
+        <label for="fileInput" class="icono-btn editar-btn" title="Editar imagen">
+          <img src="{% static 'editarimg.png' %}" alt="Editar imagen">
+        </label>
+        <input id="fileInput" type="file" name="foto_perfil" accept="image/*" onchange="previewImage(this)" style="display: none;">
+
+        <!-- Ícono de eliminar -->
+        <button name="accion" value="eliminar_imagen" class="icono-btn eliminar-btn" type="submit" title="Eliminar imagen">
+          <img src="{% static 'eliminarimg.png' %}" alt="Eliminar">
+        </button>
+      </div>
+    {% else %}
+      <!-- Sin imagen: el círculo es el input -->
+      <label class="foto-perfil-preview" for="foto_perfil" style="background-image: url('{% static 'default-user.png' %}');">
+        <span class="texto-circulo">Agrega una foto de perfil</span>
+      </label>
+      <input id="foto_perfil" type="file" name="foto_perfil" accept="image/*" onchange="previewImage(this)" style="display: none;">
+    {% endif %}
+
+      <!-- Campos -->
       <label>Nombre</label>
-      <input type="text" name="nombre" value="{{ usuario.first_name|default:usuario.username }}">
-    
+      <input type="text" name="nombre" value="{{ user.first_name|default:user.username }}">
+
       <label>Correo</label>
-      <input type="email" name="correo" value="{{ usuario.email }}">
-    
+      <input type="email" name="correo" value="{{ user.email }}">
+
       <label>Identificación</label>
       <input type="text" name="identificacion" value="{{ perfil_estudiante.identificacion|default:'' }}">
-    
+
       <label>Edad</label>
       <input type="number" name="edad" value="{{ perfil_estudiante.edad|default:'' }}">
-    
+
       <label>Teléfono</label>
       <input type="text" name="telefono" value="{{ perfil_estudiante.telefono|default:'' }}">
-    
+
       <label>Departamento</label>
       <input type="text" name="departamento" value="{{ perfil_estudiante.departamento|default:'' }}">
-    
+
       <label>Ciudad</label>
       <input type="text" name="ciudad" value="{{ perfil_estudiante.ciudad|default:'' }}">
-    
+
       <button type="submit">Guardar Cambios</button>
-    </form>    
+    </form>
   </div>
+
+  <!-- Modal para imagen -->
+  <div id="imageModal" class="modal" onclick="closeModal()">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modalImage">
+  </div>
+
+  <script>
+    function previewImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.querySelector('.foto-perfil-preview').style.backgroundImage = `url('${e.target.result}')`;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function openModal(imageUrl) {
+      const modal = document.getElementById("imageModal");
+      const modalImg = document.getElementById("modalImage");
+      modal.style.display = "block";
+      modalImg.src = imageUrl;
+    }
+
+    function closeModal() {
+      document.getElementById("imageModal").style.display = "none";
+    }
+
+    // Cerrar al hacer clic en la "X"
+    document.querySelector('.close').onclick = closeModal;
+  </script>
 </body>
 </html>

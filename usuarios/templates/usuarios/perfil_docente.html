@@ -1,0 +1,169 @@
+{% extends "usuarios/panel_docentes.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  .perfil-card {
+    background: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+  }
+
+  .perfil-card h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: bold;
+  }
+
+  .perfil-card .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .perfil-card label {
+    font-weight: 600;
+  }
+
+  .perfil-card input[type="text"],
+  .perfil-card input[type="email"] {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    font-size: 14px;
+  }
+
+  .perfil-imagen-label {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .perfil-imagen {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007bff;
+    transition: box-shadow 0.3s;
+  }
+
+  .perfil-imagen-label:hover .perfil-imagen {
+    box-shadow: 0 0 0 4px rgba(0,123,255,0.2);
+  }
+
+  .clear-checkbox {
+    display: inline-block;
+    margin-left: 15px;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  #id_imagen {
+    display: none;
+  }
+
+  .btn-guardar {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .btn-guardar:hover {
+    background-color: #0056b3;
+  }
+
+  .clear-checkbox label,
+  .clear-checkbox span {
+    display: none;  /* Oculta los textos "Currently:", "Change:" o similares */
+  }
+
+  .clear-checkbox input[type="checkbox"] {
+    display: inline-block; /* Muestra sólo el checkbox */
+    margin-right: 5px;
+  }
+
+  .clear-checkbox {
+    user-select: none; /* Evita que se seleccione el área vacía al ocultar textos */
+  }
+
+</style>
+
+<div class="perfil-card">
+  <h2>Perfil del Docente</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Imagen de perfil con input oculto -->
+    <label for="id_imagen" class="perfil-imagen-label">
+      {% if perfil.imagen %}
+        <img src="{{ perfil.imagen.url }}" id="preview-imagen" class="perfil-imagen">
+      {% else %}
+        <img src="{% static 'img/default-profile.png' %}" id="preview-imagen" class="perfil-imagen">
+      {% endif %}
+    </label>
+
+    <!-- Checkbox para eliminar imagen -->
+    {% if imagen_form.imagen.clear_checkbox_label %}
+      <div class="clear-checkbox">
+        {{ imagen_form.imagen.clear }} {{ imagen_form.imagen.clear_checkbox_label }}
+      </div>
+    {% endif %}
+
+    <!-- Input file oculto -->
+    {{ imagen_form.imagen }}
+
+    <div class="form-group">
+      <label for="id_username">Usuario:</label>
+      {{ form.username }}
+    </div>
+
+    <div class="form-group">
+      <label>Eres:</label>
+      <input type="text" value="Docente" disabled>
+    </div>
+
+    <div class="form-group">
+      <label for="id_first_name">Nombre:</label>
+      {{ form.first_name }}
+    </div>
+
+    <div class="form-group">
+      <label for="id_last_name">Apellido:</label>
+      {{ form.last_name }}
+    </div>
+
+    <div class="form-group">
+      <label for="id_email">Correo electrónico:</label>
+      {{ form.email }}
+    </div>
+
+    <button type="submit" class="btn-guardar">Guardar cambios</button>
+  </form>
+</div>
+
+<script>
+  // Previsualizar imagen seleccionada
+  document.getElementById("id_imagen").addEventListener("change", function(event) {
+    const [file] = event.target.files;
+    if (file) {
+      const preview = document.getElementById("preview-imagen");
+      preview.src = URL.createObjectURL(file);
+    }
+  });
+</script>
+{% endblock %}
